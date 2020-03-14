@@ -17,7 +17,7 @@
     <table id="8" parent="2" name="transaction"/>
     <column id="9" parent="6" name="id">
       <Position>1</Position>
-      <DataType>TEXT|0s</DataType>
+      <DataType>INTEGER|0s</DataType>
       <NotNull>1</NotNull>
     </column>
     <column id="10" parent="6" name="frequency">
@@ -60,77 +60,63 @@
       <DataType>DATETIME|0s</DataType>
       <NotNull>1</NotNull>
     </column>
-    <index id="18" parent="6" name="sqlite_autoindex_recurring_bill_1">
-      <NameSurrogate>1</NameSurrogate>
-      <ColNames>id</ColNames>
-      <ColumnCollations></ColumnCollations>
-      <Unique>1</Unique>
-    </index>
-    <key id="19" parent="6">
+    <key id="18" parent="6">
       <ColNames>id</ColNames>
       <Primary>1</Primary>
-      <UnderlyingIndexName>sqlite_autoindex_recurring_bill_1</UnderlyingIndexName>
     </key>
-    <column id="20" parent="7" name="type">
+    <column id="19" parent="7" name="type">
       <Position>1</Position>
       <DataType>text|0s</DataType>
     </column>
-    <column id="21" parent="7" name="name">
+    <column id="20" parent="7" name="name">
       <Position>2</Position>
       <DataType>text|0s</DataType>
     </column>
-    <column id="22" parent="7" name="tbl_name">
+    <column id="21" parent="7" name="tbl_name">
       <Position>3</Position>
       <DataType>text|0s</DataType>
     </column>
-    <column id="23" parent="7" name="rootpage">
+    <column id="22" parent="7" name="rootpage">
       <Position>4</Position>
       <DataType>int|0s</DataType>
     </column>
-    <column id="24" parent="7" name="sql">
+    <column id="23" parent="7" name="sql">
       <Position>5</Position>
       <DataType>text|0s</DataType>
     </column>
-    <column id="25" parent="8" name="id">
+    <column id="24" parent="8" name="id">
       <Position>1</Position>
-      <DataType>TEXT|0s</DataType>
+      <DataType>INTEGER|0s</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="26" parent="8" name="amount">
+    <column id="25" parent="8" name="amount">
       <Position>2</Position>
       <DataType>REAL|0s</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="27" parent="8" name="category">
+    <column id="26" parent="8" name="category">
       <Position>3</Position>
       <DataType>VARCHAR(64)|0s</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="28" parent="8" name="company">
+    <column id="27" parent="8" name="company">
       <Position>4</Position>
       <DataType>VARCHAR(64)|0s</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="29" parent="8" name="note">
+    <column id="28" parent="8" name="note">
       <Position>5</Position>
       <DataType>VARCHAR(1024)|0s</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="30" parent="8" name="time_created">
+    <column id="29" parent="8" name="time_created">
       <Position>6</Position>
       <DataType>DATETIME|0s</DataType>
       <NotNull>1</NotNull>
     </column>
-    <index id="31" parent="8" name="sqlite_autoindex_transaction_1">
-      <NameSurrogate>1</NameSurrogate>
-      <ColNames>id</ColNames>
-      <ColumnCollations></ColumnCollations>
-      <Unique>1</Unique>
-    </index>
-    <key id="32" parent="8">
+    <key id="30" parent="8">
       <ColNames>id</ColNames>
       <Primary>1</Primary>
-      <UnderlyingIndexName>sqlite_autoindex_transaction_1</UnderlyingIndexName>
     </key>
   </database-model>
 </dataSource>

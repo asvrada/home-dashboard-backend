@@ -2,7 +2,7 @@ from peewee import *
 import uuid
 from datetime import date, datetime
 
-db = SqliteDatabase('backend.db')
+db = SqliteDatabase('db/backend.db')
 
 
 class BaseModel(Model):
@@ -11,7 +11,8 @@ class BaseModel(Model):
 
 
 class Transaction(BaseModel):
-    id = UUIDField(primary_key=True, default=uuid.uuid4)
+    # Auto added
+    # id = AutoField()
     amount = FloatField(default=0)
     category = CharField(max_length=64, default="Undefined")
     company = CharField(max_length=64, default="Undefined")
@@ -20,8 +21,9 @@ class Transaction(BaseModel):
 
 
 class RecurringBill(BaseModel):
-    id = UUIDField(primary_key=True, default=uuid.uuid4)
-    frequency = CharField()
+    # Auto added
+    # id = AutoField()
+    frequency = CharField(max_length=10)
     recurring_month = IntegerField()
     recurring_date = IntegerField()
     amount = FloatField(default=0)
