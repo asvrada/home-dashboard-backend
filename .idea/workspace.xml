@@ -2,10 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="13ca2014-2c58-4876-9742-0fe92da00873" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/dataSources/ddd014ea-152b-43e6-8cd5-3b4261c6083f.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/ddd014ea-152b-43e6-8cd5-3b4261c6083f.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/database_table.py" beforeDir="false" afterPath="$PROJECT_DIR$/database_table.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/database_table.py" beforeDir="false" afterPath="$PROJECT_DIR$/server/database_table.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -54,7 +54,9 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="ProjectId" id="1Z8ACWqwN8kUGJhIyQjuuJV93Mr" />
-  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showExcludedFiles" value="true" />
@@ -65,14 +67,38 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+    <property name="restartRequiresConfirmation" value="false" />
+    <property name="settings.editor.selected.configurable" value="preferences.general" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/database" />
       <recent name="$PROJECT_DIR$/db" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.python database_table">
+  <component name="RunManager" selected="Python.python app.py">
+    <configuration name="database_table" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="untitled" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/server" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/server/database_table.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="python app.py" type="PythonConfigurationType" factoryName="Python">
       <module name="untitled" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -108,7 +134,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/database_table.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/database/database_table.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -136,11 +162,13 @@
       <item itemvalue="Flask server.Flask (app.py)" />
       <item itemvalue="Python.python app.py" />
       <item itemvalue="Python.python database_table" />
+      <item itemvalue="Python.database_table" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.python database_table" />
+        <item itemvalue="Python.database_table" />
         <item itemvalue="Flask server.Flask (app.py)" />
+        <item itemvalue="Python.python database_table" />
       </list>
     </recent_temporary>
   </component>
@@ -181,7 +209,10 @@
       <workItem from="1584210221679" duration="1785000" />
       <workItem from="1584213923777" duration="1373000" />
       <workItem from="1584215410557" duration="1311000" />
-      <workItem from="1584219206071" duration="458000" />
+      <workItem from="1584219206071" duration="3207000" />
+      <workItem from="1584335520115" duration="2382000" />
+      <workItem from="1584769407076" duration="1787000" />
+      <workItem from="1584771418857" duration="946000" />
     </task>
     <servers />
   </component>
@@ -190,44 +221,79 @@
       <screen x="64" y="23" width="1616" height="1027" />
     </state>
     <state x="569" y="172" key="#Flask_(app.py)/64.23.1616.1027@64.23.1616.1027" timestamp="1584210642939" />
-    <state x="338" y="198" width="1071" height="696" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1584219607094">
+    <state x="338" y="198" width="1071" height="696" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1584336999623">
       <screen x="64" y="23" width="1616" height="1027" />
     </state>
-    <state x="338" y="198" width="1071" height="696" key="#com.intellij.execution.impl.EditConfigurationsDialog/64.23.1616.1027@64.23.1616.1027" timestamp="1584219607094" />
+    <state x="338" y="198" width="1071" height="696" key="#com.intellij.execution.impl.EditConfigurationsDialog/64.23.1616.1027@64.23.1616.1027" timestamp="1584336999623" />
     <state x="661" y="298" key="FileChooserDialogImpl" timestamp="1584210259907">
       <screen x="64" y="23" width="1616" height="1027" />
     </state>
     <state x="661" y="298" key="FileChooserDialogImpl/64.23.1616.1027@64.23.1616.1027" timestamp="1584210259907" />
-    <state width="1570" height="224" key="GridCell.Tab.0.bottom" timestamp="1584219595083">
+    <state width="1574" height="224" key="GridCell.Tab.0.bottom" timestamp="1584772366984">
       <screen x="64" y="23" width="1616" height="1027" />
     </state>
-    <state width="1570" height="224" key="GridCell.Tab.0.bottom/64.23.1616.1027@64.23.1616.1027" timestamp="1584219595083" />
-    <state width="1570" height="224" key="GridCell.Tab.0.center" timestamp="1584219595082">
+    <state width="1574" height="224" key="GridCell.Tab.0.bottom/64.23.1616.1027@64.23.1616.1027" timestamp="1584772366984" />
+    <state width="1574" height="224" key="GridCell.Tab.0.center" timestamp="1584772366983">
       <screen x="64" y="23" width="1616" height="1027" />
     </state>
-    <state width="1570" height="224" key="GridCell.Tab.0.center/64.23.1616.1027@64.23.1616.1027" timestamp="1584219595082" />
-    <state width="1570" height="224" key="GridCell.Tab.0.left" timestamp="1584219595082">
+    <state width="1574" height="224" key="GridCell.Tab.0.center/64.23.1616.1027@64.23.1616.1027" timestamp="1584772366983" />
+    <state width="1574" height="224" key="GridCell.Tab.0.left" timestamp="1584772366983">
       <screen x="64" y="23" width="1616" height="1027" />
     </state>
-    <state width="1570" height="224" key="GridCell.Tab.0.left/64.23.1616.1027@64.23.1616.1027" timestamp="1584219595082" />
-    <state width="1570" height="224" key="GridCell.Tab.0.right" timestamp="1584219595082">
+    <state width="1574" height="224" key="GridCell.Tab.0.left/64.23.1616.1027@64.23.1616.1027" timestamp="1584772366983" />
+    <state width="1574" height="224" key="GridCell.Tab.0.right" timestamp="1584772366983">
       <screen x="64" y="23" width="1616" height="1027" />
     </state>
-    <state width="1570" height="224" key="GridCell.Tab.0.right/64.23.1616.1027@64.23.1616.1027" timestamp="1584219595082" />
+    <state width="1574" height="224" key="GridCell.Tab.0.right/64.23.1616.1027@64.23.1616.1027" timestamp="1584772366983" />
+    <state width="1574" height="345" key="GridCell.Tab.1.bottom" timestamp="1584417999117">
+      <screen x="64" y="23" width="1616" height="1027" />
+    </state>
+    <state width="1574" height="345" key="GridCell.Tab.1.bottom/64.23.1616.1027@64.23.1616.1027" timestamp="1584417999117" />
+    <state width="1574" height="345" key="GridCell.Tab.1.center" timestamp="1584417999116">
+      <screen x="64" y="23" width="1616" height="1027" />
+    </state>
+    <state width="1574" height="345" key="GridCell.Tab.1.center/64.23.1616.1027@64.23.1616.1027" timestamp="1584417999116" />
+    <state width="1574" height="345" key="GridCell.Tab.1.left" timestamp="1584417999115">
+      <screen x="64" y="23" width="1616" height="1027" />
+    </state>
+    <state width="1574" height="345" key="GridCell.Tab.1.left/64.23.1616.1027@64.23.1616.1027" timestamp="1584417999115" />
+    <state width="1574" height="345" key="GridCell.Tab.1.right" timestamp="1584417999117">
+      <screen x="64" y="23" width="1616" height="1027" />
+    </state>
+    <state width="1574" height="345" key="GridCell.Tab.1.right/64.23.1616.1027@64.23.1616.1027" timestamp="1584417999117" />
     <state width="239" height="457" key="HiddenNamespacesPopup" timestamp="1584214139921">
       <screen x="64" y="23" width="1616" height="1027" />
     </state>
     <state width="239" height="457" key="HiddenNamespacesPopup/64.23.1616.1027@64.23.1616.1027" timestamp="1584214139921" />
-    <state x="375" y="175" key="SettingsEditor" timestamp="1584210267904">
+    <state x="375" y="175" key="SettingsEditor" timestamp="1584335564420">
       <screen x="64" y="23" width="1616" height="1027" />
     </state>
-    <state x="375" y="175" key="SettingsEditor/64.23.1616.1027@64.23.1616.1027" timestamp="1584210267904" />
+    <state x="375" y="175" key="SettingsEditor/64.23.1616.1027@64.23.1616.1027" timestamp="1584335564420" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/server/database_table.py</url>
+          <line>33</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+    <watches-manager>
+      <configuration name="PythonConfigurationType">
+        <watch expression="self.time_created" language="Python" />
+      </configuration>
+    </watches-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/untitled$untitled.coverage" NAME="untitled Coverage Results" MODIFIED="1584210280715" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/home_dashboard_backend$python_app_py.coverage" NAME="python app.py Coverage Results" MODIFIED="1584772181572" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/home_dashboard_backend$Flask__app_py_.coverage" NAME="Flask (app.py) Coverage Results" MODIFIED="1584246117415" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/untitled$Flask__app_py_.coverage" NAME="Flask (app.py) Coverage Results" MODIFIED="1584210630425" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/untitled$database_table.coverage" NAME="database_table Coverage Results" MODIFIED="1584215306443" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/untitled$python_app_py.coverage" NAME="python app.py Coverage Results" MODIFIED="1584211825670" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/home_dashboard_backend$python_database_table.coverage" NAME="python database_table Coverage Results" MODIFIED="1584219595074" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/home_dashboard_backend$database_table.coverage" NAME="database_table Coverage Results" MODIFIED="1584771118111" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/server" />
   </component>
 </project>
