@@ -21,7 +21,6 @@ class Transaction(BaseModel):
     note = CharField(max_length=1024, default="")
     time_created = DateTimeField(formats=['%Y-%m-%d %H:%M:%S'], default=lambda: datetime.now(timezone))
 
-    @property
     def serialize(self):
         data = {
             'id': self.id,

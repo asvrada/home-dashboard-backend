@@ -41,7 +41,7 @@ def bill():
 
 def handle_bill_get(req):
     query_set = dt.Transaction.select()
-    return [each.serialize for each in query_set]
+    return [each.serialize() for each in query_set]
 
 
 def handle_bill_post(req):
