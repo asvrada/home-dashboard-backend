@@ -8,4 +8,5 @@ router.register(r'bill', views.TransactionViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
+    # path('summary/', )
 ]

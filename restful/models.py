@@ -13,12 +13,12 @@ class Transaction(models.Model):
     """
     Model a single transaction
     """
-    icon = models.CharField(max_length=32)
-    amount = models.FloatField()
-    category = models.CharField(max_length=32)
-    company = models.CharField(max_length=32)
-    card = models.CharField(max_length=32)
-    note = models.CharField(max_length=512)
+    icon = models.CharField(max_length=32, default="Undefined Icon")
+    amount = models.FloatField(default=0)
+    category = models.CharField(max_length=32, default="Undefined Category")
+    company = models.CharField(max_length=32, default="Undefined Company")
+    card = models.CharField(max_length=32, default="Undefined Card")
+    note = models.CharField(max_length=512, default="")
     time_created = models.DateTimeField(auto_now=True)
 
     class Meta:
@@ -26,4 +26,3 @@ class Transaction(models.Model):
 
     def __repr__(self):
         return f"{self.amount} - {self.category} - {self.company} - {self.card} - {self.time_created}"
-
