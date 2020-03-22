@@ -24,8 +24,17 @@ SECRET_KEY = '8w+=%te4qp8e4t&r5lb1t5gr&%x3$c1_v3c9n4azxa$up#-nn0'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+AUTH_USER_MODEL = 'restful.User'
+
 # When DEBUG is True and ALLOWED_HOSTS is empty, the host is validated against ['localhost', '127.0.0.1', '[::1]']
 ALLOWED_HOSTS = []
+
+# For RESTFUL API
+CORS_ORIGIN_WHITELIST = [
+    "https://kksk.biz",
+    "http://localhost:3000",
+    "http://127.0.0.1:3000"
+]
 
 # Application definition
 
@@ -36,12 +45,16 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'corsheaders',
     'rest_framework',
+    # App
+    'restful'
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
