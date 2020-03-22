@@ -1,6 +1,6 @@
 from peewee import *
 from datetime import datetime
-from .config import db, timezone
+from src.config import db, timezone
 
 
 class BaseModel(Model):

@@ -1,7 +1,9 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 
-from server import database_table as dt
+import logging
+
+from src.server import database_table as dt
 
 app = Flask(__name__)
 CORS(app)
@@ -12,7 +14,7 @@ POST = 'POST'
 
 @app.route('/')
 def index():
-    return "you shouldn't be here"
+    return {"message": "you shouldn't be here"}
 
 
 @app.route("/summary/")
@@ -48,12 +50,12 @@ def handle_bill_post(req):
     """
     dict_transaction = req.json
 
-    print(type(dict_transaction), dict_transaction)
+    logging.info("%s -- %s", str(type(dict_transaction)), str(dict_transaction))
 
     dt.Transaction.create(**dict_transaction)
 
     return {
-        "message": "doesn't matter"
+        "message": "response doesn't matter"
     }
 
 
