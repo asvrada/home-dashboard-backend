@@ -63,6 +63,7 @@ def db_create_table():
 
 
 if __name__ == '__main__':
+    # Only use this to create DB when run for the first time
     db.connect()
     db.create_tables([Transaction, RecurringBill])
     db.close()

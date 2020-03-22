@@ -61,8 +61,6 @@ def handle_bill_post(req):
 
 if __name__ == '__main__':
     dt.db.connect()
-    # only run once to populate database
-    # dt.db_create_table()
 
     app.run(port=4444)
 

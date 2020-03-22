@@ -2,12 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="13ca2014-2c58-4876-9742-0fe92da00873" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/config.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/app.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/server/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/config.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/database_table.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/server/database_table.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app.log" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/app.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/server/database_table.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/server/database_table.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -219,7 +217,7 @@
       <workItem from="1584819799828" duration="1784000" />
       <workItem from="1584824552024" duration="96000" />
       <workItem from="1584836912440" duration="259000" />
-      <workItem from="1584837181118" duration="883000" />
+      <workItem from="1584837181118" duration="1013000" />
     </task>
     <servers />
   </component>
