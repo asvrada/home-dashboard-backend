@@ -4,9 +4,9 @@ from . import views
 
 # Create a router and register our viewsets with it.
 router = DefaultRouter()
-router.register(r'bill', views.TransactionViewSet)
+router.register(r'bill', views.TransactionViewSet, basename="bill")
 
 urlpatterns = [
     path('', include(router.urls)),
-    path('summary/', views.SummaryView.as_view())
+    path('summary/', views.SummaryView.as_view(), name="summary-get")
 ]
