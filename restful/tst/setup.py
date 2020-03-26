@@ -1,9 +1,9 @@
-from django.urls import reverse
-from rest_framework import status
 from rest_framework.test import APIClient, APITestCase
 
 import pandas as pd
+import pytz
 from datetime import datetime
+from unittest import mock
 
 from .. import models
 
@@ -16,14 +16,6 @@ def read_excel(file):
     """
 
     def consume_series(row):
-        def parse_datetime(str_time: str):
-            def create_datetime(year=2020, month=1, day=1, hour=8, minute=59, second=59):
-                return datetime(year, month, day, hour, minute, second)
-
-            components = list(map(int, str_time.split()))
-
-            return create_datetime(*components)
-
         return {
             'id': int(row['id']),
             'icon': row['icon'],
@@ -32,19 +24,21 @@ def read_excel(file):
             'company': row['company'],
             'card': row['card'],
             'note': row['note'],
-            'time_created': parse_datetime(row['time_created'])
+            'time_created': list(map(int, row['time_created'].split()))
         }
 
     df = pd.read_excel(file)
-    # Just make sure your input is correct
-    # df = df.fillna(0)
+    # Don't leave number field empty in Excel
+    df = df.fillna("")
 
     return (consume_series(row) for _, row in df.iterrows())
 
 
 def create_dummy_transactions(transactions):
     for payload in transactions:
-        models.Transaction.objects.create(**payload)
+        mocked = datetime(*payload["time_created"], tzinfo=pytz.utc)
+        with mock.patch('django.utils.timezone.now', mock.Mock(return_value=mocked)):
+            models.Transaction.objects.create(**payload)
 
 
 class BasicAPITestCase(APITestCase):
