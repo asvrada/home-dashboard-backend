@@ -13,7 +13,7 @@ class BillTest(BasicAPITestCase):
 
         # then
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 3)
+        self.assertEqual(len(response.data), len(list(self.transactions)))
 
         # check fields
         obj: dict = response.data[0]
@@ -27,7 +27,7 @@ class BillTest(BasicAPITestCase):
 
         # then
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data["icon"], "icon 1")
+        self.assertEqual(response.data["icon"], "test icon 1")
 
     def test_create_bill(self):
         amount = 444
@@ -40,7 +40,7 @@ class BillTest(BasicAPITestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
         # check
-        response = self.client.get(reverse("bill-detail", args=[4]))
+        response = self.client.get(reverse("bill-detail", args=[response.data["id"]]))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["amount"], amount)
 
@@ -56,7 +56,7 @@ class BillTest(BasicAPITestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
         # check
-        response = self.client.get(reverse("bill-detail", args=[4]))
+        response = self.client.get(reverse("bill-detail", args=[response.data["id"]]))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["amount"], amount)
 
@@ -85,4 +85,4 @@ class BillTest(BasicAPITestCase):
         # check
         response = self.client.get(reverse('bill-list'))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 2)
+        self.assertEqual(len(response.data), len(self.transactions) - 1)
