@@ -25,7 +25,9 @@ class EnumCategoryAdmin(admin.ModelAdmin):
     empty_value_display = '-empty-'
 
 
-# Help functions
+##################
+# Help functions #
+##################
 FILE_DUMMY_DATA = "./restful/tst/dummy_data.xlsx"
 
 
