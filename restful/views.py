@@ -24,6 +24,7 @@ class MonthlyBudgetView(generics.RetrieveUpdateAPIView):
     serializer_class = serializers.MonthlyBudgetSerializer
 
     def get_object(self):
+        assert len(self.queryset.all()) >= 1, "No record in Budget database! Create one and only one."
         return self.queryset[0]
 
 
@@ -66,26 +67,31 @@ class SummaryView(APIView):
         # Also make sure its >= 1
         days_left = max(1, days_month - day + 1)
 
-        # todo: set by user
-        budget_month = 3333
+        budget_month = self.retrieve_budget()
 
         tmp_budget_month = budget_month + sum_spend_month
         tmp_budget_today_total = (tmp_budget_month - sum_spend_today) / days_left
 
         return Response(data={
             # budget left for today := budgetTodayTotal - spend today
-            "budgetToday": tmp_budget_today_total + sum_spend_today,
+            "budgetToday": self.convert_float(tmp_budget_today_total + sum_spend_today),
             # budget today := (budgetMonth (not include today)) / days left
-            "budgetTodayTotal": tmp_budget_today_total,
+            "budgetTodayTotal": self.convert_float(tmp_budget_today_total),
+
             # budget left for this month := budgetMonthTotal - total spend (include today)
-            "budgetMonth": tmp_budget_month,
+            "budgetMonth": self.convert_float(tmp_budget_month),
             # budget for this month := this is a number set by user
-            "budgetMonthTotal": budget_month,
+            "budgetMonthTotal": self.convert_float(budget_month),
+
             # saving this month := total income - total spend
-            "savingMonth": sum_income_month + sum_spend_month,
+            "savingMonth": self.convert_float(sum_income_month + sum_spend_month),
             # income this month := total income
-            "incomeMonthTotal": sum_income_month,
+            "incomeMonthTotal": self.convert_float(sum_income_month)
         })
+
+    @staticmethod
+    def retrieve_budget():
+        return models.MonthlyBudget.objects.get(id=1).budget
 
     @staticmethod
     def aggregate_amount(queryset):
