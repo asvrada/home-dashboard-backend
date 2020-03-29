@@ -18,7 +18,6 @@ def read_excel(file):
     def consume_series(row):
         return {
             'id': int(row['id']),
-            'icon': row['icon'],
             'amount': float(row['amount']),
             'category': row['category'],
             'company': row['company'],

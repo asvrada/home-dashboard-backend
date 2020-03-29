@@ -1,11 +1,23 @@
 from rest_framework import serializers
-from .models import Transaction, User
+from .models import Transaction, User, EnumCategory, MonthlyBudget
 
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'url', 'username', 'email']
+
+
+class MonthlyBudgetSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MonthlyBudget
+        fields = '__all__'
+
+
+class EnumSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = EnumCategory
+        fields = '__all__'
 
 
 class TransactionSerializer(serializers.ModelSerializer):
@@ -16,3 +28,4 @@ class TransactionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Transaction
         fields = '__all__'
+        read_only_fields = ('time_created',)

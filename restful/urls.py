@@ -5,8 +5,10 @@ from . import views
 # Create a router and register our viewsets with it.
 router = DefaultRouter()
 router.register(r'bill', views.TransactionViewSet, basename="bill")
+router.register(r'enum', views.EnumViewSet, basename="enum")
 
 urlpatterns = [
     path('', include(router.urls)),
-    path('summary/', views.SummaryView.as_view(), name="summary-get")
+    path('summary/', views.SummaryView.as_view(), name="get"),
+    path('budget/', views.MonthlyBudgetView.as_view(), name="budget")
 ]

@@ -15,7 +15,7 @@ class SummaryTest(BasicAPITestCase):
         # Mock today to be 2020/3/20, 12 days till next month
         mocked = datetime(2020, 3, 20, 12, 0, 0, tzinfo=pytz.utc)
         with mock.patch('django.utils.timezone.now', mock.Mock(return_value=mocked)):
-            response = self.client.get(reverse('summary-get'))
+            response = self.client.get(reverse('summary'))
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(type(response.data), dict)
