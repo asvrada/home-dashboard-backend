@@ -9,6 +9,6 @@ router.register(r'enum', views.EnumViewSet, basename="enum")
 
 urlpatterns = [
     path('', include(router.urls)),
-    path('summary/', views.SummaryView.as_view(), name="get"),
+    path('summary/', views.SummaryView.as_view(), name="summary"),
     path('budget/', views.MonthlyBudgetView.as_view(), name="budget")
 ]
