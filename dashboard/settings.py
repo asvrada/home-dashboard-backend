@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'corsheaders',
+    'django_crontab',
     'rest_framework',
     # App
     'restful'
@@ -127,3 +128,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
+CRONJOBS = [
+    # Everyday 5:00 am
+    ('0 5 * * *', 'restful.crontab.recurring.check_recurring_bill_today')
+]

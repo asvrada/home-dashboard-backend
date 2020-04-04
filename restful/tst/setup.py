@@ -10,7 +10,10 @@ class BasicAPITestCase(APITestCase):
     def setUp(self) -> None:
         super().setUp()
 
+        self.trans = None
+
         enum, trans = admin.read_excel(admin.FILE_DUMMY_DATA)
+        self.trans = trans
 
         # Load data into database
         admin.load_into_database(enum, trans)

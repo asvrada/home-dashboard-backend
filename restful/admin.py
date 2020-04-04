@@ -20,7 +20,7 @@ class EnumCategoryAdmin(admin.ModelAdmin):
 
 @admin.register(models.Transaction)
 class TransactionAdmin(admin.ModelAdmin):
-    list_display = ('amount', 'category', 'company', 'note', 'time_created')
+    list_display = ('amount', 'category', 'company', 'note', 'creator', 'time_created')
     list_display_links = list_display
     empty_value_display = '-empty-'
 

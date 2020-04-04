@@ -9,6 +9,7 @@ from calendar import monthrange
 
 from . import models
 from . import serializers
+from .crontab.recurring import check_recurring_bill_today
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -25,7 +26,13 @@ class MonthlyBudgetView(generics.RetrieveUpdateAPIView):
 
     def get_object(self):
         assert len(self.queryset.all()) >= 1, "No record in Budget database! Create one on admin site."
-        return self.queryset[0]
+        return self.queryset.first()
+
+
+class TestView(APIView):
+    def get(self, request):
+        check_recurring_bill_today()
+        return Response(data="Called")
 
 
 class SummaryView(APIView):

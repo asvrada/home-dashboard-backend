@@ -54,37 +54,6 @@ class EnumCategory(models.Model):
         return f"{self.name}"
 
 
-class Transaction(models.Model):
-    """
-    Model a single transaction
-    """
-    amount = models.FloatField(default=0)
-
-    category = models.ForeignKey(EnumCategory, related_name="key_bill_category",
-                                 null=True, blank=True, on_delete=models.SET_NULL,
-                                 limit_choices_to={"category": "CAT"})
-
-    company = models.ForeignKey(EnumCategory, related_name="key_bill_company",
-                                null=True, blank=True, on_delete=models.SET_NULL,
-                                limit_choices_to={"category": "COM"})
-
-    card = models.ForeignKey(EnumCategory, related_name="key_bill_card",
-                             null=True, blank=True, on_delete=models.SET_NULL,
-                             limit_choices_to={"category": "CAR"})
-
-    note = models.CharField(max_length=512, default="", blank=True)
-    time_created = models.DateTimeField(default=now)
-
-    class Meta:
-        ordering = ['-time_created']
-
-    def __str__(self):
-        return self.__repr__()
-
-    def __repr__(self):
-        return f"{self.amount} - {self.category} - {self.company} - {self.card} - {self.time_created}"
-
-
 class RecurringBill(models.Model):
     """
     Model a timed recurring bill
@@ -104,15 +73,15 @@ class RecurringBill(models.Model):
     # Below are the same as Transaction
     amount = models.FloatField(default=0)
 
-    category = models.ForeignKey(EnumCategory, related_name="key_recur_category",
+    category = models.ForeignKey(EnumCategory, related_name="recur_category",
                                  null=True, blank=True, on_delete=models.SET_NULL,
                                  limit_choices_to={"category": "CAT"})
 
-    company = models.ForeignKey(EnumCategory, related_name="key_recur_company",
+    company = models.ForeignKey(EnumCategory, related_name="recur_company",
                                 null=True, blank=True, on_delete=models.SET_NULL,
                                 limit_choices_to={"category": "COM"})
 
-    card = models.ForeignKey(EnumCategory, related_name="key_recur_card",
+    card = models.ForeignKey(EnumCategory, related_name="recur_card",
                              null=True, blank=True, on_delete=models.SET_NULL,
                              limit_choices_to={"category": "CAR"})
 
@@ -141,3 +110,39 @@ class RecurringBill(models.Model):
     def save(self, *args, **kwargs):
         self.full_clean()
         super().save(*args, **kwargs)
+
+
+class Transaction(models.Model):
+    """
+    Model a single transaction
+    """
+    amount = models.FloatField(default=0)
+
+    # {instance of enum}.{related_name} := all Transactions that point to it
+    category = models.ForeignKey(EnumCategory, related_name="bill_category",
+                                 null=True, blank=True, on_delete=models.SET_NULL,
+                                 limit_choices_to={"category": "CAT"})
+
+    company = models.ForeignKey(EnumCategory, related_name="bill_company",
+                                null=True, blank=True, on_delete=models.SET_NULL,
+                                limit_choices_to={"category": "COM"})
+
+    card = models.ForeignKey(EnumCategory, related_name="bill_card",
+                             null=True, blank=True, on_delete=models.SET_NULL,
+                             limit_choices_to={"category": "CAR"})
+
+    note = models.CharField(max_length=512, default="", blank=True)
+
+    # If not NULL, then point to the recurring_bill record
+    creator = models.ForeignKey(RecurringBill, related_name="bill_instance",
+                                null=True, blank=True, on_delete=models.SET_NULL)
+    time_created = models.DateTimeField(default=now)
+
+    class Meta:
+        ordering = ['-time_created']
+
+    def __str__(self):
+        return self.__repr__()
+
+    def __repr__(self):
+        return f"{self.amount} - {self.category} - {self.company} - {self.card} - {self.time_created}"
