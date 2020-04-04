@@ -57,15 +57,15 @@ class Transaction(models.Model):
     """
     amount = models.FloatField(default=0)
 
-    category = models.ForeignKey(EnumCategory, related_name="key_category",
+    category = models.ForeignKey(EnumCategory, related_name="key_bill_category",
                                  null=True, on_delete=models.SET_NULL,
                                  limit_choices_to={"category": "CAT"})
 
-    company = models.ForeignKey(EnumCategory, related_name="key_company",
+    company = models.ForeignKey(EnumCategory, related_name="key_bill_company",
                                 null=True, on_delete=models.SET_NULL,
                                 limit_choices_to={"category": "COM"})
 
-    card = models.ForeignKey(EnumCategory, related_name="key_card",
+    card = models.ForeignKey(EnumCategory, related_name="key_bill_card",
                              null=True, on_delete=models.SET_NULL,
                              limit_choices_to={"category": "CAR"})
 
@@ -80,3 +80,50 @@ class Transaction(models.Model):
 
     def __repr__(self):
         return f"{self.amount} - {self.category} - {self.company} - {self.card} - {self.time_created}"
+
+
+class RecurringBill(models.Model):
+    """
+    Model a timed recurring bill
+    """
+    FREQUENCY_CHOICES = [
+        ('Y', 'Year'),
+        ("M", "Month")
+    ]
+    frequency = models.CharField(max_length=1, choices=FREQUENCY_CHOICES, default="M")
+
+    # User could emit this when frequency is M
+    # But for simplicity we set a default value anyway
+    recurring_month = models.IntegerField(default=1)
+    # Should be only 1<= x <= 28
+    recurring_day = models.IntegerField()
+
+    # Below are the same as Transaction
+    amount = models.FloatField(default=0)
+
+    category = models.ForeignKey(EnumCategory, related_name="key_recur_category",
+                                 null=True, on_delete=models.SET_NULL,
+                                 limit_choices_to={"category": "CAT"})
+
+    company = models.ForeignKey(EnumCategory, related_name="key_recur_company",
+                                null=True, on_delete=models.SET_NULL,
+                                limit_choices_to={"category": "COM"})
+
+    card = models.ForeignKey(EnumCategory, related_name="key_recur_card",
+                             null=True, on_delete=models.SET_NULL,
+                             limit_choices_to={"category": "CAR"})
+
+    note = models.CharField(max_length=512, default="", blank=True)
+
+    # Time created for this entry (but not the actual bill)
+    time_created = models.DateTimeField(default=now)
+
+    class Meta:
+        # Order by (frequency, month, day)
+        ordering = ['frequency', 'recurring_month', 'recurring_day', 'time_created']
+
+    def __str__(self):
+        return self.__repr__()
+
+    def __repr__(self):
+        return f"Recurring {self.frequency} = {self.amount} - {self.category}"

@@ -24,7 +24,7 @@ class MonthlyBudgetView(generics.RetrieveUpdateAPIView):
     serializer_class = serializers.MonthlyBudgetSerializer
 
     def get_object(self):
-        assert len(self.queryset.all()) >= 1, "No record in Budget database! Create one and only one."
+        assert len(self.queryset.all()) >= 1, "No record in Budget database! Create one on admin site."
         return self.queryset[0]
 
 
@@ -113,3 +113,11 @@ class TransactionViewSet(viewsets.ModelViewSet):
     """
     queryset = models.Transaction.objects.all()
     serializer_class = serializers.TransactionSerializer
+
+
+class RecurringBillViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows Recurring Bill to be viewed or edited
+    """
+    queryset = models.RecurringBill.objects.all()
+    serializer_class = serializers.RecurringBillSerializer

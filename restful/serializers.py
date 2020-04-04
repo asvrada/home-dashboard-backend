@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Transaction, User, EnumCategory, MonthlyBudget
+from .models import Transaction, User, EnumCategory, MonthlyBudget, RecurringBill
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -27,5 +27,16 @@ class TransactionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Transaction
+        fields = '__all__'
+        read_only_fields = ('time_created',)
+
+
+class RecurringBillSerializer(serializers.ModelSerializer):
+    """
+    Serializer for RecurringBill
+    """
+
+    class Meta:
+        model = RecurringBill
         fields = '__all__'
         read_only_fields = ('time_created',)
