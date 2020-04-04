@@ -2,6 +2,9 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils.timezone import now
 
+from django.core.exceptions import ValidationError
+from django.utils.translation import gettext_lazy as _
+
 
 class User(AbstractUser):
     """
@@ -58,15 +61,15 @@ class Transaction(models.Model):
     amount = models.FloatField(default=0)
 
     category = models.ForeignKey(EnumCategory, related_name="key_bill_category",
-                                 null=True, on_delete=models.SET_NULL,
+                                 null=True, blank=True, on_delete=models.SET_NULL,
                                  limit_choices_to={"category": "CAT"})
 
     company = models.ForeignKey(EnumCategory, related_name="key_bill_company",
-                                null=True, on_delete=models.SET_NULL,
+                                null=True, blank=True, on_delete=models.SET_NULL,
                                 limit_choices_to={"category": "COM"})
 
     card = models.ForeignKey(EnumCategory, related_name="key_bill_card",
-                             null=True, on_delete=models.SET_NULL,
+                             null=True, blank=True, on_delete=models.SET_NULL,
                              limit_choices_to={"category": "CAR"})
 
     note = models.CharField(max_length=512, default="", blank=True)
@@ -102,15 +105,15 @@ class RecurringBill(models.Model):
     amount = models.FloatField(default=0)
 
     category = models.ForeignKey(EnumCategory, related_name="key_recur_category",
-                                 null=True, on_delete=models.SET_NULL,
+                                 null=True, blank=True, on_delete=models.SET_NULL,
                                  limit_choices_to={"category": "CAT"})
 
     company = models.ForeignKey(EnumCategory, related_name="key_recur_company",
-                                null=True, on_delete=models.SET_NULL,
+                                null=True, blank=True, on_delete=models.SET_NULL,
                                 limit_choices_to={"category": "COM"})
 
     card = models.ForeignKey(EnumCategory, related_name="key_recur_card",
-                             null=True, on_delete=models.SET_NULL,
+                             null=True, blank=True, on_delete=models.SET_NULL,
                              limit_choices_to={"category": "CAR"})
 
     note = models.CharField(max_length=512, default="", blank=True)
@@ -127,3 +130,14 @@ class RecurringBill(models.Model):
 
     def __repr__(self):
         return f"Recurring {self.frequency} = {self.amount} - {self.category}"
+
+    def clean(self):
+        if not 1 <= self.recurring_month <= 12:
+            raise ValidationError({"recurring_month": f"Value of month should be [1, 12], got {self.recurring_month}"})
+
+        if not 1 <= self.recurring_day <= 28:
+            raise ValidationError({"recurring_day": f"Value of day should be [1, 28], got {self.recurring_day}"})
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super().save(*args, **kwargs)
