@@ -24,7 +24,7 @@ SECRET_KEY = '8w+=%te4qp8e4t&r5lb1t5gr&%x3$c1_v3c9n4azxa$up#-nn0'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-AUTH_USER_MODEL = 'restful.User'
+AUTH_USER_MODEL = 'bill.User'
 
 # When DEBUG is True and ALLOWED_HOSTS is empty, the host is validated against ['localhost', '127.0.0.1', '[::1]']
 ALLOWED_HOSTS = []
@@ -49,7 +49,7 @@ INSTALLED_APPS = [
     'django_crontab',
     'rest_framework',
     # App
-    'restful'
+    'bill'
 ]
 
 MIDDLEWARE = [

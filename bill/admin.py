@@ -46,7 +46,7 @@ class RecurringBillAdmin(admin.ModelAdmin):
 ##################
 # Help functions #
 ##################
-FILE_DUMMY_DATA = "./restful/tst/dummy_data.xlsx"
+FILE_DUMMY_DATA = "./bill/test_data.xlsx"
 
 
 def read_excel(file):
