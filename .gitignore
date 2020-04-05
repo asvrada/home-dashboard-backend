@@ -1,6 +1,7 @@
 *.sqlite3
 .idea
 .DS_Store
+.vscode
 
 **/__pycache__
 *.log
