@@ -91,7 +91,10 @@ class SummaryView(APIView):
 
     @staticmethod
     def retrieve_budget():
-        return models.MonthlyBudget.objects.get(id=1).budget
+        if models.MonthlyBudget.objects.filter(pk=1).count() != 1:
+            raise Exception("MonthlyBudget record count != 1")
+
+        return models.MonthlyBudget.objects.get(pk=1).budget
 
     @staticmethod
     def aggregate_amount(queryset):
