@@ -29,13 +29,6 @@ AUTH_USER_MODEL = 'bill.User'
 # When DEBUG is True and ALLOWED_HOSTS is empty, the host is validated against ['localhost', '127.0.0.1', '[::1]']
 ALLOWED_HOSTS = []
 
-# For RESTFUL API
-CORS_ORIGIN_WHITELIST = [
-    "https://kksk.biz",
-    "http://localhost:3000",
-    "http://127.0.0.1:3000"
-]
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -47,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'corsheaders',
     'django_crontab',
+    'graphene_django',
     'rest_framework',
     # App
     'bill'
@@ -129,7 +123,18 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+# For RESTFUL API
+CORS_ORIGIN_WHITELIST = [
+    "https://kksk.biz",
+    "http://localhost:3000",
+    "http://127.0.0.1:3000"
+]
+
 CRONJOBS = [
     # Everyday 5:00 am
     ('0 5 * * *', 'restful.crontab.recurring.check_recurring_bill_today')
 ]
+
+GRAPHENE = {
+    'SCHEMA': 'bill.schema.schema' # Where your Graphene schema lives
+}
