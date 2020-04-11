@@ -27,12 +27,26 @@ class MonthlyBudget(models.Model):
         return f"{self.budget}"
 
 
+class Icon(models.Model):
+    """
+    Model an icon, an image
+    """
+    path = models.CharField(max_length=256, default="", blank=True)
+    keyword = models.CharField(max_length=128)
+
+    def __str__(self):
+        return self.__repr__()
+
+    def __repr__(self):
+        return f"{self.keyword}"
+
+
 class EnumCategory(models.Model):
     """
     Model a choice
     """
-    # Image for this enum
-    img = models.CharField(max_length=256, default="", blank=True)
+    # Icon for this enum
+    icon = models.ForeignKey(Icon, null=True, blank=True, related_name="enums", on_delete=models.SET_NULL)
     # Display name of this enum
     name = models.CharField(max_length=64)
     # Is this row for Icon, Category, Company or Card?
@@ -46,6 +60,7 @@ class EnumCategory(models.Model):
 
     class Meta:
         ordering = ['category']
+        unique_together = ('category', 'name')
 
     def __str__(self):
         return self.__repr__()

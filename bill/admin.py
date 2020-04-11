@@ -8,11 +8,12 @@ from datetime import datetime
 
 admin.site.register(models.User, UserAdmin)
 admin.site.register(models.MonthlyBudget)
+admin.site.register(models.Icon)
 
 
 @admin.register(models.EnumCategory)
 class EnumCategoryAdmin(admin.ModelAdmin):
-    list_display = ('name', 'category')
+    list_display = ('name', 'category', 'icon')
     list_display_links = ('name',)
     list_filter = ('category',)
     empty_value_display = '-empty-'
