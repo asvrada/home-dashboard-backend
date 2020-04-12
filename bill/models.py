@@ -32,7 +32,7 @@ class Icon(models.Model):
     Model an icon, an image
     """
     path = models.CharField(max_length=256, default="", blank=True)
-    keyword = models.CharField(max_length=128)
+    keyword = models.CharField(max_length=128, unique=True)
 
     def __str__(self):
         return self.__repr__()
@@ -60,7 +60,7 @@ class EnumCategory(models.Model):
 
     class Meta:
         ordering = ['category']
-        unique_together = ('category', 'name')
+        unique_together = ('icon', 'name', 'category')
 
     def __str__(self):
         return self.__repr__()

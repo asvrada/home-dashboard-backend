@@ -6,6 +6,7 @@ from . import views
 
 # Create a router and register our viewsets with it.
 router = DefaultRouter()
+router.register(r'icon', views.IconViewSet, basename="icon")
 router.register(r'bill', views.TransactionViewSet, basename="bill")
 router.register(r'recurring_bill', views.RecurringBillViewSet, basename="recurring_bill")
 router.register(r'enum', views.EnumViewSet, basename="enum")

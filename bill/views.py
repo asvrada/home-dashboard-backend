@@ -105,6 +105,11 @@ class SummaryView(APIView):
         return round(number)
 
 
+class IconViewSet(viewsets.ModelViewSet):
+    queryset = models.Icon.objects.all()
+    serializer_class = serializers.IconSerializer
+
+
 class EnumViewSet(viewsets.ModelViewSet):
     queryset = models.EnumCategory.objects.all()
     serializer_class = serializers.EnumSerializer

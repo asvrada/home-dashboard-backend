@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Transaction, User, EnumCategory, MonthlyBudget, RecurringBill
+from .models import Transaction, User, EnumCategory, MonthlyBudget, RecurringBill, Icon
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -12,6 +12,12 @@ class MonthlyBudgetSerializer(serializers.ModelSerializer):
     class Meta:
         model = MonthlyBudget
         fields = '__all__'
+
+
+class IconSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Icon
+        fields = "__all__"
 
 
 class EnumSerializer(serializers.ModelSerializer):
