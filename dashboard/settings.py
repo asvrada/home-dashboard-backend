@@ -51,7 +51,7 @@ MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+    # 'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -126,9 +126,13 @@ STATIC_URL = '/static/'
 # For RESTFUL API
 CORS_ORIGIN_WHITELIST = [
     "https://kksk.biz",
+    "http://127.0.0.1:3000",
     "http://localhost:3000",
-    "http://127.0.0.1:3000"
+    "http://127.0.0.1:4444",
+    "http://localhost:4444"
 ]
+
+CORS_ALLOW_CREDENTIALS = True
 
 CRONJOBS = [
     # Everyday 5:00 am
