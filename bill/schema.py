@@ -401,16 +401,16 @@ class Query(graphene.ObjectType):
     GraphQL schema
     """
     icon = Node.Field(IconType)
-    all_icons = DjangoConnectionField(IconType)
+    icons = DjangoConnectionField(IconType)
 
     enum = Node.Field(EnumCategoryType)
-    all_enums = DjangoConnectionField(EnumCategoryType)
+    enums = DjangoConnectionField(EnumCategoryType)
 
     recurring_bill = Node.Field(RecurringBillType)
-    all_recurring_bills = DjangoConnectionField(RecurringBillType)
+    recurring_bills = DjangoConnectionField(RecurringBillType)
 
     bill = Node.Field(TransactionType)
-    all_bills = DjangoConnectionField(TransactionType)
+    bills = DjangoConnectionField(TransactionType)
 
 
 # schema = graphene.Schema(query=Query)
