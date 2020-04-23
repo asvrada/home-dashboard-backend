@@ -1,7 +1,6 @@
 from graphene import Node, relay, Enum
 from graphene_django.types import DjangoObjectType
 from graphene_django.fields import DjangoConnectionField
-from graphene_django.filter import DjangoFilterConnectionField
 import graphene
 
 from graphql_relay.node.node import from_global_id
