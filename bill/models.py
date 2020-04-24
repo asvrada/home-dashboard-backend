@@ -58,7 +58,7 @@ class EnumCategory(models.Model):
     category = models.CharField(max_length=3, choices=CATEGORY_CHOICES, default="NUL")
 
     class Meta:
-        ordering = ['category']
+        ordering = ['category', 'name']
         unique_together = ('icon', 'name', 'category')
 
     def __str__(self):
