@@ -99,7 +99,7 @@ class RecurringBill(models.Model):
                              null=True, blank=True, on_delete=models.SET_NULL,
                              limit_choices_to={"category": "CAR"})
 
-    note = models.CharField(max_length=512, default="", blank=True)
+    note = models.CharField(max_length=512, default="", blank=True, null=True)
 
     # Time created for this entry (but not the actual bill)
     time_created = models.DateTimeField(default=now)
@@ -145,7 +145,7 @@ class Transaction(models.Model):
                              null=True, blank=True, on_delete=models.SET_NULL,
                              limit_choices_to={"category": "CAR"})
 
-    note = models.CharField(max_length=512, default="", blank=True)
+    note = models.CharField(max_length=512, default="", blank=True, null=True)
 
     # If not NULL, then point to the recurring_bill record
     creator = models.ForeignKey(RecurringBill, related_name="bill_instance",

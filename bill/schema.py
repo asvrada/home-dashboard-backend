@@ -8,6 +8,33 @@ from graphql_relay.node.node import from_global_id
 from . import models
 
 
+def from_payload_to_object(payload, key, model):
+    if key not in payload:
+        return None
+
+    _, obj_id = from_global_id(payload[key])
+    return model.objects.get(id=obj_id)
+
+
+def get_id_from_global_id(global_id):
+    if not global_id:
+        return None
+
+    return from_global_id(global_id)[1]
+
+
+def get_amount_category_company_card_note(payload):
+    amount = payload.get("amount", None)
+
+    category = from_payload_to_object(payload, "category", models.EnumCategory)
+    company = from_payload_to_object(payload, "company", models.EnumCategory)
+    card = from_payload_to_object(payload, "card", models.EnumCategory)
+
+    note = payload.get("note", None)
+
+    return amount, category, company, card, note
+
+
 # Type declaration
 
 class EnumEnumCategory(Enum):
@@ -79,13 +106,15 @@ class CreateIcon(relay.ClientIDMutation):
     def mutate_and_get_payload(cls, root, info, **payload):
         keyword = payload["keyword"]
         path = payload["path"]
+
         icon = models.Icon.objects.create(keyword=keyword, path=path)
+
         return CreateIcon(icon=icon)
 
 
 class CreateEnum(relay.ClientIDMutation):
     class Input:
-        icon = graphene.GlobalID(required=True)
+        icon = graphene.GlobalID(required=False)
         name = graphene.String(required=True)
         category = EnumEnumCategory(required=True)
 
@@ -94,11 +123,12 @@ class CreateEnum(relay.ClientIDMutation):
 
     @classmethod
     def mutate_and_get_payload(cls, root, info, **payload):
-        _, icon_id = from_global_id(payload["icon"])
-        icon = models.Icon.objects.get(id=icon_id)
+        icon = from_payload_to_object(payload, "icon", models.Icon)
         name = payload["name"]
         category = payload["category"]
+
         enum = models.EnumCategory.objects.create(icon=icon, name=name, category=category)
+
         return CreateEnum(enum=enum)
 
 
@@ -108,10 +138,10 @@ class CreateRecurringBill(relay.ClientIDMutation):
         recurring_month = graphene.Int(required=True)
         recurring_day = graphene.Int(required=True)
         amount = graphene.Float(required=True)
-        category = graphene.GlobalID(required=True)
-        company = graphene.GlobalID(required=True)
-        card = graphene.GlobalID(required=True)
-        note = graphene.String(required=True)
+        category = graphene.GlobalID(required=False)
+        company = graphene.GlobalID(required=False)
+        card = graphene.GlobalID(required=False)
+        note = graphene.String(required=False)
 
     # output
     recurring_bill = graphene.Field(RecurringBillType)
@@ -121,16 +151,8 @@ class CreateRecurringBill(relay.ClientIDMutation):
         frequency = payload["frequency"]
         recurring_month = payload["recurring_month"]
         recurring_day = payload["recurring_day"]
-        amount = payload["amount"]
 
-        _, category_id = from_global_id(payload["category"])
-        category = models.EnumCategory.objects.get(id=category_id)
-        _, company_id = from_global_id(payload["company"])
-        company = models.EnumCategory.objects.get(id=company_id)
-        _, card_id = from_global_id(payload["card"])
-        card = models.EnumCategory.objects.get(id=card_id)
-
-        note = payload["note"]
+        amount, category, company, card, note = get_amount_category_company_card_note(payload)
 
         recurring_bill = models.RecurringBill.objects.create(
             frequency=frequency,
@@ -148,26 +170,17 @@ class CreateRecurringBill(relay.ClientIDMutation):
 class CreateTransaction(relay.ClientIDMutation):
     class Input:
         amount = graphene.Float(required=True)
-        category = graphene.GlobalID(required=True)
-        company = graphene.GlobalID(required=True)
-        card = graphene.GlobalID(required=True)
-        note = graphene.String(required=True)
+        category = graphene.GlobalID(required=False)
+        company = graphene.GlobalID(required=False)
+        card = graphene.GlobalID(required=False)
+        note = graphene.String(required=False)
 
     # output
     transaction = graphene.Field(TransactionType)
 
     @classmethod
     def mutate_and_get_payload(cls, root, info, **payload):
-        amount = payload["amount"]
-
-        _, category_id = from_global_id(payload["category"])
-        category = models.EnumCategory.objects.get(id=category_id)
-        _, company_id = from_global_id(payload["company"])
-        company = models.EnumCategory.objects.get(id=company_id)
-        _, card_id = from_global_id(payload["card"])
-        card = models.EnumCategory.objects.get(id=card_id)
-
-        note = payload["note"]
+        amount, category, company, card, note = get_amount_category_company_card_note(payload)
 
         transaction = models.Transaction.objects.create(
             amount=amount,
@@ -181,18 +194,13 @@ class CreateTransaction(relay.ClientIDMutation):
 
 
 # Update
-def get_id_from_global_id(global_id):
-    if not global_id:
-        return None
-
-    return from_global_id(global_id)[1]
 
 
 class UpdateIcon(relay.ClientIDMutation):
     class Input:
         id = graphene.GlobalID(required=True)
-        keyword = graphene.String()
-        path = graphene.String()
+        keyword = graphene.String(required=False)
+        path = graphene.String(required=False)
 
     # output
     icon = graphene.Field(IconType)
@@ -220,9 +228,9 @@ class UpdateIcon(relay.ClientIDMutation):
 class UpdateEnum(relay.ClientIDMutation):
     class Input:
         id = graphene.GlobalID(required=True)
-        icon = graphene.GlobalID()
-        name = graphene.String()
-        category = EnumEnumCategory()
+        icon = graphene.GlobalID(required=False)
+        name = graphene.String(required=False)
+        category = EnumEnumCategory(required=False)
 
     # output
     enum = graphene.Field(EnumCategoryType)
@@ -230,7 +238,7 @@ class UpdateEnum(relay.ClientIDMutation):
     @classmethod
     def mutate_and_get_payload(cls, root, info, **payload):
         id = get_id_from_global_id(payload["id"])
-        _, icon_id = get_id_from_global_id(payload.get("icon", None))
+        icon = from_payload_to_object(payload, "icon", models.Icon)
         name = payload.get("name", None)
         category = payload.get("category", None)
 
@@ -238,8 +246,7 @@ class UpdateEnum(relay.ClientIDMutation):
         enum = models.EnumCategory.objects.get(id=id)
 
         # Update object
-        if icon_id:
-            icon = models.Icon.objects.get(id=icon_id)
+        if icon:
             enum.icon = icon
         if name:
             enum.name = name
@@ -253,14 +260,14 @@ class UpdateEnum(relay.ClientIDMutation):
 class UpdateRecurringBill(relay.ClientIDMutation):
     class Input:
         id = graphene.GlobalID(required=True)
-        frequency = EnumRecurringBillFrequency()
-        recurring_month = graphene.Int()
-        recurring_day = graphene.Int()
-        amount = graphene.Float()
+        frequency = EnumRecurringBillFrequency(required=False)
+        recurring_month = graphene.Int(required=False)
+        recurring_day = graphene.Int(required=False)
+        amount = graphene.Float(required=False)
         category = graphene.GlobalID(required=False)
         company = graphene.GlobalID(required=False)
         card = graphene.GlobalID(required=False)
-        note = graphene.String()
+        note = graphene.String(required=False)
 
     # output
     recurring_bill = graphene.Field(RecurringBillType)
@@ -271,13 +278,8 @@ class UpdateRecurringBill(relay.ClientIDMutation):
         frequency = payload.get("frequency", None)
         recurring_month = payload.get("recurring_month", None)
         recurring_day = payload.get("recurring_day", None)
-        amount = payload.get("amount", None)
 
-        category_id = get_id_from_global_id(payload.get("category", None))
-        company_id = get_id_from_global_id(payload.get("company", None))
-        card_id = get_id_from_global_id(payload.get("card", None))
-
-        note = payload.get("note", None)
+        amount, category, company, card, note = get_amount_category_company_card_note(payload)
 
         # Get object
         recurring_bill = models.RecurringBill.objects.get(id=id)
@@ -291,14 +293,11 @@ class UpdateRecurringBill(relay.ClientIDMutation):
             recurring_bill.recurring_day = recurring_day
         if amount:
             recurring_bill.amount = amount
-        if category_id:
-            category = models.EnumCategory.objects.get(id=category_id)
+        if category:
             recurring_bill.category = category
-        if company_id:
-            company = models.EnumCategory.objects.get(id=company_id)
+        if company:
             recurring_bill.company = company
-        if card_id:
-            card = models.EnumCategory.objects.get(id=id)
+        if card:
             recurring_bill.card = card
         if note:
             recurring_bill.note = note
@@ -310,11 +309,11 @@ class UpdateRecurringBill(relay.ClientIDMutation):
 class UpdateTransaction(relay.ClientIDMutation):
     class Input:
         id = graphene.GlobalID(required=True)
-        amount = graphene.Float()
+        amount = graphene.Float(required=False)
         category = graphene.GlobalID(required=False)
         company = graphene.GlobalID(required=False)
         card = graphene.GlobalID(required=False)
-        note = graphene.String()
+        note = graphene.String(required=False)
 
     # output
     transaction = graphene.Field(TransactionType)
@@ -322,13 +321,8 @@ class UpdateTransaction(relay.ClientIDMutation):
     @classmethod
     def mutate_and_get_payload(cls, root, info, **payload):
         id = get_id_from_global_id(payload["id"])
-        amount = payload.get("amount", None)
 
-        category_id = get_id_from_global_id(payload.get("category", None))
-        company_id = get_id_from_global_id(payload.get("company", None))
-        card_id = get_id_from_global_id(payload.get("card", None))
-
-        note = payload.get("note", None)
+        amount, category, company, card, note = get_amount_category_company_card_note(payload)
 
         # Get object
         bill = models.Transaction.objects.get(id=id)
@@ -336,14 +330,11 @@ class UpdateTransaction(relay.ClientIDMutation):
         # Update object
         if amount:
             bill.amount = amount
-        if category_id:
-            category = models.EnumCategory.objects.get(id=category_id)
+        if category:
             bill.category = category
-        if company_id:
-            company = models.EnumCategory.objects.get(id=company_id)
+        if company:
             bill.company = company
-        if card_id:
-            card = models.EnumCategory.objects.get(id=id)
+        if card:
             bill.card = card
         if note:
             bill.note = note
