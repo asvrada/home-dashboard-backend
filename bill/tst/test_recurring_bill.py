@@ -11,7 +11,7 @@ from datetime import datetime
 
 from .setup import BasicAPITestCase
 
-from ..crontab.recurring import check_recurring_bill_today
+from ..crontab.recurring import create_recurring_bill_today
 from .. import models
 
 
@@ -64,7 +64,7 @@ class RecurringBillTest(BasicAPITestCase):
         # Try to trigger recurring bill
         mocked = datetime(2020, 12, 2, 12, 0, 0, tzinfo=pytz.utc)
         with mock.patch('django.utils.timezone.now', mock.Mock(return_value=mocked)):
-            check_recurring_bill_today()
+            create_recurring_bill_today()
 
         # Check database
         res = self.client.get(reverse("bill-list"))

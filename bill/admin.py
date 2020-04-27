@@ -1,3 +1,5 @@
+from typing import Tuple, List, Dict
+
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from . import models
@@ -50,36 +52,36 @@ class RecurringBillAdmin(admin.ModelAdmin):
 FILE_DUMMY_DATA = "./bill/test_data.xlsx"
 
 
-def read_excel(file):
+def read_excel(file: str) -> Tuple[List[Dict], List[Dict]]:
     """
     Return a tuple of generator (enum, transaction)
     """
 
-    def consume_series(row):
+    def consume_series(pd_series) -> Dict:
         return {
-            'id': int(row['id']),
-            'amount': float(row['amount']),
-            'category': map_name_to_id[row['category']],
-            'company': map_name_to_id[row['company']],
-            'card': map_name_to_id[row['card']],
-            'note': row['note'],
-            'time_created': list(map(int, row['time_created'].split()))
+            'id': int(pd_series['id']),
+            'amount': float(pd_series['amount']),
+            'category': dict_name_to_id[pd_series['category']],
+            'company': dict_name_to_id[pd_series['company']],
+            'card': dict_name_to_id[pd_series['card']],
+            'note': pd_series['note'],
+            'time_created': list(map(int, pd_series['time_created'].split()))
         }
 
     df = pd.read_excel(file)
-    # Don't leave number field empty in Excel
     df = df.fillna("")
 
     enum_category = set()
     enum_company = set()
     enum_card = set()
 
+    # Gather all possible value for EnumCategory
     for _, row in df.iterrows():
         enum_category.add(row['category'])
         enum_company.add(row['company'])
         enum_card.add(row['card'])
 
-    # create enum first
+    # create enum object
     enum = []
     idx = 1
 
@@ -94,17 +96,17 @@ def read_excel(file):
             idx += 1
 
     # Map from name to enum id
-    map_name_to_id = dict()
+    dict_name_to_id = dict()
     for each in enum:
-        map_name_to_id[each["name"]] = each["id"]
+        dict_name_to_id[each["name"]] = each["id"]
 
-    # create transaction
+    # create transaction object
     transactions = [consume_series(row) for _, row in df.iterrows()]
 
     return enum, transactions
 
 
-def load_into_database(enum, transactions):
+def load_into_database(enum: List[Dict], transactions: List[Dict]) -> None:
     """
     enum: [{id, img, name, category(3 letter choice)}]
     transaction: [{amount, category, company, card, note, time_created}]
@@ -114,16 +116,16 @@ def load_into_database(enum, transactions):
         models.EnumCategory.objects.create(**payload)
 
     # Create map from id to enum instance in database
-    map_id_to_enum_instance = dict()
+    dict_id_to_enum_instance = dict()
     for each in models.EnumCategory.objects.all():
-        map_id_to_enum_instance[each.id] = each
+        dict_id_to_enum_instance[each.id] = each
 
     # Create transaction in database
     for payload in transactions:
         # Modify payload to point to enum instance
-        payload["category"] = map_id_to_enum_instance[payload["category"]]
-        payload["company"] = map_id_to_enum_instance[payload["company"]]
-        payload["card"] = map_id_to_enum_instance[payload["card"]]
+        payload["category"] = dict_id_to_enum_instance[payload["category"]]
+        payload["company"] = dict_id_to_enum_instance[payload["company"]]
+        payload["card"] = dict_id_to_enum_instance[payload["card"]]
 
         # Create actual datetime object
         payload["time_created"] = datetime(*payload["time_created"], tzinfo=pytz.utc)

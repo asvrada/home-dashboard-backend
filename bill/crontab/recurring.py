@@ -1,8 +1,9 @@
+from typing import List
 from django.utils import timezone
 from .. import models
 
 
-def get_recurring_bill_today():
+def get_recurring_bill_today() -> List[models.Transaction]:
     """
     For yearly bill, check if today is the month/day
     For monthly bill, check if today is the x-th day
@@ -25,7 +26,7 @@ def get_recurring_bill_today():
     return bill_today
 
 
-def check_recurring_bill_today():
+def create_recurring_bill_today() -> None:
     """
     Run at each day 5:00 am
     """

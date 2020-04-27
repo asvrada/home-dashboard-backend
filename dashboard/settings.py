@@ -136,7 +136,7 @@ CORS_ALLOW_CREDENTIALS = True
 
 CRONJOBS = [
     # Everyday 5:00 am
-    ('0 5 * * *', 'restful.crontab.recurring.check_recurring_bill_today')
+    ('0 5 * * *', 'restful.crontab.recurring.create_recurring_bill_today')
 ]
 
 GRAPHENE = {

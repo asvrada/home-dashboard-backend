@@ -1,13 +1,14 @@
+from typing import Set
+
 from django.core.management.base import BaseCommand
 import pandas as pd
-import numpy as np
 import pytz
 import datetime
 
 from ... import models
 
 
-def parse_time(str_time):
+def parse_time(str_time: str) -> datetime.datetime:
     format = '%Y-%m-%d %H:%M:%S'
     tz_seattle = pytz.timezone('America/Los_Angeles')
 
@@ -24,17 +25,13 @@ def parse_time(str_time):
 
 
 class Command(BaseCommand):
-    help = 'Closes the specified poll for voting'
+    help = 'Load CSV from fixed file'
 
-    def add_arguments(self, parser):
-        # parser.add_argument('poll_id', nargs='+', type=int)
-        pass
-
-    def get_set_category(self):
+    def get_set_category(self) -> Set[str]:
         categories = models.EnumCategory.objects.all().filter(category='CAT')
         return set(categories)
 
-    def parse_insert_row(self, row, set_category):
+    def parse_insert_row(self, row, set_category: Set[str]) -> None:
         """
         Parse
         时间
@@ -58,8 +55,10 @@ class Command(BaseCommand):
         model_category_default = models.EnumCategory.objects.get(category='CAT', name="一般")
         model_category = model_category_default if category is None else models.EnumCategory.objects.get(category='CAT',
                                                                                                          name=category)
+        # Set default value for card
         model_card = models.EnumCategory.objects.get(category='CAR', name='BOA')
 
+        # Create instance in DB
         models.Transaction.objects.create(amount=amount, category=model_category, card=model_card, note=note,
                                           time_created=dt)
 
@@ -68,6 +67,4 @@ class Command(BaseCommand):
         set_category = self.get_set_category()
 
         for index, row in df.iterrows():
-            # print(index)
             self.parse_insert_row(row, set_category)
-            pass

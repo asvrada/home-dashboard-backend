@@ -1,3 +1,5 @@
+from typing import List
+
 from rest_framework.test import APIClient, APITestCase
 
 from .. import models
@@ -10,7 +12,7 @@ class BasicAPITestCase(APITestCase):
     def setUp(self) -> None:
         super().setUp()
 
-        self.trans = None
+        self.trans = []
 
         enum, trans = admin.read_excel(admin.FILE_DUMMY_DATA)
         self.trans = trans
