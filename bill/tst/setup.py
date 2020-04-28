@@ -22,3 +22,6 @@ class BasicAPITestCase(APITestCase):
 
         # Create budget entry
         models.MonthlyBudget.objects.create(id=1, budget=TEST_BUDGET)
+
+        # Create icon
+        models.Icon.objects.create(id=1, keyword="Test Icon id 1", path="/path/to/icon1")

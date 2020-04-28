@@ -1,12 +1,10 @@
 from rest_framework import status
 
-from ..setup import BasicAPITestCase
+from .setup import GraphQLBasicAPITestCase
 
 
-class GraphQLEnumTest(BasicAPITestCase):
+class GraphQLEnumTest(GraphQLBasicAPITestCase):
     endpoint = "/graphql/"
-
-    id_enum = "RW51bUNhdGVnb3J5VHlwZTo3"
 
     query_enums = """
     query getEnums {
@@ -40,9 +38,9 @@ class GraphQLEnumTest(BasicAPITestCase):
         }
       }
     }
-    """ % id_enum
+    """
 
-    mutation_create_enum = """
+    mutation_create_enum_min = """
     mutation createEnum {
       createEnum(input: {
         category: Company,
@@ -56,56 +54,149 @@ class GraphQLEnumTest(BasicAPITestCase):
     }
     """
 
-    mutation_delete_enum = """
-    mutation delete {
-      delete(input: {
-        id: "%s"
+    mutation_create_enum_max = """
+    mutation createEnum {
+      createEnum(input: {
+        icon: "%s",
+        category: Company,
+        name: "APITest created"
       }) {
-        ok
+        enum {
+          icon {
+            id,
+            keyword,
+            path
+          },
+          category,
+          name
+        }
       }
     }
-    """ % id_enum
+    """
+
+    mutation_update_enum_min = """
+    mutation updateEnum {
+      updateEnum(input: {
+        id: "%s",
+      }) {
+        enum {
+          id,
+          icon {
+            id
+          },
+          category,
+          name
+        }
+      }
+    }
+    """
+
+    mutation_update_enum_max = """
+    mutation updateEnum {
+      updateEnum(input: {
+        id: "%s",
+        icon: "%s",
+        name: "update name",
+        category: Card
+      }) {
+        enum {
+          id,
+          icon {
+            id
+          },
+          category,
+          name
+        }
+      }
+    }
+    """
 
     def test_GIVEN_WHEN_get_enums_THEN_return_all(self):
         # when
-        response = self.client.get(self.endpoint, data={'query': self.query_enums}, format="json")
+        response = self.post_query(self.query_enums)
 
         # then
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         content = response.json()["data"]["enums"]["edges"]
         self.assertEqual(16, len(content))
 
-    def test_GIVEN_WHEN_get_any_enum_THEN_return_that_enum(self):
+    def test_GIVEN_WHEN_get_enum_THEN_return_that_enum(self):
         # when
-        res = self.client.get(self.endpoint, data={'query': self.query_enum}, format="json")
+        res = self.post_query(self.query_enum % self.id_valid_enum)
 
         # then
         self.assertEqual(status.HTTP_200_OK, res.status_code)
         content = res.json()["data"]["enum"]
-        self.assertEqual(content, {
-            "id": 'RW51bUNhdGVnb3J5VHlwZTo3',
+        self.assertDictEqual(content, {
+            "id": self.id_valid_enum,
             "category": "Company",
             "name": "",
             "icon": None
         })
 
-    def test_GIVEN_new_enum_WHEN_create_enum_THEN_enum_created(self):
+    def test_GIVEN_min_parameter_WHEN_create_enum_THEN_enum_created(self):
         # when
-        res = self.client.post(self.endpoint, data={'query': self.mutation_create_enum}, format="json")
+        res = self.post_query(self.mutation_create_enum_min)
 
         # then
         self.assertEqual(status.HTTP_200_OK, res.status_code)
         content = res.json()["data"]["createEnum"]["enum"]
-        self.assertEqual(content, {
+        self.assertDictEqual(content, {
             "category": "Company",
             "name": "APITest created"
         })
 
+    def test_GIVEN_max_parameter_WHEN_create_enum_THEN_enum_created(self):
+        # when
+        res = self.post_query(self.mutation_create_enum_max % self.id_valid_icon)
+
+        # then
+        self.assertEqual(status.HTTP_200_OK, res.status_code)
+        content = res.json()["data"]["createEnum"]["enum"]
+        self.assertIn("icon", content)
+        self.assertIn("category", content)
+        self.assertIn("name", content)
+
+    def test_GIVEN_min_parameter_WHEN_update_enum_THEN_enum_unchanged(self):
+        # when
+        res = self.post_query(self.mutation_update_enum_min % self.id_valid_enum)
+
+        # then
+        self.assertEqual(status.HTTP_200_OK, res.status_code)
+        content = res.json()["data"]["updateEnum"]["enum"]
+        self.assertDictEqual(content, {
+            "id": self.id_valid_enum,
+            "icon": None,
+            "category": "Company",
+            "name": ""
+        })
+
+    def test_GIVEN_max_parameter_WHEN_update_enum_THEN_enum_updated(self):
+        # when
+        res = self.post_query(self.mutation_update_enum_max % (self.id_valid_enum, self.id_valid_icon))
+
+        # then
+        self.assertEqual(status.HTTP_200_OK, res.status_code)
+        content = res.json()["data"]["updateEnum"]["enum"]
+        self.assertDictEqual(content, {
+            "id": self.id_valid_enum,
+            "icon": {
+                "id": self.id_valid_icon
+            },
+            "category": "Card",
+            "name": "update name"
+        })
+
     def test_GIVEN_existing_enum_WHEN_delete_THEN_enum_deleted(self):
         # when
-        res = self.client.post(self.endpoint, data={'query': self.mutation_delete_enum}, format="json")
+        res = self.post_query(self.mutation_delete % self.id_valid_enum)
 
         # then
         self.assertEqual(status.HTTP_200_OK, res.status_code)
         content = res.json()["data"]["delete"]
         self.assertIn("ok", content, msg="ok not in response")
+
+        # check icon count
+        res = self.post_query(self.query_enums)
+        content = res.json()["data"]["enums"]["edges"]
+        self.assertEqual(15, len(content))

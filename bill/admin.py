@@ -68,8 +68,11 @@ def read_excel(file: str) -> Tuple[List[Dict], List[Dict]]:
             'time_created': list(map(int, pd_series['time_created'].split()))
         }
 
-    df = pd.read_excel(file)
-    df = df.fillna("")
+    df = pd.read_excel(file).fillna("").astype({
+        'category': 'str',
+        'company': 'str',
+        'card': 'str'
+    })
 
     enum_category = set()
     enum_company = set()
@@ -85,8 +88,13 @@ def read_excel(file: str) -> Tuple[List[Dict], List[Dict]]:
     enum = []
     idx = 1
 
-    for enums, category in zip([enum_category, enum_company, enum_card],
-                               ["CAT", "COM", "CAR"]):
+    def set_to_sorted_list(s):
+        return sorted(list(s))
+
+    for enums, category in zip(
+            [set_to_sorted_list(enum_category), set_to_sorted_list(enum_company), set_to_sorted_list(enum_card)],
+            ["CAT", "COM", "CAR"]
+    ):
         for each in enums:
             enum.append({
                 "id": idx,
