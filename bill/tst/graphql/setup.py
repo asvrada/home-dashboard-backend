@@ -1,15 +1,21 @@
-from ..setup import BasicAPITestCase
+import json
+
+from graphene_django.utils.testing import GraphQLTestCase
+
+from bill.tst.setup import setup_db
+from bill.schema import schema
 
 
-class GraphQLBasicAPITestCase(BasicAPITestCase):
-    endpoint = "/graphql/"
+class GraphQLBasicAPITestCase(GraphQLTestCase):
+    GRAPHQL_SCHEMA = schema
+
     id_valid_icon = "SWNvblR5cGU6MQ=="
     id_valid_enum = "RW51bUNhdGVnb3J5VHlwZTo3"
 
     mutation_delete = """
-    mutation delete {
+    mutation delete($id: ID!) {
       delete(input: {
-        id: "%s"
+        id: $id
       }) {
         ok
       }
@@ -19,5 +25,4 @@ class GraphQLBasicAPITestCase(BasicAPITestCase):
     def setUp(self):
         super().setUp()
 
-    def post_query(self, query):
-        return self.client.post(self.endpoint, data={'query': query}, format="json")
+        setup_db()

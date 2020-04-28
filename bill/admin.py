@@ -18,14 +18,12 @@ class EnumCategoryAdmin(admin.ModelAdmin):
     list_display = ('name', 'category', 'icon')
     list_display_links = ('name',)
     list_filter = ('category',)
-    empty_value_display = '-empty-'
 
 
 @admin.register(models.Transaction)
 class TransactionAdmin(admin.ModelAdmin):
     list_display = ('amount', 'category', 'company', 'note', 'creator', 'time_created')
     list_display_links = list_display
-    empty_value_display = '-empty-'
 
 
 @admin.register(models.RecurringBill)
@@ -33,7 +31,6 @@ class RecurringBillAdmin(admin.ModelAdmin):
     list_display = ('view_recurring_date', 'note',
                     'amount', 'category', 'company', 'time_created')
     list_display_links = list_display
-    empty_value_display = '-empty-'
 
     def view_recurring_date(self, obj):
         """
