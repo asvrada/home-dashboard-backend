@@ -31,6 +31,7 @@ class RecurringBillAdmin(admin.ModelAdmin):
     list_display = ('view_recurring_date', 'note',
                     'amount', 'category', 'company', 'time_created')
     list_display_links = list_display
+    list_filter = ('frequency',)
 
     def view_recurring_date(self, obj):
         """

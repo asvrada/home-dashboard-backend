@@ -24,8 +24,9 @@ class SummaryTest(BasicAPITestCase):
             'budgetTodayTotal': 472,
             'budgetMonth': 3290,
             'budgetMonthTotal': 3333,
-            'savingMonth': 6969,
-            'incomeMonthTotal': 7012
+            'savingMonth': -43,
+            'incomeMonthTotal': 0,
+            "monthlyCost": 0
         })
 
     def test_create_summary_THEN_failed(self):
