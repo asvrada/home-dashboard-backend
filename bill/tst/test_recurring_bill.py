@@ -70,4 +70,4 @@ class RecurringBillTest(BasicAPITestCase):
         res = self.client.get(reverse("bill-list"))
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(res.data), 9)
+        self.assertEqual(len(res.data), 10)

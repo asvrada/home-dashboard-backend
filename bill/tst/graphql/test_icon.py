@@ -80,7 +80,7 @@ class GraphQLIconTest(GraphQLBasicAPITestCase):
         # then
         self.assertResponseNoErrors(response)
         content = response.json()["data"]["icons"]["edges"]
-        self.assertEqual(1, len(content))
+        self.assertEqual(2, len(content))
 
     def test_GIVEN_WHEN_get_icon_THEN_return_icon(self):
         # when
@@ -91,8 +91,8 @@ class GraphQLIconTest(GraphQLBasicAPITestCase):
         content = response.json()["data"]["icon"]
         self.assertDictEqual(content, {
             "id": self.id_valid_icon,
-            "keyword": "Test Icon id 1",
-            "path": "/path/to/icon1"
+            "keyword": "Test Icon 2",
+            "path": "/path/icon 2"
         })
 
     def test_GIVEN_all_parameter_WHEN_create_icon_THEN_success(self):
@@ -114,8 +114,8 @@ class GraphQLIconTest(GraphQLBasicAPITestCase):
         content = res.json()["data"]["updateIcon"]["icon"]
         self.assertDictEqual(content, {
             "id": self.id_valid_icon,
-            "keyword": "Test Icon id 1",
-            "path": "/path/to/icon1"
+            "keyword": "Test Icon 2",
+            "path": "/path/icon 2"
         })
 
     def test_GIVEN_max_parameter_WHEN_update_icon_THEN_success(self):
@@ -144,4 +144,4 @@ class GraphQLIconTest(GraphQLBasicAPITestCase):
         res = self.query(self.query_icons)
         self.assertResponseNoErrors(res)
         content = res.json()["data"]["icons"]["edges"]
-        self.assertEqual(0, len(content))
+        self.assertEqual(1, len(content))

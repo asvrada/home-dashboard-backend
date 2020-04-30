@@ -65,7 +65,7 @@ class EnumCategory(models.Model):
         return self.__repr__()
 
     def __repr__(self):
-        return f"{self.name}"
+        return f"{self.category} - {self.name}"
 
 
 class RecurringBill(models.Model):
@@ -160,3 +160,20 @@ class Transaction(models.Model):
 
     def __repr__(self):
         return f"{self.amount} - {self.category} - {self.company} - {self.card} - {self.time_created}"
+
+    def clean(self):
+        if self.category is not None and self.category.category != "CAT":
+            raise ValidationError(
+                {"category": f"Field category should have a enum of type category, got {self.category}"})
+
+        if self.company is not None and self.company.category != "COM":
+            raise ValidationError(
+                {"company": f"Field company should have a enum of type company, got {self.company}"})
+
+        if self.card is not None and self.card.category != "CAR":
+            raise ValidationError(
+                {"card": f"Field card should have a enum of type card, got {self.card}"})
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super().save(*args, **kwargs)
