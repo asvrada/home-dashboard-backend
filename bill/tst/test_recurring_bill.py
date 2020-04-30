@@ -51,16 +51,6 @@ class RecurringBillTest(BasicAPITestCase):
         self.assertIn("recurring_month", err.message_dict)
 
     def test_GIVEN_recurring_bill_WHEN_trigger_THEN_transaction_created(self):
-        # Create some yearly recurring bill
-        month = 12
-        day = 2
-        models.RecurringBill.objects.create(frequency='Y', recurring_month=month, recurring_day=day,
-                                            amount=123, note=f"Test recurring {month}/{day} each year")
-
-        # Create some monthly recurring bill
-        models.RecurringBill.objects.create(frequency='M', recurring_day=day,
-                                            amount=456, note=f"Test {day} each month")
-
         # Try to trigger recurring bill
         mocked = datetime(2020, 12, 2, 12, 0, 0, tzinfo=pytz.utc)
         with mock.patch('django.utils.timezone.now', mock.Mock(return_value=mocked)):

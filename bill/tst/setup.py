@@ -20,7 +20,9 @@ enums = [
 ]
 
 recurring_bills = [
-
+    # id, frequency, month, day, amount, category, company, card, note
+    (1, 'Y', 12, 2, 123, None, None, None, "Test year 12/2"),
+    (2, 'M', 1, 2, 456, None, None, None, "Test month 2"),
 ]
 
 transactions = [
@@ -46,7 +48,7 @@ def create_icons():
 
 def create_enums():
     def create_enum(id, id_icon, name, category):
-        icon = models.Icon.objects.get(id=id_icon)
+        icon = models.Icon.objects.get(id=id_icon) if id_icon else None
         models.EnumCategory.objects.create(id=id, icon=icon, name=name, category=category)
 
     for enum in enums:
@@ -54,17 +56,24 @@ def create_enums():
 
 
 def create_rbs():
-    def create_rb():
-        pass
+    def create_rb(id, frequency, month, day, amount, id_category, id_company, id_card, note, time):
+        category = models.EnumCategory.objects.get(id=id_category) if id_category else None
+        company = models.EnumCategory.objects.get(id=id_company) if id_company else None
+        card = models.EnumCategory.objects.get(id=id_card) if id_card else None
+        models.RecurringBill.objects.create(id=id, frequency=frequency, recurring_month=month, recurring_day=day,
+                                            amount=amount, category=category, company=company, card=card,
+                                            note=note, time_created=time)
 
-    pass
+    for rb in recurring_bills:
+        list_para = list(rb) + [pytz.utc.localize(datetime.now())]
+        create_rb(*list_para)
 
 
 def create_bills():
     def create_bill(id, amount, id_category, id_company, id_card, note, creator, time):
-        category = models.EnumCategory.objects.get(id=id_category)
-        company = models.EnumCategory.objects.get(id=id_company)
-        card = models.EnumCategory.objects.get(id=id_card)
+        category = models.EnumCategory.objects.get(id=id_category) if id_category else None
+        company = models.EnumCategory.objects.get(id=id_company) if id_company else None
+        card = models.EnumCategory.objects.get(id=id_card) if id_card else None
         models.Transaction.objects.create(id=id, amount=amount, category=category, company=company, card=card,
                                           note=note, creator=creator, time_created=time)
 
