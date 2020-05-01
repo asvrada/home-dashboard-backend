@@ -7,6 +7,10 @@ from graphql_relay.node.node import from_global_id
 
 from . import models
 
+"""
+Helper functions
+"""
+
 
 def from_payload_to_object(payload, key, model):
     if key not in payload:
@@ -31,8 +35,26 @@ def get_amount_category_company_card_note(payload):
     card = from_payload_to_object(payload, "card", models.EnumCategory)
 
     note = payload.get("note", None)
+    skip = payload.get("skipSummary", False)
 
-    return amount, category, company, card, note
+    return amount, category, company, card, note, skip
+
+
+def update_fragment_given_payload(obj_fragment, payload):
+    amount, category, company, card, note, skip = get_amount_category_company_card_note(payload)
+
+    if amount:
+        obj_fragment.amount = amount
+    if category:
+        obj_fragment.category = category
+    if company:
+        obj_fragment.company = company
+    if card:
+        obj_fragment.card = card
+    if note:
+        obj_fragment.note = note
+    if skip:
+        obj_fragment.skip_summary = skip
 
 
 # Type declaration
@@ -79,7 +101,7 @@ class RecurringBillType(DjangoObjectType):
         model = models.RecurringBill
         interfaces = (Node,)
         filter_fields = ["frequency", "recurring_month", "recurring_day",
-                         "amount", "category", "company", "card", "note", "time_created"]
+                         "amount", "category", "company", "card", "note", "skip_summary", "time_created"]
 
     def resolve_frequency(self, info, **kwargs):
         return self.frequency
@@ -89,7 +111,7 @@ class TransactionType(DjangoObjectType):
     class Meta:
         model = models.Transaction
         interfaces = (Node,)
-        filter_fields = ["amount", "category", "company", "card", "note", "time_created"]
+        filter_fields = ["amount", "category", "company", "card", "note", "skip_summary", "time_created"]
 
 
 # Create
@@ -142,6 +164,7 @@ class CreateRecurringBill(relay.ClientIDMutation):
         company = graphene.GlobalID(required=False)
         card = graphene.GlobalID(required=False)
         note = graphene.String(required=False)
+        skipSummary = graphene.Boolean(required=False)
 
     # output
     recurring_bill = graphene.Field(RecurringBillType)
@@ -152,7 +175,7 @@ class CreateRecurringBill(relay.ClientIDMutation):
         recurring_month = payload["recurring_month"]
         recurring_day = payload["recurring_day"]
 
-        amount, category, company, card, note = get_amount_category_company_card_note(payload)
+        amount, category, company, card, note, skip = get_amount_category_company_card_note(payload)
 
         recurring_bill = models.RecurringBill.objects.create(
             frequency=frequency,
@@ -162,7 +185,8 @@ class CreateRecurringBill(relay.ClientIDMutation):
             category=category,
             company=company,
             card=card,
-            note=note
+            note=note,
+            skip_summary=skip
         )
         return CreateRecurringBill(recurring_bill=recurring_bill)
 
@@ -174,20 +198,22 @@ class CreateTransaction(relay.ClientIDMutation):
         company = graphene.GlobalID(required=False)
         card = graphene.GlobalID(required=False)
         note = graphene.String(required=False)
+        skipSummary = graphene.Boolean(required=False)
 
     # output
     transaction = graphene.Field(TransactionType)
 
     @classmethod
     def mutate_and_get_payload(cls, root, info, **payload):
-        amount, category, company, card, note = get_amount_category_company_card_note(payload)
+        amount, category, company, card, note, skip = get_amount_category_company_card_note(payload)
 
         transaction = models.Transaction.objects.create(
             amount=amount,
             category=category,
             company=company,
             card=card,
-            note=note
+            note=note,
+            skip_summary=skip
         )
 
         return CreateTransaction(transaction=transaction)
@@ -268,6 +294,7 @@ class UpdateRecurringBill(relay.ClientIDMutation):
         company = graphene.GlobalID(required=False)
         card = graphene.GlobalID(required=False)
         note = graphene.String(required=False)
+        skipSummary = graphene.Boolean(required=False)
 
     # output
     recurring_bill = graphene.Field(RecurringBillType)
@@ -279,28 +306,18 @@ class UpdateRecurringBill(relay.ClientIDMutation):
         recurring_month = payload.get("recurring_month", None)
         recurring_day = payload.get("recurring_day", None)
 
-        amount, category, company, card, note = get_amount_category_company_card_note(payload)
-
         # Get object
         recurring_bill = models.RecurringBill.objects.get(id=id)
 
         # Update object
+        update_fragment_given_payload(recurring_bill, payload)
+
         if frequency:
             recurring_bill.frequency = frequency
         if recurring_month:
             recurring_bill.recurring_month = recurring_month
         if recurring_day:
             recurring_bill.recurring_day = recurring_day
-        if amount:
-            recurring_bill.amount = amount
-        if category:
-            recurring_bill.category = category
-        if company:
-            recurring_bill.company = company
-        if card:
-            recurring_bill.card = card
-        if note:
-            recurring_bill.note = note
 
         recurring_bill.save()
         return CreateRecurringBill(recurring_bill=recurring_bill)
@@ -314,6 +331,7 @@ class UpdateTransaction(relay.ClientIDMutation):
         company = graphene.GlobalID(required=False)
         card = graphene.GlobalID(required=False)
         note = graphene.String(required=False)
+        skipSummary = graphene.Boolean(required=False)
 
     # output
     transaction = graphene.Field(TransactionType)
@@ -322,22 +340,11 @@ class UpdateTransaction(relay.ClientIDMutation):
     def mutate_and_get_payload(cls, root, info, **payload):
         id = get_id_from_global_id(payload["id"])
 
-        amount, category, company, card, note = get_amount_category_company_card_note(payload)
-
         # Get object
         bill = models.Transaction.objects.get(id=id)
 
-        # Update object
-        if amount:
-            bill.amount = amount
-        if category:
-            bill.category = category
-        if company:
-            bill.company = company
-        if card:
-            bill.card = card
-        if note:
-            bill.note = note
+        # update object
+        update_fragment_given_payload(bill, payload)
 
         bill.save()
         return CreateTransaction(transaction=bill)
