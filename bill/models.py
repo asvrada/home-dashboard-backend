@@ -101,6 +101,8 @@ class RecurringBill(models.Model):
 
     note = models.CharField(max_length=512, default="", blank=True, null=True)
 
+    skip_summary = models.BooleanField(default=False)
+
     # Time created for this entry (but not the actual bill)
     time_created = models.DateTimeField(default=now)
 
@@ -146,6 +148,8 @@ class Transaction(models.Model):
                              limit_choices_to={"category": "CAR"})
 
     note = models.CharField(max_length=512, default="", blank=True, null=True)
+
+    skip_summary = models.BooleanField(default=False)
 
     # If not NULL, then point to the recurring_bill record
     creator = models.ForeignKey(RecurringBill, related_name="bill_instance",

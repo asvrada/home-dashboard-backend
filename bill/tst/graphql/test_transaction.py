@@ -135,7 +135,7 @@ class GraphQLTransactionTest(GraphQLBasicAPITestCase):
         # then
         self.assertResponseNoErrors(response)
         content = response.json()["data"]["bills"]["edges"]
-        self.assertEqual(8, len(content))
+        self.assertEqual(9, len(content))
 
     def test_GIVEN_WHEN_get_transaction_THEN_return_one(self):
         # when

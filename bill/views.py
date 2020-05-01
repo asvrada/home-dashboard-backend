@@ -62,11 +62,12 @@ class SummaryView(APIView):
                                                                    time_created__month=last_month, amount__gt=0)
         sum_income_last_month = self.aggregate_amount(bill_income_last_month)
 
-        # A negative number
-        sum_spend_month = self.aggregate_amount(bill_spend_month)
-        # Sum of all spending today
-        # A negative number
-        sum_spend_today = self.aggregate_amount(bill_today.filter(amount__lte=0))
+        # Sum of all spending this month, ignore these marked as skip
+        # Note: a negative number
+        sum_spend_month = self.aggregate_amount(bill_spend_month.filter(skip_summary=False))
+        # Sum of all spending today, ignore these marked as skip
+        # Note: a negative number
+        sum_spend_today = self.aggregate_amount(bill_today.filter(skip_summary=False, amount__lte=0))
 
         # Days left for this month
         _, days_month = monthrange(year, month)
@@ -118,6 +119,9 @@ class SummaryView(APIView):
 
     @staticmethod
     def get_recurring_cost_each_month():
+        """
+        Sum of all recurring bill
+        """
         rb_all = models.RecurringBill.objects.all()
         rb_monthly = rb_all.filter(frequency='M')
         rb_yearly = rb_all.filter(frequency='Y')
