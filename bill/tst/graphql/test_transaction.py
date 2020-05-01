@@ -95,9 +95,38 @@ class GraphQLTransactionTest(GraphQLBasicAPITestCase):
     }
     """
 
-    mutation_update_bill_min = ""
+    mutation_update_bill_min = """
+    mutation updateBill($id: ID!) {
+      updateTransaction(input: {
+        id: $id
+      }) {
+        transaction {
+          id,
+          amount,
+          note
+        }
+      }
+    }
+    """
 
-    mutation_update_bill_max = ""
+    mutation_update_bill_max = """
+    mutation updateBill($id: ID!, $cat: ID, $com: ID, $car: ID) {
+      updateTransaction(input: {
+        id: $id,
+        amount: -9999,
+        category: $cat,
+        company: $com,
+        card: $car,
+        note: "New note"
+      }) {
+        transaction {
+          id,
+          amount,
+          note
+        }
+      }
+    }
+    """
 
     def test_GIVEN_WHEN_get_transactions_THEN_return_all(self):
         # when
@@ -144,6 +173,25 @@ class GraphQLTransactionTest(GraphQLBasicAPITestCase):
     def test_GIVEN_WHEN_create_transaction_max_THEN_bill_created(self):
         # when
         res = self.query(self.mutation_create_bill_max, variables={
+            "cat": self.id_valid_enum_category,
+            "com": self.id_valid_enum_company,
+            "car": self.id_valid_enum_card
+        })
+
+        # then
+        self.assertResponseNoErrors(res)
+
+    def test_GIVEN_WHEN_update_transaction_min_THEN_unchanged(self):
+        # when
+        res = self.query(self.mutation_update_bill_min, variables={"id": self.id_valid_bill})
+
+        # then
+        self.assertResponseNoErrors(res)
+
+    def test_GIVEN_WHEN_update_transaction_max_THEN_updated(self):
+        # when
+        res = self.query(self.mutation_update_bill_max, variables={
+            "id": self.id_valid_bill,
             "cat": self.id_valid_enum_category,
             "com": self.id_valid_enum_company,
             "car": self.id_valid_enum_card
