@@ -1,6 +1,6 @@
 *.sqlite3
-.idea
 .DS_Store
+.idea
 .vscode
 
 **/__pycache__

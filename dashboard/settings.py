@@ -126,6 +126,10 @@ STATIC_URL = '/static/'
 # For RESTFUL API
 CORS_ORIGIN_WHITELIST = [
     "https://kksk.biz",
+
+    # local test ip
+    "http://127.0.0.1",
+    "http://localhost",
     "http://127.0.0.1:3000",
     "http://localhost:3000",
     "http://127.0.0.1:4444",
