@@ -1,10 +1,21 @@
 version: "3"
 
 services:
-  web:
-    build: .
+  nginx:
+    image: nginx
+    container_name: dashboard-backend-nginx
+    volumes:
+      - ./ci/nginx.conf:/etc/nginx/nginx.conf
     ports:
-    - "80:80"
+      - "4444:80"
+    depends_on:
+      - web
+
+  web:
+    container_name: dashboard-backend-web
+    build: .
+    expose:
+      - "8000"
     volumes:
       - v-db:/app/db/
 

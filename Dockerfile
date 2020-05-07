@@ -8,6 +8,6 @@ RUN pip install -r requirements.txt --no-cache-dir
 
 COPY . /app/
 
-EXPOSE 80
+EXPOSE 8000
 
-ENTRYPOINT ["gunicorn", "-b", ":80", "dashboard.wsgi:application"]
+ENTRYPOINT ["gunicorn", "-b", ":8000", "dashboard.wsgi:application"]
