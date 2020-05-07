@@ -1,0 +1,13 @@
+version: "3"
+
+services:
+  web:
+    build: .
+    ports:
+    - "80:80"
+    volumes:
+      - v-db:/app/db/
+
+volumes:
+  v-db:
+    external: true
