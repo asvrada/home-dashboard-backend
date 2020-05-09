@@ -24,7 +24,7 @@ class SummaryTest(BasicAPITestCase):
             'budgetTodayTotal': 313,
             'budgetMonth': 2180,
             'budgetMonthTotal': 3333,
-            'savingMonth': -1153,
+            'savingMonth': -2353,
             'incomeMonthTotal': 0,
             "monthlyCost": 922
         })

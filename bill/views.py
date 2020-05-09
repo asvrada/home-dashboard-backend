@@ -62,9 +62,12 @@ class SummaryView(APIView):
                                                                    time_created__month=last_month, amount__gt=0)
         sum_income_last_month = self.aggregate_amount(bill_income_last_month)
 
+        # Sum of all spending this month, include these marked as skip
+        # Note: a negative number
+        sum_spend_month = self.aggregate_amount(bill_spend_month)
         # Sum of all spending this month, ignore these marked as skip
         # Note: a negative number
-        sum_spend_month = self.aggregate_amount(bill_spend_month.filter(skip_summary=False))
+        sum_spend_month_skipped = self.aggregate_amount(bill_spend_month.filter(skip_summary=False))
         # Sum of all spending today, ignore these marked as skip
         # Note: a negative number
         sum_spend_today = self.aggregate_amount(bill_today.filter(skip_summary=False, amount__lte=0))
@@ -78,7 +81,7 @@ class SummaryView(APIView):
 
         budget_month = self.retrieve_budget()
 
-        tmp_budget_month = budget_month + sum_spend_month
+        tmp_budget_month = budget_month + sum_spend_month_skipped
         tmp_budget_today_total = (tmp_budget_month - sum_spend_today) / days_left
 
         monthly_cost = self.get_recurring_cost_each_month()
