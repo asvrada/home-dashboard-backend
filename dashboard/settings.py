@@ -147,3 +147,7 @@ CRONJOBS = [
 GRAPHENE = {
     'SCHEMA': 'bill.schema.schema'  # Where your Graphene schema lives
 }
+
+ENV = "prod"
+if ENV == "prod":
+    from .settings_prod import *
