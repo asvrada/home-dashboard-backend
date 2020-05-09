@@ -148,6 +148,6 @@ GRAPHENE = {
     'SCHEMA': 'bill.schema.schema'  # Where your Graphene schema lives
 }
 
-ENV = "prod"
+ENV = os.getenv("ENV", "dev")
 if ENV == "prod":
     from .settings_prod import *
