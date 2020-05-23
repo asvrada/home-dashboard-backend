@@ -5,6 +5,8 @@ import graphene
 
 from graphql_relay.node.node import from_global_id
 
+from django.utils.timezone import now
+
 from . import models
 
 """
@@ -111,7 +113,7 @@ class TransactionType(DjangoObjectType):
     class Meta:
         model = models.Transaction
         interfaces = (Node,)
-        filter_fields = ["amount", "category", "company", "card", "note", "skip_summary", "time_created"]
+        filter_fields = ["amount", "category", "company", "card", "note", "skip_summary", "creator", "time_created"]
 
 
 # Create
@@ -199,6 +201,7 @@ class CreateTransaction(relay.ClientIDMutation):
         card = graphene.GlobalID(required=False)
         note = graphene.String(required=False)
         skipSummary = graphene.Boolean(required=False)
+        timeCreated = graphene.String(required=False)
 
     # output
     transaction = graphene.Field(TransactionType)
@@ -206,6 +209,7 @@ class CreateTransaction(relay.ClientIDMutation):
     @classmethod
     def mutate_and_get_payload(cls, root, info, **payload):
         amount, category, company, card, note, skip = get_amount_category_company_card_note(payload)
+        time_created = payload.get("timeCreated", now())
 
         transaction = models.Transaction.objects.create(
             amount=amount,
@@ -213,7 +217,8 @@ class CreateTransaction(relay.ClientIDMutation):
             company=company,
             card=card,
             note=note,
-            skip_summary=skip
+            skip_summary=skip,
+            time_created=time_created
         )
 
         return CreateTransaction(transaction=transaction)
