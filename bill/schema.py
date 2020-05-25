@@ -79,7 +79,7 @@ class IconType(DjangoObjectType):
     class Meta:
         model = models.Icon
         interfaces = (Node,)
-        filter_fields = ["keyword", "path"]
+        filter_fields = ["id", "keyword", "path"]
 
 
 class EnumCategoryType(DjangoObjectType):
@@ -89,7 +89,7 @@ class EnumCategoryType(DjangoObjectType):
     class Meta:
         model = models.EnumCategory
         interfaces = (Node,)
-        filter_fields = ["name", "category", "icon"]
+        filter_fields = ["id", "name", "category", "icon"]
 
     def resolve_category(self, info, **kwargs):
         return self.category
@@ -102,7 +102,7 @@ class RecurringBillType(DjangoObjectType):
     class Meta:
         model = models.RecurringBill
         interfaces = (Node,)
-        filter_fields = ["frequency", "recurring_month", "recurring_day",
+        filter_fields = ["id", "frequency", "recurring_month", "recurring_day",
                          "amount", "category", "company", "card", "note", "skip_summary", "time_created"]
 
     def resolve_frequency(self, info, **kwargs):
@@ -113,7 +113,8 @@ class TransactionType(DjangoObjectType):
     class Meta:
         model = models.Transaction
         interfaces = (Node,)
-        filter_fields = ["amount", "category", "company", "card", "note", "skip_summary", "creator", "time_created"]
+        filter_fields = ["id", "amount", "category", "company", "card", "note", "skip_summary", "creator",
+                         "time_created"]
 
 
 # Create
@@ -337,6 +338,7 @@ class UpdateTransaction(relay.ClientIDMutation):
         card = graphene.GlobalID(required=False)
         note = graphene.String(required=False)
         skipSummary = graphene.Boolean(required=False)
+        timeCreated = graphene.String(required=False)
 
     # output
     transaction = graphene.Field(TransactionType)
@@ -350,6 +352,11 @@ class UpdateTransaction(relay.ClientIDMutation):
 
         # update object
         update_fragment_given_payload(bill, payload)
+
+        time_created = payload.get("timeCreated", None)
+
+        if time_created:
+            bill.time_created = time_created
 
         bill.save()
         return CreateTransaction(transaction=bill)
