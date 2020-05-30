@@ -1,6 +1,14 @@
 version: "3"
 
 services:
+  frontend:
+    image: hullcritical/dashboard-frontend
+    container_name: dashboard-frontend-nginx
+    ports:
+      - "80:80"
+    depends_on: 
+      - nginx
+
   nginx:
     image: nginx
     container_name: dashboard-backend-nginx
@@ -11,13 +19,6 @@ services:
       - "4444:80"
     depends_on:
       - web
-      - frontend
-
-  frontend:
-    image: hullcritical/dashboard-frontend
-    container_name: dashboard-frontend-nginx
-    ports:
-    - "80:80"
 
   web:
     container_name: dashboard-backend-web
