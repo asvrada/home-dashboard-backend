@@ -397,7 +397,7 @@ class Mutation(graphene.ObjectType):
     create_recurring_bill = CreateRecurringBill.Field()
     create_transaction = CreateTransaction.Field()
 
-    delete = DeleteMutation().Field()
+    deleteObj = DeleteMutation().Field()
 
     update_icon = UpdateIcon.Field()
     update_enum = UpdateEnum.Field()
