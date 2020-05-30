@@ -171,6 +171,7 @@ class Transaction(models.Model):
     # If not NULL, then point to the recurring_bill record
     creator = models.ForeignKey(RecurringBill, related_name="bill_instance",
                                 null=True, blank=True, on_delete=models.SET_NULL)
+
     time_created = models.DateTimeField(default=now)
 
     class Meta:

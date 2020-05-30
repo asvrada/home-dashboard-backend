@@ -1,4 +1,7 @@
-FROM python
+FROM python:3
+
+RUN apt-get update \
+    && apt-get install -y cron
 
 WORKDIR /app/
 
