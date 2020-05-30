@@ -16,13 +16,13 @@ class EnumCategoryAdmin(admin.ModelAdmin):
 
 @admin.register(models.Transaction)
 class TransactionAdmin(admin.ModelAdmin):
-    list_display = ('amount', 'category', 'company', 'note', 'skip_summary', 'creator', 'time_created')
+    list_display = ('amount', 'category', 'company', 'note', 'skip_summary_flag', 'creator', 'time_created')
     list_display_links = list_display
 
 
 @admin.register(models.RecurringBill)
 class RecurringBillAdmin(admin.ModelAdmin):
-    list_display = ('view_recurring_date', 'note', 'amount', 'category', 'company', 'skip_summary', 'time_created')
+    list_display = ('view_recurring_date', 'note', 'amount', 'category', 'company', 'skip_summary_flag', 'time_created')
     list_display_links = list_display
     list_filter = ('frequency',)
 

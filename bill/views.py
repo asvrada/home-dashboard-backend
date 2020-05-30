@@ -2,7 +2,7 @@ from rest_framework import viewsets, generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
-from django.db.models import Sum, Max
+from django.db.models import Sum, Max, F
 from django.utils import timezone
 
 from calendar import monthrange
@@ -62,15 +62,30 @@ class SummaryView(APIView):
                                                                    time_created__month=last_month, amount__gt=0)
         sum_income_last_month = self.aggregate_amount(bill_income_last_month)
 
-        # Sum of all spending this month, include these marked as skip
+        # Sum of all spending this month, exclude marked as skip total
         # Note: a negative number
-        sum_spend_month = self.aggregate_amount(bill_spend_month)
-        # Sum of all spending this month, ignore these marked as skip
+        sum_spend_month = self.aggregate_amount(
+            bill_spend_month
+                .annotate(flag=F('skip_summary_flag').bitand(models.FLAG_SKIP_TOTAL))
+                .exclude(flag=models.FLAG_SKIP_TOTAL)
+        )
+        # Sum of all spending this month, exclude these marked as skip budget
         # Note: a negative number
-        sum_spend_month_skipped = self.aggregate_amount(bill_spend_month.filter(skip_summary=False))
-        # Sum of all spending today, ignore these marked as skip
+        sum_spend_month_skipped = self.aggregate_amount(
+            bill_spend_month
+                .annotate(flag=F('skip_summary_flag').bitand(models.FLAG_SKIP_BUDGET))
+                .exclude(flag=models.FLAG_SKIP_BUDGET)
+        )
+        # Sum of all spending today, exclude these marked as skip budget
         # Note: a negative number
-        sum_spend_today = self.aggregate_amount(bill_today.filter(skip_summary=False, amount__lte=0))
+        sum_spend_today = self.aggregate_amount(
+            bill_today
+                # negative amount will pass
+                .filter(amount__lte=0)
+                # not marked skip budget will pass
+                .annotate(flag=F('skip_summary_flag').bitand(models.FLAG_SKIP_BUDGET))
+                .exclude(flag=models.FLAG_SKIP_BUDGET)
+        )
 
         # Days left for this month
         _, days_month = monthrange(year, month)

@@ -37,7 +37,7 @@ def get_amount_category_company_card_note(payload):
     card = from_payload_to_object(payload, "card", models.EnumCategory)
 
     note = payload.get("note", None)
-    skip = payload.get("skipSummary", False)
+    skip = payload.get("skipSummaryFlag", False)
 
     return amount, category, company, card, note, skip
 
@@ -56,7 +56,7 @@ def update_fragment_given_payload(obj_fragment, payload):
     if note:
         obj_fragment.note = note
     if skip:
-        obj_fragment.skip_summary = skip
+        obj_fragment.skip_summary_flag = skip
 
 
 # Type declaration
@@ -103,7 +103,7 @@ class RecurringBillType(DjangoObjectType):
         model = models.RecurringBill
         interfaces = (Node,)
         filter_fields = ["id", "frequency", "recurring_month", "recurring_day",
-                         "amount", "category", "company", "card", "note", "skip_summary", "time_created"]
+                         "amount", "category", "company", "card", "note", "skip_summary_flag", "time_created"]
 
     def resolve_frequency(self, info, **kwargs):
         return self.frequency
@@ -113,7 +113,7 @@ class TransactionType(DjangoObjectType):
     class Meta:
         model = models.Transaction
         interfaces = (Node,)
-        filter_fields = ["id", "amount", "category", "company", "card", "note", "skip_summary", "creator",
+        filter_fields = ["id", "amount", "category", "company", "card", "note", "skip_summary_flag", "creator",
                          "time_created"]
 
 
@@ -167,7 +167,7 @@ class CreateRecurringBill(relay.ClientIDMutation):
         company = graphene.GlobalID(required=False)
         card = graphene.GlobalID(required=False)
         note = graphene.String(required=False)
-        skipSummary = graphene.Boolean(required=False)
+        skipSummaryFlag = graphene.Int(required=False)
 
     # output
     recurring_bill = graphene.Field(RecurringBillType)
@@ -189,7 +189,7 @@ class CreateRecurringBill(relay.ClientIDMutation):
             company=company,
             card=card,
             note=note,
-            skip_summary=skip
+            skip_summary_flag=skip
         )
         return CreateRecurringBill(recurring_bill=recurring_bill)
 
@@ -201,7 +201,7 @@ class CreateTransaction(relay.ClientIDMutation):
         company = graphene.GlobalID(required=False)
         card = graphene.GlobalID(required=False)
         note = graphene.String(required=False)
-        skipSummary = graphene.Boolean(required=False)
+        skipSummaryFlag = graphene.Int(required=False)
         timeCreated = graphene.String(required=False)
 
     # output
@@ -218,7 +218,7 @@ class CreateTransaction(relay.ClientIDMutation):
             company=company,
             card=card,
             note=note,
-            skip_summary=skip,
+            skip_summary_flag=skip,
             time_created=time_created
         )
 
@@ -300,7 +300,7 @@ class UpdateRecurringBill(relay.ClientIDMutation):
         company = graphene.GlobalID(required=False)
         card = graphene.GlobalID(required=False)
         note = graphene.String(required=False)
-        skipSummary = graphene.Boolean(required=False)
+        skipSummaryFlag = graphene.Int(required=False)
 
     # output
     recurring_bill = graphene.Field(RecurringBillType)
@@ -337,7 +337,7 @@ class UpdateTransaction(relay.ClientIDMutation):
         company = graphene.GlobalID(required=False)
         card = graphene.GlobalID(required=False)
         note = graphene.String(required=False)
-        skipSummary = graphene.Boolean(required=False)
+        skipSummaryFlag = graphene.Int(required=False)
         timeCreated = graphene.String(required=False)
 
     # output

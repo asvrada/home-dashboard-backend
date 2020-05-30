@@ -41,5 +41,5 @@ def create_recurring_bill_today() -> None:
             card=bill.card,
             creator=bill,
             note=bill.note,
-            skip_summary=bill.skip_summary
+            skip_summary_flag=bill.skip_summary_flag
         )

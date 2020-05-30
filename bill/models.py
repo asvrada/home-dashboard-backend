@@ -4,6 +4,11 @@ from django.utils.timezone import now
 
 from django.core.exceptions import ValidationError
 
+FLAG_NO_SKIP_SUMMARY = 0
+FLAG_SKIP_BUDGET = 1
+FLAG_SKIP_TOTAL = 2
+FLAG_SKIP_BOTH = FLAG_SKIP_BUDGET | FLAG_SKIP_TOTAL
+
 
 class User(AbstractUser):
     """
@@ -101,7 +106,8 @@ class RecurringBill(models.Model):
 
     note = models.CharField(max_length=512, default="", blank=True, null=True)
 
-    skip_summary = models.BooleanField(default=False)
+    # Check the Transaction class for detailed explanation
+    skip_summary_flag = models.IntegerField(default=0)
 
     # Time created for this entry (but not the actual bill)
     time_created = models.DateTimeField(default=now)
@@ -149,7 +155,18 @@ class Transaction(models.Model):
 
     note = models.CharField(max_length=512, default="", blank=True, null=True)
 
-    skip_summary = models.BooleanField(default=False)
+    """
+    First bit: ______x
+    If 1: this transaction won't count in monthly budget
+    
+    Second bit: _____x_
+    If 1: this transaction won't count in monthly total
+    
+    For example:
+    For a rent payment, value should be 1
+    For a transfer, value should be 3
+    """
+    skip_summary_flag = models.IntegerField(default=0)
 
     # If not NULL, then point to the recurring_bill record
     creator = models.ForeignKey(RecurringBill, related_name="bill_instance",

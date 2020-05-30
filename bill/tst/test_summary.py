@@ -20,9 +20,9 @@ class SummaryTest(BasicAPITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(type(response.data), dict)
         self.assertEqual(response.data, {
-            'budgetToday': 301,
-            'budgetTodayTotal': 313,
-            'budgetMonth': 2180,
+            'budgetToday': 458,
+            'budgetTodayTotal': 470,
+            'budgetMonth': 3279,
             'budgetMonthTotal': 3333,
             'savingMonth': -2353,
             'incomeMonthTotal': 0,
