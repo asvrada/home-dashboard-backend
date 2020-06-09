@@ -124,20 +124,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
-# For RESTFUL API
-CORS_ORIGIN_WHITELIST = [
-    "https://kksk.biz",
-
-    # local test ip
-    "http://127.0.0.1",
-    "http://localhost",
-    "http://127.0.0.1:3000",
-    "http://localhost:3000",
-    "http://127.0.0.1:4444",
-    "http://localhost:4444"
-]
-
-CORS_ALLOW_CREDENTIALS = True
+CORS_ORIGIN_ALLOW_ALL = True
 
 CRONJOBS = [
     # Everyday 5:00 am

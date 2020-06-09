@@ -1,4 +1,13 @@
-ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "kksk.biz"]
+
+CORS_ORIGIN_WHITELIST = [
+    # Prod
+    "https://kksk.biz",
+
+    "http://45.63.10.52",
+    "http://localhost",
+    "http://127.0.0.1"
+]
 
 DATABASES = {
     'default': {
