@@ -18,7 +18,7 @@ class GraphQLBasicAPITestCase(GraphQLTestCase):
 
     mutation_delete = """
     mutation delete($id: ID!) {
-      delete(input: {
+      deleteObj(input: {
         id: $id
       }) {
         ok

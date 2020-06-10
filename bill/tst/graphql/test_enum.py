@@ -188,7 +188,7 @@ class GraphQLEnumTest(GraphQLBasicAPITestCase):
 
         # then
         self.assertResponseNoErrors(res)
-        content = res.json()["data"]["delete"]
+        content = res.json()["data"]["deleteObj"]
         self.assertIn("ok", content, msg="ok not in response")
 
         # check icon count
