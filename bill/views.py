@@ -2,7 +2,7 @@ from rest_framework import viewsets, generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
-from django.db.models import Sum, Max, F
+from django.db.models import Sum, F
 from django.utils import timezone
 
 from calendar import monthrange
@@ -149,28 +149,3 @@ class SummaryView(APIView):
 
         return sum_monthly + sum_year / 12
 
-
-class IconViewSet(viewsets.ModelViewSet):
-    queryset = models.Icon.objects.all()
-    serializer_class = serializers.IconSerializer
-
-
-class EnumViewSet(viewsets.ModelViewSet):
-    queryset = models.EnumCategory.objects.all()
-    serializer_class = serializers.EnumSerializer
-
-
-class TransactionViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint that allows Transaction to be viewed or edited
-    """
-    queryset = models.Transaction.objects.all()
-    serializer_class = serializers.TransactionSerializer
-
-
-class RecurringBillViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint that allows Recurring Bill to be viewed or edited
-    """
-    queryset = models.RecurringBill.objects.all()
-    serializer_class = serializers.RecurringBillSerializer

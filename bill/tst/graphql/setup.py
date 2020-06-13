@@ -1,5 +1,3 @@
-import json
-
 from graphene_django.utils.testing import GraphQLTestCase
 
 from bill.tst.setup import setup_db
