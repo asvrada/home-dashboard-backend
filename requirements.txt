@@ -3,4 +3,3 @@ djangorestframework==3.11.0
 graphene==2.1.8
 
 pytz~=2019.3
-pandas~=0.25.1
