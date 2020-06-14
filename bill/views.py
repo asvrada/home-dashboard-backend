@@ -1,22 +1,23 @@
-from rest_framework import viewsets, generics
-from rest_framework.views import APIView
-from rest_framework.response import Response
+from calendar import monthrange
 
 from django.db.models import Sum, F
 from django.utils import timezone
-
-from calendar import monthrange
+from rest_framework import generics
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from . import models
 from . import serializers
 
 
-class UserViewSet(viewsets.ModelViewSet):
+class UserView(generics.RetrieveAPIView):
     """
-    API endpoint that allows users to be viewed or edited.
+    Retrieve the current user
     """
-    queryset = models.User.objects.all()
     serializer_class = serializers.UserSerializer
+
+    def get_object(self):
+        return self.request.user
 
 
 class MonthlyBudgetView(generics.RetrieveUpdateAPIView):
@@ -24,8 +25,10 @@ class MonthlyBudgetView(generics.RetrieveUpdateAPIView):
     serializer_class = serializers.MonthlyBudgetSerializer
 
     def get_object(self):
-        assert len(self.queryset.all()) >= 1, "No record in Budget database! Create one on admin site."
-        return self.queryset.first()
+        return self.filter_queryset(self.get_queryset()).first()
+
+    def get_queryset(self):
+        return self.request.user.budget.all()
 
 
 class SummaryView(APIView):
@@ -42,6 +45,11 @@ class SummaryView(APIView):
         4. 当月固定开销
             monthlyCost
         """
+        user = request.user
+
+        if not user.is_authenticated:
+            return Response(status=401)
+
         # Get current date
         # Is this the same timezone as database?
         # Somehow we have to use local time to query, although the date stored in DB is in UTC
@@ -148,4 +156,3 @@ class SummaryView(APIView):
         sum_year = rb_yearly.aggregate(tmp_result=Sum('amount'))["tmp_result"] or 0
 
         return sum_monthly + sum_year / 12
-

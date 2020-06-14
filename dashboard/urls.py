@@ -23,11 +23,14 @@ from rest_framework_simplejwt.views import (
     TokenVerifyView
 )
 
+from bill.views import UserView
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('bill/', include('bill.urls')),
     path('graphql/', GraphQLView.as_view(graphiql=True)),
-    path('token-auth/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('user/', UserView.as_view(), name="get_user"),
+    path('token-auth/', TokenObtainPairView.as_view(), name='token_auth'),
     path('token-refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('token-verify/', TokenVerifyView.as_view(), name='token_verify'),
 ]

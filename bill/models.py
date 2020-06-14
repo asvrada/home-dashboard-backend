@@ -1,8 +1,7 @@
-from django.db import models
 from django.contrib.auth.models import AbstractUser
-from django.utils.timezone import now
-
 from django.core.exceptions import ValidationError
+from django.db import models
+from django.utils.timezone import now
 
 FLAG_NO_SKIP_SUMMARY = 0
 FLAG_SKIP_BUDGET = 1
@@ -22,19 +21,21 @@ class MonthlyBudget(models.Model):
     Model the budget user set for each month
     Should only has one row (i.e one value)
     """
+    user = models.ForeignKey(User, related_name="budget", on_delete=models.CASCADE, null=True)
     budget = models.FloatField(default=0)
 
     def __str__(self):
         return self.__repr__()
 
     def __repr__(self):
-        return f"{self.budget}"
+        return f"{self.budget} - {self.user.username}"
 
 
 class Icon(models.Model):
     """
     Model an icon, an image
     """
+    user = models.ForeignKey(User, related_name="icons", on_delete=models.CASCADE, null=True)
     path = models.CharField(max_length=256, default="", blank=True)
     keyword = models.CharField(max_length=128, unique=True)
 
@@ -49,6 +50,7 @@ class EnumCategory(models.Model):
     """
     Model a choice
     """
+    user = models.ForeignKey(User, related_name="enums", on_delete=models.CASCADE, null=True)
     # Icon for this enum
     icon = models.ForeignKey(Icon, null=True, blank=True, related_name="enums", on_delete=models.SET_NULL)
     # Display name of this enum
@@ -77,6 +79,8 @@ class RecurringBill(models.Model):
     """
     Model a timed recurring bill
     """
+    user = models.ForeignKey(User, related_name="rbs", on_delete=models.CASCADE, null=True)
+
     FREQUENCY_CHOICES = [
         ('Y', 'Year'),
         ("M", "Month")
@@ -138,6 +142,8 @@ class Transaction(models.Model):
     """
     Model a single transaction
     """
+    user = models.ForeignKey(User, related_name="bills", on_delete=models.CASCADE, null=True)
+
     amount = models.FloatField(default=0)
 
     # {instance of enum}.{related_name} := all Transactions that point to it
