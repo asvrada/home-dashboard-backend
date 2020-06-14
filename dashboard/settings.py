@@ -59,6 +59,24 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'dashboard.urls'
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    )
+}
+
+GRAPHENE = {
+    'SCHEMA': 'bill.schema.schema',
+    'MIDDLEWARE': [
+        'graphql_jwt.middleware.JSONWebTokenMiddleware',
+    ],
+}
+
+AUTHENTICATION_BACKENDS = [
+    'graphql_jwt.backends.JSONWebTokenBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -125,15 +143,6 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
 CORS_ORIGIN_ALLOW_ALL = True
-
-CRONJOBS = [
-    # Everyday 5:00 am
-    ('0 5 * * *', 'restful.crontab.recurring.create_recurring_bill_today')
-]
-
-GRAPHENE = {
-    'SCHEMA': 'bill.schema.schema'  # Where your Graphene schema lives
-}
 
 ENV = os.getenv("ENV", "dev")
 if ENV == "prod":

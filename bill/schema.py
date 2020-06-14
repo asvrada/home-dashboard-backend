@@ -2,6 +2,7 @@ from graphene import Node, relay, Enum
 from graphene_django.types import DjangoObjectType
 from graphene_django.fields import DjangoConnectionField
 import graphene
+import graphql_jwt
 
 from graphql_relay.node.node import from_global_id
 
@@ -392,6 +393,10 @@ class DeleteMutation(relay.ClientIDMutation):
 
 
 class Mutation(graphene.ObjectType):
+    token_auth = graphql_jwt.ObtainJSONWebToken.Field()
+    token_verify = graphql_jwt.Verify.Field()
+    token_refresh = graphql_jwt.Refresh.Field()
+
     create_icon = CreateIcon.Field()
     create_enum = CreateEnum.Field()
     create_recurring_bill = CreateRecurringBill.Field()
