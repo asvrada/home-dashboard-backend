@@ -21,7 +21,7 @@ class MonthlyBudget(models.Model):
     Model the budget user set for each month
     Should only has one row (i.e one value)
     """
-    user = models.ForeignKey(User, related_name="budget", on_delete=models.CASCADE, null=True)
+    user = models.ForeignKey(User, related_name="budget", on_delete=models.CASCADE, null=True, blank=True)
     budget = models.FloatField(default=0)
 
     def __str__(self):
@@ -35,7 +35,7 @@ class Icon(models.Model):
     """
     Model an icon, an image
     """
-    user = models.ForeignKey(User, related_name="icons", on_delete=models.CASCADE, null=True)
+    user = models.ForeignKey(User, related_name="icons", on_delete=models.CASCADE, null=True, blank=True)
     path = models.CharField(max_length=256, default="", blank=True)
     keyword = models.CharField(max_length=128, unique=True)
 
@@ -50,7 +50,7 @@ class EnumCategory(models.Model):
     """
     Model a choice
     """
-    user = models.ForeignKey(User, related_name="enums", on_delete=models.CASCADE, null=True)
+    user = models.ForeignKey(User, related_name="enums", on_delete=models.CASCADE, null=True, blank=True)
     # Icon for this enum
     icon = models.ForeignKey(Icon, null=True, blank=True, related_name="enums", on_delete=models.SET_NULL)
     # Display name of this enum
@@ -79,7 +79,7 @@ class RecurringBill(models.Model):
     """
     Model a timed recurring bill
     """
-    user = models.ForeignKey(User, related_name="rbs", on_delete=models.CASCADE, null=True)
+    user = models.ForeignKey(User, related_name="rbs", on_delete=models.CASCADE, null=True, blank=True)
 
     FREQUENCY_CHOICES = [
         ('Y', 'Year'),
@@ -142,7 +142,7 @@ class Transaction(models.Model):
     """
     Model a single transaction
     """
-    user = models.ForeignKey(User, related_name="bills", on_delete=models.CASCADE, null=True)
+    user = models.ForeignKey(User, related_name="bills", on_delete=models.CASCADE, null=True, blank=True)
 
     amount = models.FloatField(default=0)
 

@@ -1,4 +1,6 @@
+from django.urls import reverse
 from rest_framework.test import APITestCase
+from rest_framework import status
 
 import pytz
 from datetime import datetime
@@ -93,12 +95,33 @@ def setup_db():
     create_rbs()
     create_bills()
 
-    # Create budget entry
-    models.MonthlyBudget.objects.create(id=1, budget=TEST_BUDGET)
+    # Create super user
+    user_admin = models.User.objects.create_superuser("admin", password="4980")
+
+    user_jeff = models.User.objects.create_user("jeff", password="4980")
+
+    # Create budget entry for both user
+    models.MonthlyBudget.objects.create(id=1, user=user_admin, budget=TEST_BUDGET)
+    models.MonthlyBudget.objects.create(id=2, user=user_jeff, budget=TEST_BUDGET * 2)
+
+    return user_admin, user_jeff
 
 
 class BasicAPITestCase(APITestCase):
+    accessToken = None
+    user_admin = None
+    user_jeff = None
+
     def setUp(self) -> None:
         super().setUp()
 
-        setup_db()
+        self.user_admin, self.user_jeff = setup_db()
+
+        # get access token
+        url = reverse('token_auth')
+        res = self.client.post(url, {'username': 'jeff', 'password': '4980'}, format='json')
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertTrue('access' in res.data)
+        self.accessToken = res.data['access']
+
+        self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + self.accessToken)

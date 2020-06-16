@@ -5,6 +5,7 @@ from graphene import Node, relay, Enum
 from graphene_django.fields import DjangoConnectionField
 from graphene_django.types import DjangoObjectType
 from graphql_relay.node.node import from_global_id
+from graphql_jwt.decorators import login_required
 
 from . import models
 
@@ -90,6 +91,7 @@ class EnumCategoryType(DjangoObjectType):
         interfaces = (Node,)
         filter_fields = ["id", "name", "category", "icon"]
 
+    @login_required
     def resolve_category(self, info, **kwargs):
         return self.category
 
@@ -425,5 +427,4 @@ class Query(graphene.ObjectType):
     bills = DjangoConnectionField(TransactionType)
 
 
-# schema = graphene.Schema(query=Query)
 schema = graphene.Schema(query=Query, mutation=Mutation)
