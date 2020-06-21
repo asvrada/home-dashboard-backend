@@ -1,7 +1,7 @@
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
 
-class JSONWebTokenBackend:
+class JWTBackend:
     authenticator = JWTAuthentication()
 
     def authenticate(self, request=None, **kwargs):

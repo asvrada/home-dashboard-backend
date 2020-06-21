@@ -15,20 +15,19 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from graphene_django.views import GraphQLView
-
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
     TokenVerifyView
 )
 
+from bill.views import PrivateGraphQLView
 from bill.views import UserView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('bill/', include('bill.urls')),
-    path('graphql/', GraphQLView.as_view(graphiql=True)),
+    path('graphql/', PrivateGraphQLView.as_view(graphiql=True)),
     path('user/', UserView.as_view(), name="get_user"),
     path('token-auth/', TokenObtainPairView.as_view(), name='token_auth'),
     path('token-refresh/', TokenRefreshView.as_view(), name='token_refresh'),

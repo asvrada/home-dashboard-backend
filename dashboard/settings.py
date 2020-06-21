@@ -54,6 +54,7 @@ MIDDLEWARE = [
     # 'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'bill.middleware.JWTAuthMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
@@ -63,7 +64,6 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.BasicAuthentication',
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
@@ -72,18 +72,11 @@ REST_FRAMEWORK = {
 
 GRAPHENE = {
     'SCHEMA': 'bill.schema.schema',
-    'MIDDLEWARE': (
-        'graphql_jwt.middleware.JSONWebTokenMiddleware',
-    ),
-}
-
-GRAPHQL_JWT = {
-    'JWT_AUTH_HEADER_PREFIX': 'Bearer'
 }
 
 # https://docs.djangoproject.com/en/3.0/topics/auth/customizing/#specifying-authentication-backends
 AUTHENTICATION_BACKENDS = [
-    'bill.backends.JSONWebTokenBackend',
+    'bill.backends.JWTBackend',
     'django.contrib.auth.backends.ModelBackend',
 ]
 

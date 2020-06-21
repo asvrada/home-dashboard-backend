@@ -1,7 +1,9 @@
 from calendar import monthrange
 
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Sum, F
 from django.utils import timezone
+from graphene_django.views import GraphQLView
 from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -156,3 +158,7 @@ class SummaryView(APIView):
         sum_year = rb_yearly.aggregate(tmp_result=Sum('amount'))["tmp_result"] or 0
 
         return sum_monthly + sum_year / 12
+
+
+class PrivateGraphQLView(LoginRequiredMixin, GraphQLView):
+    raise_exception = True
