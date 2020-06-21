@@ -39,7 +39,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'corsheaders',
-    'django_crontab',
     'graphene_django',
     'rest_framework',
     # My App
@@ -51,6 +50,7 @@ MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
+    # todo: enable later
     # 'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -72,13 +72,18 @@ REST_FRAMEWORK = {
 
 GRAPHENE = {
     'SCHEMA': 'bill.schema.schema',
-    'MIDDLEWARE': [
+    'MIDDLEWARE': (
         'graphql_jwt.middleware.JSONWebTokenMiddleware',
-    ],
+    ),
 }
 
+GRAPHQL_JWT = {
+    'JWT_AUTH_HEADER_PREFIX': 'Bearer'
+}
+
+# https://docs.djangoproject.com/en/3.0/topics/auth/customizing/#specifying-authentication-backends
 AUTHENTICATION_BACKENDS = [
-    'graphql_jwt.backends.JSONWebTokenBackend',
+    'bill.backends.JSONWebTokenBackend',
     'django.contrib.auth.backends.ModelBackend',
 ]
 
@@ -102,7 +107,6 @@ WSGI_APPLICATION = 'dashboard.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',

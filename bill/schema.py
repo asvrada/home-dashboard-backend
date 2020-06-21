@@ -1,11 +1,11 @@
 import graphene
 import graphql_jwt
 from django.utils.timezone import now
-from graphene import Node, relay, Enum
+from graphene import relay, Enum
 from graphene_django.fields import DjangoConnectionField
 from graphene_django.types import DjangoObjectType
-from graphql_relay.node.node import from_global_id
 from graphql_jwt.decorators import login_required
+from graphql_relay.node.node import from_global_id
 
 from . import models
 
@@ -78,8 +78,8 @@ class EnumRecurringBillFrequency(Enum):
 class IconType(DjangoObjectType):
     class Meta:
         model = models.Icon
-        interfaces = (Node,)
         filter_fields = ["id", "keyword", "path"]
+        interfaces = (relay.Node,)
 
 
 class EnumCategoryType(DjangoObjectType):
@@ -88,8 +88,8 @@ class EnumCategoryType(DjangoObjectType):
 
     class Meta:
         model = models.EnumCategory
-        interfaces = (Node,)
         filter_fields = ["id", "name", "category", "icon"]
+        interfaces = (relay.Node,)
 
     @login_required
     def resolve_category(self, info, **kwargs):
@@ -102,9 +102,9 @@ class RecurringBillType(DjangoObjectType):
 
     class Meta:
         model = models.RecurringBill
-        interfaces = (Node,)
         filter_fields = ["id", "frequency", "recurring_month", "recurring_day",
                          "amount", "category", "company", "card", "note", "skip_summary_flag", "time_created"]
+        interfaces = (relay.Node,)
 
     def resolve_frequency(self, info, **kwargs):
         return self.frequency
@@ -113,9 +113,9 @@ class RecurringBillType(DjangoObjectType):
 class TransactionType(DjangoObjectType):
     class Meta:
         model = models.Transaction
-        interfaces = (Node,)
         filter_fields = ["id", "amount", "category", "company", "card", "note", "skip_summary_flag", "creator",
                          "time_created"]
+        interfaces = (relay.Node,)
 
 
 # Create
@@ -393,9 +393,7 @@ class DeleteMutation(relay.ClientIDMutation):
 
 
 class Mutation(graphene.ObjectType):
-    token_auth = graphql_jwt.ObtainJSONWebToken.Field()
     token_verify = graphql_jwt.Verify.Field()
-    token_refresh = graphql_jwt.Refresh.Field()
 
     create_icon = CreateIcon.Field()
     create_enum = CreateEnum.Field()
@@ -411,19 +409,16 @@ class Mutation(graphene.ObjectType):
 
 
 class Query(graphene.ObjectType):
-    """
-    GraphQL schema
-    """
-    icon = Node.Field(IconType)
+    icon = relay.Node.Field(IconType)
     icons = DjangoConnectionField(IconType)
 
-    enum = Node.Field(EnumCategoryType)
+    enum = relay.Node.Field(EnumCategoryType)
     enums = DjangoConnectionField(EnumCategoryType)
 
-    recurring_bill = Node.Field(RecurringBillType)
+    recurring_bill = relay.Node.Field(RecurringBillType)
     recurring_bills = DjangoConnectionField(RecurringBillType)
 
-    bill = Node.Field(TransactionType)
+    bill = relay.Node.Field(TransactionType)
     bills = DjangoConnectionField(TransactionType)
 
 
