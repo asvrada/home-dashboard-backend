@@ -9,66 +9,74 @@ from bill import models
 from bill.models import FLAG_SKIP_BOTH, FLAG_SKIP_TOTAL, FLAG_SKIP_BUDGET, FLAG_NO_SKIP_SUMMARY
 
 TEST_BUDGET = 3333
+ID_USER_ADMIN = 1
+ID_USER_JEFF = 2
 
 icons = [
-    (1, "Test Icon 1", "/path/icon 1"),
-    (2, "Test Icon 2", "/path/icon 2")
+    (1, "Test Icon admin id 1", "/path/icon 1", ID_USER_ADMIN),
+    (2, "Test Icon admin id 2", "/path/icon 1", ID_USER_JEFF),
+    (3, "Test Icon jeff id 3", "/path/icon 2", ID_USER_JEFF)
 ]
 
 enums = [
-    (1, 1, "Test Category 1", "CAT"),
-    (2, 1, "Test Category 2", "CAT"),
-    (3, 2, "Test Company 1", "COM"),
-    (4, 2, "Test Card 1", "CAR")
+    (1, 1, "Test Category 1", "CAT", ID_USER_ADMIN),
+    (2, 1, "Test Category 2", "CAT", ID_USER_JEFF),
+    (3, 2, "Test Company 1", "COM", ID_USER_JEFF),
+    (4, 2, "Test Card 1", "CAR", ID_USER_JEFF)
 ]
 
 recurring_bills = [
-    # id, frequency, month, day, amount, category, company, card, note, skip
-    (1, 'Y', 12, 2, 123, None, None, None, "Test year 12/2", FLAG_NO_SKIP_SUMMARY),
-    (2, 'M', 1, 2, 456, None, None, None, "Test month 2", FLAG_NO_SKIP_SUMMARY),
-    (3, 'M', 1, 2, 456, None, None, None, "Test month 2", FLAG_SKIP_TOTAL),
+    # id, frequency, month, day, amount, category, company, card, note, skip, user
+    (1, 'Y', 12, 2, 123, None, None, None, "Test year 12/2", FLAG_NO_SKIP_SUMMARY, ID_USER_ADMIN),
+    (2, 'M', 1, 2, 456, None, None, None, "Test month 2", FLAG_NO_SKIP_SUMMARY, ID_USER_JEFF),
+    (3, 'M', 1, 2, 456, None, None, None, "Test month 2", FLAG_SKIP_TOTAL, ID_USER_JEFF),
 ]
 
 transactions = [
-    # id, amount, category, company, card, note, skip, creator, time
-    (1, -12, 1, 3, 4, "Test note -12 Food", FLAG_NO_SKIP_SUMMARY, None, "2020 3 25 18 00 00"),
-    (2, -1099, 2, 3, 4, "Test index vr", FLAG_SKIP_BUDGET, None, "2020 3 24 19 00 00"),
-    (3, 12, 1, 3, 4, "Test 12 Stock", FLAG_NO_SKIP_SUMMARY, None, "2020 3 23 19 00 00"),
-    (4, -21, 1, 3, 4, "Test", FLAG_NO_SKIP_SUMMARY, None, "2020 3 23 18 00 00"),
-    (5, -5, 2, 3, 4, "Food", FLAG_NO_SKIP_SUMMARY, None, "2020 3 23 17 00 00"),
-    (6, -4, 1, 3, 4, "Amount is -4", FLAG_NO_SKIP_SUMMARY, None, "2020 3 21 12 00 00"),
-    (7, 7000, 2, 3, 4, "Test income", FLAG_NO_SKIP_SUMMARY, None, "2020 3 5 18 00 00"),
-    (8, -12, 1, 3, 4, "-12", FLAG_NO_SKIP_SUMMARY, None, "2020 3 2 18 00 00"),
-    (9, -1200, 1, 3, 4, "Rent, not shown in summary", FLAG_SKIP_BUDGET, None, "2020 3 2 18 00 00"),
-    (10, -120000, 1, 3, 4, "Transfer, not shown in both", FLAG_SKIP_BOTH, None, "2020 3 2 18 01 00")
+    # id, amount, category, company, card, note, skip, creator, user_id, time
+    (1, -12, 1, 3, 4, "Test note -12 Food", FLAG_NO_SKIP_SUMMARY, None, ID_USER_ADMIN, "2020 3 25 18 00 00"),
+    (2, -1099, 2, 3, 4, "Test index vr", FLAG_SKIP_BUDGET, None, ID_USER_JEFF, "2020 3 24 19 00 00"),
+    (3, 12, 1, 3, 4, "Test 12 Stock", FLAG_NO_SKIP_SUMMARY, None, ID_USER_JEFF, "2020 3 23 19 00 00"),
+    (4, -21, 1, 3, 4, "Test", FLAG_NO_SKIP_SUMMARY, None, ID_USER_JEFF, "2020 3 23 18 00 00"),
+    (5, -5, 2, 3, 4, "Food", FLAG_NO_SKIP_SUMMARY, None, ID_USER_JEFF, "2020 3 23 17 00 00"),
+    (6, -4, 1, 3, 4, "Amount is -4", FLAG_NO_SKIP_SUMMARY, None, ID_USER_JEFF, "2020 3 21 12 00 00"),
+    (7, 7000, 2, 3, 4, "Test income", FLAG_NO_SKIP_SUMMARY, None, ID_USER_JEFF, "2020 3 5 18 00 00"),
+    (8, -12, 1, 3, 4, "-12", FLAG_NO_SKIP_SUMMARY, None, ID_USER_JEFF, "2020 3 2 18 00 00"),
+    (9, -1200, 1, 3, 4, "Rent, not shown in summary", FLAG_SKIP_BUDGET, None, ID_USER_JEFF, "2020 3 2 18 00 00"),
+    (10, -120000, 1, 3, 4, "Transfer, not shown in both", FLAG_SKIP_BOTH, None, ID_USER_JEFF, "2020 3 2 18 01 00")
 ]
 
 
+def get_user(pk):
+    return models.User.objects.get(pk=pk)
+
+
 def create_icons():
-    def create_icon(id, keyword, path):
-        models.Icon.objects.create(id=id, keyword=keyword, path=path)
+    def create_icon(id, keyword, path, user_id):
+        models.Icon.objects.create(id=id, keyword=keyword, path=path, user=get_user(user_id))
 
     for icon in icons:
         create_icon(*icon)
 
 
 def create_enums():
-    def create_enum(id, id_icon, name, category):
+    def create_enum(id, id_icon, name, category, user_id):
         icon = models.Icon.objects.get(id=id_icon) if id_icon else None
-        models.EnumCategory.objects.create(id=id, icon=icon, name=name, category=category)
+        models.EnumCategory.objects.create(id=id, icon=icon, name=name, category=category, user=get_user(user_id))
 
     for enum in enums:
         create_enum(*enum)
 
 
 def create_rbs():
-    def create_rb(id, frequency, month, day, amount, id_category, id_company, id_card, note, skip, time):
+    def create_rb(id, frequency, month, day, amount, id_category, id_company, id_card, note, skip, user_id, time):
         category = models.EnumCategory.objects.get(id=id_category) if id_category else None
         company = models.EnumCategory.objects.get(id=id_company) if id_company else None
         card = models.EnumCategory.objects.get(id=id_card) if id_card else None
         models.RecurringBill.objects.create(id=id, frequency=frequency, recurring_month=month, recurring_day=day,
                                             amount=amount, category=category, company=company, card=card,
-                                            note=note, skip_summary_flag=skip, time_created=time)
+                                            note=note, skip_summary_flag=skip, user=get_user(user_id),
+                                            time_created=time)
 
     for rb in recurring_bills:
         list_para = list(rb) + [pytz.utc.localize(datetime.now())]
@@ -76,12 +84,13 @@ def create_rbs():
 
 
 def create_bills():
-    def create_bill(id, amount, id_category, id_company, id_card, note, skip, creator, time):
+    def create_bill(id, amount, id_category, id_company, id_card, note, skip, creator, user_id, time_created):
         category = models.EnumCategory.objects.get(id=id_category) if id_category else None
         company = models.EnumCategory.objects.get(id=id_company) if id_company else None
         card = models.EnumCategory.objects.get(id=id_card) if id_card else None
         models.Transaction.objects.create(id=id, amount=amount, category=category, company=company, card=card,
-                                          note=note, skip_summary_flag=skip, creator=creator, time_created=time)
+                                          note=note, skip_summary_flag=skip,
+                                          creator=creator, user=get_user(user_id), time_created=time_created)
 
     for bill in transactions:
         time = datetime(*list(map(int, bill[-1].split())), tzinfo=pytz.utc)
@@ -90,15 +99,14 @@ def create_bills():
 
 
 def setup_db():
+    # Create super user
+    user_admin = models.User.objects.create_superuser("admin", id=ID_USER_ADMIN, password="4980")
+    user_jeff = models.User.objects.create_user("jeff", id=ID_USER_JEFF, password="4980")
+
     create_icons()
     create_enums()
     create_rbs()
     create_bills()
-
-    # Create super user
-    user_admin = models.User.objects.create_superuser("admin", password="4980")
-
-    user_jeff = models.User.objects.create_user("jeff", password="4980")
 
     # Create budget entry for both user
     models.MonthlyBudget.objects.create(id=1, user=user_admin, budget=TEST_BUDGET)
