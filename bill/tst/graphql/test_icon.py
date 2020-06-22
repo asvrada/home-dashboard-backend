@@ -1,5 +1,3 @@
-from rest_framework import status
-
 from .setup import GraphQLBasicAPITestCase
 
 

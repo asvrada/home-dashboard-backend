@@ -1,8 +1,6 @@
-from django.urls import reverse
 from graphene_django.utils.testing import GraphQLTestCase
 
 from bill.schema import schema
-
 from ..setup import BasicAPITestCase
 
 
