@@ -4,7 +4,6 @@ from django.utils.timezone import now
 from graphene import relay, Enum
 from graphene_django.fields import DjangoConnectionField
 from graphene_django.types import DjangoObjectType
-from graphql_jwt.decorators import login_required
 from graphql_relay.node.node import from_global_id
 
 from . import models
@@ -91,7 +90,6 @@ class EnumCategoryType(DjangoObjectType):
         filter_fields = ["id", "name", "category", "icon"]
         interfaces = (relay.Node,)
 
-    @login_required
     def resolve_category(self, info, **kwargs):
         return self.category
 

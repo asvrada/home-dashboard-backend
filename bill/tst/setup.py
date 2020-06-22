@@ -108,20 +108,28 @@ def setup_db():
 
 
 class BasicAPITestCase(APITestCase):
-    accessToken = None
     user_admin = None
     user_jeff = None
+    access_token_admin = None
+    access_token_jeff = None
 
-    def setUp(self) -> None:
+    def getAccessToken(self, username, password):
+        url = reverse('token_auth')
+        res = self.client.post(url, {'username': username, 'password': password}, format='json')
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertTrue('access' in res.data)
+
+        return res.data['access']
+
+    def setAccessToken(self, token):
+        self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + token)
+
+    def setUp(self):
         super().setUp()
 
         self.user_admin, self.user_jeff = setup_db()
 
         # get access token
-        url = reverse('token_auth')
-        res = self.client.post(url, {'username': 'jeff', 'password': '4980'}, format='json')
-        self.assertEqual(res.status_code, status.HTTP_200_OK)
-        self.assertTrue('access' in res.data)
-        self.accessToken = res.data['access']
-
-        self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + self.accessToken)
+        self.access_token_admin = self.getAccessToken('admin', '4980')
+        self.access_token_jeff = self.getAccessToken('jeff', '4980')

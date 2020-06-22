@@ -128,6 +128,11 @@ class GraphQLTransactionTest(GraphQLBasicAPITestCase):
     }
     """
 
+    def setUp(self):
+        super().setUp()
+
+        self.access_token = self.access_token_jeff
+
     def test_GIVEN_WHEN_get_transactions_THEN_return_all(self):
         # when
         response = self.query(self.query_bills)

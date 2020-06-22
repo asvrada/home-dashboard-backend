@@ -1,16 +1,19 @@
-from rest_framework.test import APIClient, APITestCase
+from datetime import datetime
+from unittest import mock
 
+import pytz
 from django.urls import reverse
 from rest_framework import status
 
-import pytz
-from unittest import mock
-from datetime import datetime
-
-from .setup import BasicAPITestCase
+from ..setup import BasicAPITestCase
 
 
 class SummaryTest(BasicAPITestCase):
+    def setUp(self):
+        super().setUp()
+
+        self.setAccessToken(self.access_token_admin)
+
     def test_get_summary(self):
         # Mock today to be 2020/3/25, 7 days till next month
         mocked = datetime(2020, 3, 25, 12, 0, 0, tzinfo=pytz.utc)

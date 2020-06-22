@@ -1,18 +1,22 @@
 from django.urls import reverse
 from rest_framework import status
 
-from .setup import BasicAPITestCase, TEST_BUDGET
-from rest_framework.test import force_authenticate
+from ..setup import BasicAPITestCase, TEST_BUDGET
 
 
 class BudgetTest(BasicAPITestCase):
+    def setUp(self):
+        super().setUp()
+
+        self.setAccessToken(self.access_token_admin)
+
     def test_get_budget(self):
         # when
         response = self.client.get(reverse('budget'))
 
         # then
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data, {"budget": TEST_BUDGET * 2})
+        self.assertEqual(response.data, {"budget": TEST_BUDGET})
 
     def test_create_summary_THEN_failed(self):
         res = self.client.post(reverse("budget"))

@@ -1,4 +1,3 @@
-
 from .setup import GraphQLBasicAPITestCase
 
 
@@ -108,9 +107,14 @@ class GraphQLEnumTest(GraphQLBasicAPITestCase):
     }
     """
 
+    def setUp(self):
+        super().setUp()
+
+        self.access_token = self.access_token_jeff
+
     def test_GIVEN_WHEN_get_enums_THEN_return_all(self):
         # when
-        response = self.query(self.query_enums, headers={"Authorization": "Bearer " + self.accessToken})
+        response = self.query(self.query_enums)
 
         # then
         self.assertResponseNoErrors(response)

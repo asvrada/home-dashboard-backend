@@ -26,9 +26,13 @@ from bill.views import UserView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+
+    path('user/', UserView.as_view(), name="get_user"),
+
+    # bill application
     path('bill/', include('bill.urls')),
     path('graphql/', PrivateGraphQLView.as_view(graphiql=True)),
-    path('user/', UserView.as_view(), name="get_user"),
+
     path('token-auth/', TokenObtainPairView.as_view(), name='token_auth'),
     path('token-refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('token-verify/', TokenVerifyView.as_view(), name='token_verify'),

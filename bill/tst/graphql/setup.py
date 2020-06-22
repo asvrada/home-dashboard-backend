@@ -1,13 +1,13 @@
 from django.urls import reverse
 from graphene_django.utils.testing import GraphQLTestCase
-from rest_framework import status
 
-from bill.tst.setup import setup_db
 from bill.schema import schema
 
+from ..setup import BasicAPITestCase
 
-class GraphQLBasicAPITestCase(GraphQLTestCase):
-    accessToken = None
+
+class GraphQLBasicAPITestCase(BasicAPITestCase, GraphQLTestCase):
+    access_token = None
 
     GRAPHQL_SCHEMA = schema
 
@@ -28,15 +28,13 @@ class GraphQLBasicAPITestCase(GraphQLTestCase):
     }
     """
 
-    def setUp(self):
-        super().setUp()
+    def query(self, query, op_name=None, input_data=None, variables=None, headers=None):
+        if headers is None:
+            headers = dict()
 
-        admin, jeff = setup_db()
+        if self.access_token is not None:
+            headers.update({
+                "HTTP_AUTHORIZATION": "Bearer " + self.access_token
+            })
 
-        # get access token
-        url = reverse('token_auth')
-        res = self.client.post(url, {'username': 'jeff', 'password': '4980'}, format='json')
-        self.assertEqual(res.status_code, status.HTTP_200_OK)
-        self.assertTrue('access' in res.data)
-        self.accessToken = res.data['access']
-
+        return super(GraphQLBasicAPITestCase, self).query(query, op_name, input_data, variables, headers)
