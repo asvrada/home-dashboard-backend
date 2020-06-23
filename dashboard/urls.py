@@ -31,7 +31,7 @@ urlpatterns = [
 
     # bill application
     path('bill/', include('bill.urls')),
-    path('graphql/', PrivateGraphQLView.as_view(graphiql=True)),
+    path('graphql/', PrivateGraphQLView.as_view()),
 
     path('token-auth/', TokenObtainPairView.as_view(), name='token_auth'),
     path('token-refresh/', TokenRefreshView.as_view(), name='token_refresh'),

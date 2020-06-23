@@ -75,10 +75,23 @@ class EnumRecurringBillFrequency(Enum):
     Month = 'M'
 
 
+class UserType(DjangoObjectType):
+    class Meta:
+        model = models.User
+        filter_fields = ["id", "username", "password", "icons", "enums", "rbs", "bills"]
+        interfaces = (relay.Node,)
+
+    @classmethod
+    def get_queryset(cls, queryset, info):
+        if not info.context.user.is_authenticated:
+            raise exceptions.PermissionDeniedException(exceptions.MESSAGE_PERMISSION_DENIED)
+        return queryset.filter(pk=info.context.user.pk)
+
+
 class IconType(DjangoObjectType):
     class Meta:
         model = models.Icon
-        filter_fields = ["id", "keyword", "path"]
+        filter_fields = "__all__"
         interfaces = (relay.Node,)
 
     @classmethod
@@ -94,7 +107,7 @@ class EnumCategoryType(DjangoObjectType):
 
     class Meta:
         model = models.EnumCategory
-        filter_fields = ["id", "name", "category", "icon"]
+        filter_fields = '__all__'
         interfaces = (relay.Node,)
 
     def resolve_category(self, info, **kwargs):
@@ -113,8 +126,7 @@ class RecurringBillType(DjangoObjectType):
 
     class Meta:
         model = models.RecurringBill
-        filter_fields = ["id", "frequency", "recurring_month", "recurring_day",
-                         "amount", "category", "company", "card", "note", "skip_summary_flag", "time_created"]
+        filter_fields = '__all__'
         interfaces = (relay.Node,)
 
     def resolve_frequency(self, info, **kwargs):
@@ -130,8 +142,7 @@ class RecurringBillType(DjangoObjectType):
 class TransactionType(DjangoObjectType):
     class Meta:
         model = models.Transaction
-        filter_fields = ["id", "amount", "category", "company", "card", "note", "skip_summary_flag", "creator",
-                         "time_created"]
+        filter_fields = '__all__'
         interfaces = (relay.Node,)
 
     @classmethod
@@ -153,10 +164,11 @@ class CreateIcon(relay.ClientIDMutation):
 
     @classmethod
     def mutate_and_get_payload(cls, root, info, **payload):
+        user = info.context.user
         keyword = payload["keyword"]
         path = payload["path"]
 
-        icon = models.Icon.objects.create(keyword=keyword, path=path)
+        icon = models.Icon.objects.create(keyword=keyword, path=path, user=user)
 
         return CreateIcon(icon=icon)
 
@@ -172,11 +184,12 @@ class CreateEnum(relay.ClientIDMutation):
 
     @classmethod
     def mutate_and_get_payload(cls, root, info, **payload):
+        user = info.context.user
         icon = from_payload_to_object(payload, "icon", models.Icon)
         name = payload["name"]
         category = payload["category"]
 
-        enum = models.EnumCategory.objects.create(icon=icon, name=name, category=category)
+        enum = models.EnumCategory.objects.create(icon=icon, name=name, category=category, user=user)
 
         return CreateEnum(enum=enum)
 
@@ -198,6 +211,7 @@ class CreateRecurringBill(relay.ClientIDMutation):
 
     @classmethod
     def mutate_and_get_payload(cls, root, info, **payload):
+        user = info.context.user
         frequency = payload["frequency"]
         recurring_month = payload["recurring_month"]
         recurring_day = payload["recurring_day"]
@@ -213,7 +227,8 @@ class CreateRecurringBill(relay.ClientIDMutation):
             company=company,
             card=card,
             note=note,
-            skip_summary_flag=skip
+            skip_summary_flag=skip,
+            user=user
         )
         return CreateRecurringBill(recurring_bill=recurring_bill)
 
@@ -233,6 +248,7 @@ class CreateTransaction(relay.ClientIDMutation):
 
     @classmethod
     def mutate_and_get_payload(cls, root, info, **payload):
+        user = info.context.user
         amount, category, company, card, note, skip = get_amount_category_company_card_note(payload)
         time_created = payload.get("timeCreated", now())
 
@@ -243,13 +259,16 @@ class CreateTransaction(relay.ClientIDMutation):
             card=card,
             note=note,
             skip_summary_flag=skip,
-            time_created=time_created
+            time_created=time_created,
+            user=user
         )
 
         return CreateTransaction(transaction=transaction)
 
 
-# Update
+"""
+Update
+"""
 
 
 class UpdateIcon(relay.ClientIDMutation):
@@ -386,7 +405,11 @@ class UpdateTransaction(relay.ClientIDMutation):
         return CreateTransaction(transaction=bill)
 
 
-# Delete
+"""
+Delete
+"""
+
+
 class DeleteMutation(relay.ClientIDMutation):
     class Input:
         id = graphene.GlobalID(required=True)
