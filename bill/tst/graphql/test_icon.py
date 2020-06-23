@@ -83,7 +83,7 @@ class GraphQLIconTest(GraphQLBasicAPITestCase):
         # then
         self.assertResponseNoErrors(response)
         content = response.json()["data"]["icons"]["edges"]
-        self.assertEqual(3, len(content))
+        self.assertEqual(2, len(content))
 
     def test_GIVEN_WHEN_get_icon_THEN_return_icon(self):
         # when
@@ -147,4 +147,4 @@ class GraphQLIconTest(GraphQLBasicAPITestCase):
         res = self.query(self.query_icons)
         self.assertResponseNoErrors(res)
         content = res.json()["data"]["icons"]["edges"]
-        self.assertEqual(2, len(content))
+        self.assertEqual(1, len(content))

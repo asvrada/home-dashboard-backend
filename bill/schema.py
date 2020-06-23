@@ -80,6 +80,12 @@ class IconType(DjangoObjectType):
         filter_fields = ["id", "keyword", "path"]
         interfaces = (relay.Node,)
 
+    @classmethod
+    def get_queryset(cls, queryset, info):
+        if info.context.user.is_authenticated:
+            return queryset.filter(user=info.context.user)
+        return queryset
+
 
 class EnumCategoryType(DjangoObjectType):
     # overwrite field
@@ -92,6 +98,12 @@ class EnumCategoryType(DjangoObjectType):
 
     def resolve_category(self, info, **kwargs):
         return self.category
+
+    @classmethod
+    def get_queryset(cls, queryset, info):
+        if info.context.user.is_authenticated:
+            return queryset.filter(user=info.context.user)
+        return queryset
 
 
 class RecurringBillType(DjangoObjectType):
@@ -107,6 +119,12 @@ class RecurringBillType(DjangoObjectType):
     def resolve_frequency(self, info, **kwargs):
         return self.frequency
 
+    @classmethod
+    def get_queryset(cls, queryset, info):
+        if info.context.user.is_authenticated:
+            return queryset.filter(user=info.context.user)
+        return queryset
+
 
 class TransactionType(DjangoObjectType):
     class Meta:
@@ -114,6 +132,12 @@ class TransactionType(DjangoObjectType):
         filter_fields = ["id", "amount", "category", "company", "card", "note", "skip_summary_flag", "creator",
                          "time_created"]
         interfaces = (relay.Node,)
+
+    @classmethod
+    def get_queryset(cls, queryset, info):
+        if info.context.user.is_authenticated:
+            return queryset.filter(user=info.context.user)
+        return queryset
 
 
 # Create

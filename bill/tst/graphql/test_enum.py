@@ -119,7 +119,7 @@ class GraphQLEnumTest(GraphQLBasicAPITestCase):
         # then
         self.assertResponseNoErrors(response)
         content = response.json()["data"]["enums"]["edges"]
-        self.assertEqual(4, len(content))
+        self.assertEqual(3, len(content))
 
     def test_GIVEN_WHEN_get_enum_THEN_return_that_enum(self):
         # when
@@ -199,4 +199,4 @@ class GraphQLEnumTest(GraphQLBasicAPITestCase):
         res = self.query(self.query_enums)
         self.assertResponseNoErrors(res)
         content = res.json()["data"]["enums"]["edges"]
-        self.assertEqual(3, len(content))
+        self.assertEqual(2, len(content))
