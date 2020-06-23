@@ -7,6 +7,7 @@ from graphene_django.types import DjangoObjectType
 from graphql_relay.node.node import from_global_id
 
 from . import models
+from . import exceptions
 
 """
 Helper functions
@@ -82,9 +83,9 @@ class IconType(DjangoObjectType):
 
     @classmethod
     def get_queryset(cls, queryset, info):
-        if info.context.user.is_authenticated:
-            return queryset.filter(user=info.context.user)
-        return queryset
+        if not info.context.user.is_authenticated:
+            raise exceptions.PermissionDeniedException(exceptions.MESSAGE_PERMISSION_DENIED)
+        return queryset.filter(user=info.context.user)
 
 
 class EnumCategoryType(DjangoObjectType):
@@ -101,9 +102,9 @@ class EnumCategoryType(DjangoObjectType):
 
     @classmethod
     def get_queryset(cls, queryset, info):
-        if info.context.user.is_authenticated:
-            return queryset.filter(user=info.context.user)
-        return queryset
+        if not info.context.user.is_authenticated:
+            raise exceptions.PermissionDeniedException(exceptions.MESSAGE_PERMISSION_DENIED)
+        return queryset.filter(user=info.context.user)
 
 
 class RecurringBillType(DjangoObjectType):
@@ -121,9 +122,9 @@ class RecurringBillType(DjangoObjectType):
 
     @classmethod
     def get_queryset(cls, queryset, info):
-        if info.context.user.is_authenticated:
-            return queryset.filter(user=info.context.user)
-        return queryset
+        if not info.context.user.is_authenticated:
+            raise exceptions.PermissionDeniedException(exceptions.MESSAGE_PERMISSION_DENIED)
+        return queryset.filter(user=info.context.user)
 
 
 class TransactionType(DjangoObjectType):
@@ -135,9 +136,9 @@ class TransactionType(DjangoObjectType):
 
     @classmethod
     def get_queryset(cls, queryset, info):
-        if info.context.user.is_authenticated:
-            return queryset.filter(user=info.context.user)
-        return queryset
+        if not info.context.user.is_authenticated:
+            raise exceptions.PermissionDeniedException(exceptions.MESSAGE_PERMISSION_DENIED)
+        return queryset.filter(user=info.context.user)
 
 
 # Create
