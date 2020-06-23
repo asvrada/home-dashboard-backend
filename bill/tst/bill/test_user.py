@@ -18,7 +18,7 @@ class UserTest(BasicAPITestCase):
 
     def test_GIVEN_wrong_jwt_WHEN_get_user_THEN_403(self):
         # given
-        self.setAccessToken("Any wrong token")
+        self.set_access_token("Any wrong token")
 
         # when
         res = self.client.get(reverse("get_user"))
@@ -28,7 +28,7 @@ class UserTest(BasicAPITestCase):
 
     def test_GIVEN_admin_token_WHEN_get_user_THEN_admin_returned(self):
         # given
-        self.setAccessToken(self.access_token_admin)
+        self.set_access_token(self.access_token_admin)
 
         # when
         res = self.client.get(reverse("get_user"))
@@ -39,7 +39,7 @@ class UserTest(BasicAPITestCase):
 
     def test_GIVEN_jeff_token_WHEN_get_user_THEN_jeff_returned(self):
         # given
-        self.setAccessToken(self.access_token_jeff)
+        self.set_access_token(self.access_token_jeff)
 
         # when
         res = self.client.get(reverse("get_user"))

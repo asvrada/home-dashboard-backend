@@ -12,7 +12,7 @@ class SummaryTest(BasicAPITestCase):
     def setUp(self):
         super().setUp()
 
-        self.setAccessToken(self.access_token_admin)
+        self.set_access_token(self.access_token_admin)
 
     def test_get_summary(self):
         # Mock today to be 2020/3/25, 7 days till next month

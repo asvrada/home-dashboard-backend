@@ -8,7 +8,7 @@ class BudgetTest(BasicAPITestCase):
     def setUp(self):
         super().setUp()
 
-        self.setAccessToken(self.access_token_admin)
+        self.set_access_token(self.access_token_admin)
 
     def test_get_budget(self):
         # when
