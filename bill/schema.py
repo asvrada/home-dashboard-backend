@@ -85,9 +85,6 @@ class UserType(DjangoObjectType):
 
     @classmethod
     def get_queryset(cls, queryset, info):
-        if settings.DEBUG:
-            return super(UserType, cls).get_queryset(queryset, info)
-
         if not info.context.user.is_authenticated:
             raise exceptions.PermissionDeniedException(exceptions.MESSAGE_PERMISSION_DENIED)
         return queryset.filter(pk=info.context.user.pk)
@@ -102,9 +99,6 @@ class IconType(DjangoObjectType):
 
     @classmethod
     def get_queryset(cls, queryset, info):
-        if settings.DEBUG:
-            return super(IconType, cls).get_queryset(queryset, info)
-
         if not info.context.user.is_authenticated:
             raise exceptions.PermissionDeniedException(exceptions.MESSAGE_PERMISSION_DENIED)
         return queryset.filter(user=info.context.user)
@@ -125,9 +119,6 @@ class EnumCategoryType(DjangoObjectType):
 
     @classmethod
     def get_queryset(cls, queryset, info):
-        if settings.DEBUG:
-            return super(EnumCategoryType, cls).get_queryset(queryset, info)
-
         if not info.context.user.is_authenticated:
             raise exceptions.PermissionDeniedException(exceptions.MESSAGE_PERMISSION_DENIED)
         return queryset.filter(user=info.context.user)
@@ -148,9 +139,6 @@ class RecurringBillType(DjangoObjectType):
 
     @classmethod
     def get_queryset(cls, queryset, info):
-        if settings.DEBUG:
-            return super(RecurringBillType, cls).get_queryset(queryset, info)
-
         if not info.context.user.is_authenticated:
             raise exceptions.PermissionDeniedException(exceptions.MESSAGE_PERMISSION_DENIED)
         return queryset.filter(user=info.context.user)
@@ -165,9 +153,6 @@ class TransactionType(DjangoObjectType):
 
     @classmethod
     def get_queryset(cls, queryset, info):
-        if settings.DEBUG:
-            return super(TransactionType, cls).get_queryset(queryset, info)
-
         if not info.context.user.is_authenticated:
             raise exceptions.PermissionDeniedException(exceptions.MESSAGE_PERMISSION_DENIED)
         return queryset.filter(user=info.context.user)
