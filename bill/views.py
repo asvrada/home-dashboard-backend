@@ -52,7 +52,7 @@ class SummaryView(APIView):
         if not user.is_authenticated:
             return Response(status=401)
 
-        bill_current_user = models.Transaction.objects.filter(user=user)
+        bill_current_user = user.bills
 
         # Get current date
         # Is this the same timezone as database?
@@ -134,10 +134,10 @@ class SummaryView(APIView):
 
     @staticmethod
     def retrieve_budget(user):
-        if models.MonthlyBudget.objects.filter(user=user).count() != 1:
+        if user.budget.count() != 1:
             raise Exception("MonthlyBudget record count != 1")
 
-        return models.MonthlyBudget.objects.filter(user=user).first().budget
+        return user.budget.first().budget
 
     @staticmethod
     def aggregate_amount(queryset):
@@ -152,7 +152,7 @@ class SummaryView(APIView):
         """
         Sum of all recurring bill
         """
-        rb_all = models.RecurringBill.objects.filter(user=user)
+        rb_all = user.rbs
         rb_monthly = rb_all.filter(frequency='M')
         rb_yearly = rb_all.filter(frequency='Y')
 
