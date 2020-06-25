@@ -38,7 +38,7 @@ def get_amount_category_company_card_note(payload):
     card = from_payload_to_object(payload, "card", models.EnumCategory)
 
     note = payload.get("note", None)
-    skip = payload.get("skipSummaryFlag", False)
+    skip = payload.get("skipSummaryFlag", None)
 
     return amount, category, company, card, note, skip
 
@@ -46,7 +46,7 @@ def get_amount_category_company_card_note(payload):
 def update_fragment_given_payload(obj_fragment, payload):
     amount, category, company, card, note, skip = get_amount_category_company_card_note(payload)
 
-    if amount:
+    if amount is not None:
         obj_fragment.amount = amount
     if category:
         obj_fragment.category = category
@@ -54,9 +54,9 @@ def update_fragment_given_payload(obj_fragment, payload):
         obj_fragment.company = company
     if card:
         obj_fragment.card = card
-    if note:
+    if note is not None:
         obj_fragment.note = note
-    if skip:
+    if skip is not None:
         obj_fragment.skip_summary_flag = skip
 
 
@@ -423,6 +423,7 @@ class UpdateTransaction(relay.ClientIDMutation):
             bill.time_created = time_created
 
         bill.save()
+        print(bill)
         return CreateTransaction(transaction=bill)
 
 
