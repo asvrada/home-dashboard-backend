@@ -1,13 +1,14 @@
 import graphene
 import graphql_jwt
+from django.conf import settings
 from django.utils.timezone import now
 from graphene import relay, Enum
 from graphene_django.fields import DjangoConnectionField
 from graphene_django.types import DjangoObjectType
 from graphql_relay.node.node import from_global_id
 
-from . import models
 from . import exceptions
+from . import models
 
 """
 Helper functions
@@ -78,11 +79,15 @@ class EnumRecurringBillFrequency(Enum):
 class UserType(DjangoObjectType):
     class Meta:
         model = models.User
-        filter_fields = ["id", "username", "password", "icons", "enums", "rbs", "bills"]
+        fields = ["id", "username", "password", "icons", "enums", "rbs", "bills"]
+        filter_fields = fields
         interfaces = (relay.Node,)
 
     @classmethod
     def get_queryset(cls, queryset, info):
+        if settings.DEBUG:
+            return super(UserType, cls).get_queryset(queryset, info)
+
         if not info.context.user.is_authenticated:
             raise exceptions.PermissionDeniedException(exceptions.MESSAGE_PERMISSION_DENIED)
         return queryset.filter(pk=info.context.user.pk)
@@ -91,11 +96,15 @@ class UserType(DjangoObjectType):
 class IconType(DjangoObjectType):
     class Meta:
         model = models.Icon
-        filter_fields = "__all__"
+        fields = "__all__"
+        filter_fields = fields
         interfaces = (relay.Node,)
 
     @classmethod
     def get_queryset(cls, queryset, info):
+        if settings.DEBUG:
+            return super(IconType, cls).get_queryset(queryset, info)
+
         if not info.context.user.is_authenticated:
             raise exceptions.PermissionDeniedException(exceptions.MESSAGE_PERMISSION_DENIED)
         return queryset.filter(user=info.context.user)
@@ -107,7 +116,8 @@ class EnumCategoryType(DjangoObjectType):
 
     class Meta:
         model = models.EnumCategory
-        filter_fields = '__all__'
+        fields = "__all__"
+        filter_fields = fields
         interfaces = (relay.Node,)
 
     def resolve_category(self, info, **kwargs):
@@ -115,6 +125,9 @@ class EnumCategoryType(DjangoObjectType):
 
     @classmethod
     def get_queryset(cls, queryset, info):
+        if settings.DEBUG:
+            return super(EnumCategoryType, cls).get_queryset(queryset, info)
+
         if not info.context.user.is_authenticated:
             raise exceptions.PermissionDeniedException(exceptions.MESSAGE_PERMISSION_DENIED)
         return queryset.filter(user=info.context.user)
@@ -126,7 +139,8 @@ class RecurringBillType(DjangoObjectType):
 
     class Meta:
         model = models.RecurringBill
-        filter_fields = '__all__'
+        fields = "__all__"
+        filter_fields = fields
         interfaces = (relay.Node,)
 
     def resolve_frequency(self, info, **kwargs):
@@ -134,6 +148,9 @@ class RecurringBillType(DjangoObjectType):
 
     @classmethod
     def get_queryset(cls, queryset, info):
+        if settings.DEBUG:
+            return super(RecurringBillType, cls).get_queryset(queryset, info)
+
         if not info.context.user.is_authenticated:
             raise exceptions.PermissionDeniedException(exceptions.MESSAGE_PERMISSION_DENIED)
         return queryset.filter(user=info.context.user)
@@ -142,11 +159,15 @@ class RecurringBillType(DjangoObjectType):
 class TransactionType(DjangoObjectType):
     class Meta:
         model = models.Transaction
-        filter_fields = '__all__'
+        fields = "__all__"
+        filter_fields = fields
         interfaces = (relay.Node,)
 
     @classmethod
     def get_queryset(cls, queryset, info):
+        if settings.DEBUG:
+            return super(TransactionType, cls).get_queryset(queryset, info)
+
         if not info.context.user.is_authenticated:
             raise exceptions.PermissionDeniedException(exceptions.MESSAGE_PERMISSION_DENIED)
         return queryset.filter(user=info.context.user)
