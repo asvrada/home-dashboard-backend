@@ -16,14 +16,13 @@ Including another URLconf
 from django.conf import settings
 from django.contrib import admin
 from django.urls import path, include
-from graphene_django.views import GraphQLView
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
     TokenVerifyView
 )
 
-from bill.views import PrivateGraphQLView
+from bill.views import PrivateGraphQLView, TestGraphQLView
 from bill.views import UserView
 
 urlpatterns = [
@@ -42,5 +41,6 @@ urlpatterns = [
 
 if settings.DEBUG:
     urlpatterns += [
-        path('graphqltest/', GraphQLView.as_view(graphiql=True)),
+        path('graphqltest/', TestGraphQLView.as_view(graphiql=True)),
+        path('graphqltest/<str:username>', TestGraphQLView.as_view(graphiql=True)),
     ]
