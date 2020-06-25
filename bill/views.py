@@ -52,6 +52,8 @@ class SummaryView(APIView):
         if not user.is_authenticated:
             return Response(status=401)
 
+        bill_current_user = models.Transaction.objects.filter(user=user)
+
         # Get current date
         # Is this the same timezone as database?
         # Somehow we have to use local time to query, although the date stored in DB is in UTC
@@ -59,7 +61,7 @@ class SummaryView(APIView):
         today = timezone.localdate()
         year, month, day = today.year, today.month, today.day
 
-        bill_month = models.Transaction.objects.filter(time_created__year=year, time_created__month=month)
+        bill_month = bill_current_user.filter(time_created__year=year, time_created__month=month)
         bill_spend_month = bill_month.filter(amount__lt=0)
         bill_today = bill_month.filter(time_created__day=day)
 
@@ -68,7 +70,7 @@ class SummaryView(APIView):
         if last_month == 0:
             last_month = 12
             last_year -= 1
-        bill_income_last_month = models.Transaction.objects.filter(time_created__year=last_year,
+        bill_income_last_month = bill_current_user.filter(time_created__year=last_year,
                                                                    time_created__month=last_month, amount__gt=0)
         sum_income_last_month = self.aggregate_amount(bill_income_last_month)
 
@@ -104,12 +106,12 @@ class SummaryView(APIView):
         # Also make sure its >= 1
         days_left = max(1, days_month - day + 1)
 
-        budget_month = self.retrieve_budget()
+        budget_month = self.retrieve_budget(user)
 
         tmp_budget_month = budget_month + sum_spend_month_skipped
         tmp_budget_today_total = (tmp_budget_month - sum_spend_today) / days_left
 
-        monthly_cost = self.get_recurring_cost_each_month()
+        monthly_cost = self.get_recurring_cost_each_month(user)
 
         return Response(data={
             # budget left for today := budgetTodayTotal - spend today
@@ -127,15 +129,15 @@ class SummaryView(APIView):
             # income this month := total income from last month
             "incomeMonthTotal": self.convert_float(sum_income_last_month),
 
-            "monthlyCost": self.convert_float(monthly_cost)
+            "monthlyCost": round(monthly_cost, 2)
         })
 
     @staticmethod
-    def retrieve_budget():
-        if models.MonthlyBudget.objects.filter(pk=1).count() != 1:
+    def retrieve_budget(user):
+        if models.MonthlyBudget.objects.filter(user=user).count() != 1:
             raise Exception("MonthlyBudget record count != 1")
 
-        return models.MonthlyBudget.objects.get(pk=1).budget
+        return models.MonthlyBudget.objects.filter(user=user).first().budget
 
     @staticmethod
     def aggregate_amount(queryset):
@@ -146,11 +148,11 @@ class SummaryView(APIView):
         return round(number)
 
     @staticmethod
-    def get_recurring_cost_each_month():
+    def get_recurring_cost_each_month(user):
         """
         Sum of all recurring bill
         """
-        rb_all = models.RecurringBill.objects.all()
+        rb_all = models.RecurringBill.objects.filter(user=user)
         rb_monthly = rb_all.filter(frequency='M')
         rb_yearly = rb_all.filter(frequency='Y')
 
