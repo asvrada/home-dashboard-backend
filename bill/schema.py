@@ -224,6 +224,9 @@ class CreateRecurringBill(relay.ClientIDMutation):
 
         amount, category, company, card, note, skip = get_amount_category_company_card_note(payload)
 
+        if skip is None:
+            skip = 0
+
         recurring_bill = models.RecurringBill.objects.create(
             frequency=frequency,
             recurring_month=recurring_month,
@@ -257,6 +260,9 @@ class CreateTransaction(relay.ClientIDMutation):
         user = info.context.user
         amount, category, company, card, note, skip = get_amount_category_company_card_note(payload)
         time_created = payload.get("timeCreated", now())
+
+        if skip is None:
+            skip = 0
 
         transaction = models.Transaction.objects.create(
             amount=amount,
@@ -408,7 +414,6 @@ class UpdateTransaction(relay.ClientIDMutation):
             bill.time_created = time_created
 
         bill.save()
-        print(bill)
         return CreateTransaction(transaction=bill)
 
 
