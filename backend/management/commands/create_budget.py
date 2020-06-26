@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 
-from bill import models
+from backend import models
 
 
 class Command(BaseCommand):

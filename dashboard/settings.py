@@ -24,7 +24,7 @@ SECRET_KEY = '8w+=%te4qp8e4t&r5lb1t5gr&%x3$c1_v3c9n4azxa$up#-nn0'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-AUTH_USER_MODEL = 'bill.User'
+AUTH_USER_MODEL = 'backend.User'
 
 # When DEBUG is True and ALLOWED_HOSTS is empty, the host is validated against ['localhost', '127.0.0.1', '[::1]']
 ALLOWED_HOSTS = []
@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     'graphene_django',
     'rest_framework',
     # My App
-    'bill'
+    'backend'
 ]
 
 MIDDLEWARE = [
@@ -54,7 +54,7 @@ MIDDLEWARE = [
     # 'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'bill.middleware.JWTAuthMiddleware',
+    'backend.middleware.JWTAuthMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
@@ -71,12 +71,12 @@ REST_FRAMEWORK = {
 }
 
 GRAPHENE = {
-    'SCHEMA': 'bill.schema.schema',
+    'SCHEMA': 'backend.schema.schema',
 }
 
 # https://docs.djangoproject.com/en/3.0/topics/auth/customizing/#specifying-authentication-backends
 AUTHENTICATION_BACKENDS = [
-    'bill.backends.JWTBackend',
+    'backend.backends.JWTBackend',
     'django.contrib.auth.backends.ModelBackend',
 ]
 

@@ -22,14 +22,17 @@ from rest_framework_simplejwt.views import (
     TokenVerifyView
 )
 
-from bill.views import PrivateGraphQLView, TestGraphQLView
+from backend.views import PrivateGraphQLView, TestGraphQLView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
 
     # bill application
-    path('bill/', include('bill.urls')),
+    path('bill/', include('backend.urls')),
     path('graphql/', PrivateGraphQLView.as_view()),
+
+    # path('google-login/')
+    # path('google-signup/')
 
     path('token-auth/', TokenObtainPairView.as_view(), name='token_auth'),
     path('token-refresh/', TokenRefreshView.as_view(), name='token_refresh'),
