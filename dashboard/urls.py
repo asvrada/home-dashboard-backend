@@ -23,12 +23,9 @@ from rest_framework_simplejwt.views import (
 )
 
 from bill.views import PrivateGraphQLView, TestGraphQLView
-from bill.views import UserView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-
-    path('user/', UserView.as_view(), name="get_user"),
 
     # bill application
     path('bill/', include('bill.urls')),
