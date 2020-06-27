@@ -1,0 +1,6 @@
+language: python
+
+jobs:
+    include:
+        - stage: test
+          script: ./manage.py test

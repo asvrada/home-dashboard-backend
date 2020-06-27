@@ -443,25 +443,23 @@ class DeleteMutation(relay.ClientIDMutation):
 
         # delete
         count, result = model_class.objects.get(id=id).delete()
-        if count != 1:
-            raise Exception("Delete count is not 1 but ", count)
 
         return DeleteMutation(ok=f"Deleted {result}")
 
 
 class Mutation(graphene.ObjectType):
-    token_verify = graphql_jwt.Verify.Field()
-
-    create_icon = CreateIcon.Field()
-    create_enum = CreateEnum.Field()
-    create_recurring_bill = CreateRecurringBill.Field()
-    create_transaction = CreateTransaction.Field()
-
     deleteObj = DeleteMutation().Field()
 
+    create_icon = CreateIcon.Field()
     update_icon = UpdateIcon.Field()
+
+    create_enum = CreateEnum.Field()
     update_enum = UpdateEnum.Field()
+
+    create_recurring_bill = CreateRecurringBill.Field()
     update_recurring_bill = UpdateRecurringBill.Field()
+
+    create_transaction = CreateTransaction.Field()
     update_transaction = UpdateTransaction.Field()
 
 
