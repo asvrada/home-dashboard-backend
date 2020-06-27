@@ -14,7 +14,7 @@ class SummaryTest(BasicAPITestCase):
 
         self.set_access_token(self.access_token_admin)
 
-    def test_get_summary(self):
+    def test_get_summary_THEN_summary_returned(self):
         # Mock today to be 2020/3/25, 7 days till next month
         mocked = datetime(2020, 3, 25, 12, 0, 0, tzinfo=pytz.utc)
         with mock.patch('django.utils.timezone.now', mock.Mock(return_value=mocked)):
@@ -22,7 +22,7 @@ class SummaryTest(BasicAPITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(type(response.data), dict)
-        self.assertEqual(response.data, {
+        self.assertEqual({
             'budgetToday': 464,
             'budgetTodayTotal': 476,
             'budgetMonth': 3321,
@@ -30,21 +30,21 @@ class SummaryTest(BasicAPITestCase):
             'savingMonth': -12,
             'incomeMonthTotal': 0,
             "monthlyCost": 10.25
-        })
+        }, response.data)
 
-    def test_create_summary_THEN_failed(self):
+    def test_create_summary_THEN_method_not_allowed(self):
         res = self.client.post(reverse("summary"), data={})
 
         # then
         self.assertEqual(res.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
 
-    def test_update_summary_THEN_failed(self):
+    def test_update_summary_THEN_method_not_allowed(self):
         res = self.client.put(reverse("summary"), data={})
 
         # then
         self.assertEqual(res.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
 
-    def test_delete_summary_THEN_failed(self):
+    def test_delete_summary_THEN_method_not_allowed(self):
         res = self.client.delete(reverse("summary"), data={})
 
         # then

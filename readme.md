@@ -19,7 +19,5 @@ Powered by Django
 ## Code Coverage
 
 ```bash
-coverage erase
-coverage run manage.py test
-coverage report
+coverage erase && coverage run manage.py test && coverage report
 ```

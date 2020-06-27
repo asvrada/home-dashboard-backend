@@ -2,6 +2,10 @@ from typing import List
 from django.utils import timezone
 from .. import models
 
+"""
+Out of date
+"""
+
 
 def get_recurring_bill_today() -> List[models.Transaction]:
     """

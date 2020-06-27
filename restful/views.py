@@ -27,7 +27,7 @@ class GoogleLogin(APIView):
     def post(self, request):
         token = request.data.get("token", None)
 
-        if token is None:
+        if not token:
             return Response(status=400, data={"error": "Please provide Google access token in POST body"})
 
         google_user_object = get_google_user_from_google_token(token)
