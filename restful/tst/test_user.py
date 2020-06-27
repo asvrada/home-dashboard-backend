@@ -35,7 +35,13 @@ class UserTest(BasicAPITestCase):
 
         # then
         self.assertEqual(res.status_code, status.HTTP_200_OK)
-        self.assertEqual('admin', res.data['username'])
+        self.assertDictEqual(res.data, {
+            'email': 'noojeff@gmail.com',
+            'google_user_id': None,
+            'has_password': False,
+            'id': 1,
+            'username': 'admin'
+        })
 
     def test_GIVEN_jeff_token_WHEN_get_user_THEN_jeff_returned(self):
         # given
@@ -46,4 +52,10 @@ class UserTest(BasicAPITestCase):
 
         # then
         self.assertEqual(res.status_code, status.HTTP_200_OK)
-        self.assertEqual('jeff', res.data['username'])
+        self.assertDictEqual(res.data, {
+            'email': 'zijiewu@brandeis.edu',
+            'google_user_id': None,
+            'has_password': False,
+            'id': 2,
+            'username': 'jeff'
+        })

@@ -1,7 +1,7 @@
-from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.timezone import now
+from cuser.models import AbstractCUser
 
 FLAG_NO_SKIP_SUMMARY = 0
 FLAG_SKIP_BUDGET = 1
@@ -9,10 +9,12 @@ FLAG_SKIP_TOTAL = 2
 FLAG_SKIP_BOTH = FLAG_SKIP_BUDGET | FLAG_SKIP_TOTAL
 
 
-class User(AbstractUser):
+class User(AbstractCUser):
     """
     User for this website
     """
+    username = models.CharField(max_length=256, null=False, blank=False)
+    has_password = models.BooleanField(default=False)
     google_user_id = models.CharField(max_length=256, null=True, blank=True, default=None)
 
 

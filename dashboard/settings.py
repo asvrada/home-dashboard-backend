@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'graphene_django',
     'rest_framework',
+    'cuser',
     # My App
     'backend',
     'restful',

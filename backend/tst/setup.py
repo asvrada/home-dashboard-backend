@@ -4,7 +4,7 @@ import pytz
 from rest_framework.test import APITestCase
 
 from backend import models
-from restful.views import get_jwt_token
+from backend.helper import get_jwt_token
 
 TEST_BUDGET = 3333
 ID_USER_ADMIN = 1
@@ -42,7 +42,8 @@ transactions = [
     (8, -12, 1, 3, 4, "-12", models.FLAG_NO_SKIP_SUMMARY, None, ID_USER_JEFF, "2020 3 2 18 00 00"),
     (9, -1200, 1, 3, 4, "Rent, not shown in summary", models.FLAG_SKIP_BUDGET, None, ID_USER_JEFF, "2020 3 2 18 00 00"),
     (
-    10, -120000, 1, 3, 4, "Transfer, not shown in both", models.FLAG_SKIP_BOTH, None, ID_USER_JEFF, "2020 3 2 18 01 00")
+        10, -120000, 1, 3, 4, "Transfer, not shown in both", models.FLAG_SKIP_BOTH, None, ID_USER_JEFF,
+        "2020 3 2 18 01 00")
 ]
 
 
@@ -99,8 +100,10 @@ def create_bills():
 
 def setup_db():
     # Create super user
-    user_admin = models.User.objects.create_superuser("admin", id=ID_USER_ADMIN, password="4980")
-    user_jeff = models.User.objects.create_user("jeff", id=ID_USER_JEFF, password="4980")
+    user_admin = models.User.objects.create_superuser(id=ID_USER_ADMIN, email="noojeff@gmail.com",
+                                                      username="admin", password="4980")
+    user_jeff = models.User.objects.create_user(id=ID_USER_JEFF, email="zijiewu@brandeis.edu",
+                                                username="jeff", password="4980")
 
     create_icons()
     create_enums()

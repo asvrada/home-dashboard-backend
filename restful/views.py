@@ -1,24 +1,14 @@
 from calendar import monthrange
 
-from django.db.models import Sum, F
+from django.db.models import Sum, F, Q
 from django.utils import timezone
 from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework_simplejwt.tokens import RefreshToken
 
-from backend import exceptions, models
+from backend import exceptions, models, helper
 from . import serializers
 from .google_oauth import get_google_user_from_google_token
-
-
-def get_jwt_token(user):
-    refresh_token_obj = RefreshToken.for_user(user)
-
-    refresh = str(refresh_token_obj)
-    access = str(refresh_token_obj.access_token)
-
-    return access, refresh
 
 
 class UserView(generics.RetrieveAPIView):
@@ -45,7 +35,7 @@ class GoogleLogin(APIView):
         user = self.get_or_create_user_given_google_user_object(google_user_object)
 
         # return user's access and refresh token
-        access, refresh = get_jwt_token(user)
+        access, refresh = helper.get_jwt_token(user)
 
         return Response(data={
             "access": access,
@@ -55,8 +45,9 @@ class GoogleLogin(APIView):
     @staticmethod
     def get_or_create_user_given_google_user_object(google_user_object):
         google_user_id = google_user_object["sub"]
+        google_email = google_user_object["email"]
 
-        users = models.User.objects.filter(google_user_id=google_user_id)
+        users = models.User.objects.filter(Q(google_user_id=google_user_id) | Q(email=google_email))
 
         if users.count() > 1:
             raise exceptions.ImpossibleException(f"More than 1 result given google user id: {google_user_id}")
@@ -65,11 +56,11 @@ class GoogleLogin(APIView):
             # create user
             user = models.User.objects.create_user(email=google_user_object["email"],
                                                    username=google_user_object["name"],
-                                                   password="default",
                                                    first_name=google_user_object["given_name"],
                                                    last_name=google_user_object["family_name"],
+                                                   has_password=False,
                                                    google_user_id=google_user_id)
-            user.budget = models.MonthlyBudget.objects.create(budget=2000)
+            user.budget = models.MonthlyBudget.objects.create(user=user, budget=2000)
             user.save()
         else:
             user = users.first()
