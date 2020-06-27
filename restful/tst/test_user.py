@@ -1,7 +1,7 @@
 from django.urls import reverse
 from rest_framework import status
 
-from ..setup import BasicAPITestCase
+from backend.tst.setup import BasicAPITestCase
 
 
 class UserTest(BasicAPITestCase):
@@ -11,7 +11,7 @@ class UserTest(BasicAPITestCase):
         self.client.credentials(HTTP_AUTHORIZATION='')
 
         # when
-        res = self.client.get(reverse("get_user"))
+        res = self.client.get(reverse("user"))
 
         # then
         self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
@@ -21,7 +21,7 @@ class UserTest(BasicAPITestCase):
         self.set_access_token("Any wrong token")
 
         # when
-        res = self.client.get(reverse("get_user"))
+        res = self.client.get(reverse("user"))
 
         # then
         self.assertEqual(res.status_code, status.HTTP_403_FORBIDDEN)
@@ -31,7 +31,7 @@ class UserTest(BasicAPITestCase):
         self.set_access_token(self.access_token_admin)
 
         # when
-        res = self.client.get(reverse("get_user"))
+        res = self.client.get(reverse("user"))
 
         # then
         self.assertEqual(res.status_code, status.HTTP_200_OK)
@@ -42,7 +42,7 @@ class UserTest(BasicAPITestCase):
         self.set_access_token(self.access_token_jeff)
 
         # when
-        res = self.client.get(reverse("get_user"))
+        res = self.client.get(reverse("user"))
 
         # then
         self.assertEqual(res.status_code, status.HTTP_200_OK)

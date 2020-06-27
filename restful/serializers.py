@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import User, MonthlyBudget
+from backend.models import User, MonthlyBudget
 
 
 class UserSerializer(serializers.ModelSerializer):

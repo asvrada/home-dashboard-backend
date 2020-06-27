@@ -5,8 +5,7 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from bill import models
-from bill.models import FLAG_SKIP_BOTH, FLAG_SKIP_TOTAL, FLAG_SKIP_BUDGET, FLAG_NO_SKIP_SUMMARY
+from backend import models
 
 TEST_BUDGET = 3333
 ID_USER_ADMIN = 1
@@ -27,23 +26,23 @@ enums = [
 
 recurring_bills = [
     # id, frequency, month, day, amount, category, company, card, note, skip, user
-    (1, 'Y', 12, 2, 123, None, None, None, "Test year 12/2", FLAG_NO_SKIP_SUMMARY, ID_USER_ADMIN),
-    (2, 'M', 1, 2, 456, None, None, None, "Test month 2", FLAG_NO_SKIP_SUMMARY, ID_USER_JEFF),
-    (3, 'M', 1, 2, 456, None, None, None, "Test month 2", FLAG_SKIP_TOTAL, ID_USER_JEFF),
+    (1, 'Y', 12, 2, 123, None, None, None, "Test year 12/2", models.FLAG_NO_SKIP_SUMMARY, ID_USER_ADMIN),
+    (2, 'M', 1, 2, 456, None, None, None, "Test month 2", models.FLAG_NO_SKIP_SUMMARY, ID_USER_JEFF),
+    (3, 'M', 1, 2, 456, None, None, None, "Test month 2", models.FLAG_SKIP_TOTAL, ID_USER_JEFF),
 ]
 
 transactions = [
     # id, amount, category, company, card, note, skip, creator, user_id, time
-    (1, -12, 1, 3, 4, "Test note -12 Food", FLAG_NO_SKIP_SUMMARY, None, ID_USER_ADMIN, "2020 3 25 18 00 00"),
-    (2, -1099, 2, 3, 4, "Test index vr", FLAG_SKIP_BUDGET, None, ID_USER_JEFF, "2020 3 24 19 00 00"),
-    (3, 12, 1, 3, 4, "Test 12 Stock", FLAG_NO_SKIP_SUMMARY, None, ID_USER_JEFF, "2020 3 23 19 00 00"),
-    (4, -21, 1, 3, 4, "Test", FLAG_NO_SKIP_SUMMARY, None, ID_USER_JEFF, "2020 3 23 18 00 00"),
-    (5, -5, 2, 3, 4, "Food", FLAG_NO_SKIP_SUMMARY, None, ID_USER_JEFF, "2020 3 23 17 00 00"),
-    (6, -4, 1, 3, 4, "Amount is -4", FLAG_NO_SKIP_SUMMARY, None, ID_USER_JEFF, "2020 3 21 12 00 00"),
-    (7, 7000, 2, 3, 4, "Test income", FLAG_NO_SKIP_SUMMARY, None, ID_USER_JEFF, "2020 3 5 18 00 00"),
-    (8, -12, 1, 3, 4, "-12", FLAG_NO_SKIP_SUMMARY, None, ID_USER_JEFF, "2020 3 2 18 00 00"),
-    (9, -1200, 1, 3, 4, "Rent, not shown in summary", FLAG_SKIP_BUDGET, None, ID_USER_JEFF, "2020 3 2 18 00 00"),
-    (10, -120000, 1, 3, 4, "Transfer, not shown in both", FLAG_SKIP_BOTH, None, ID_USER_JEFF, "2020 3 2 18 01 00")
+    (1, -12, 1, 3, 4, "Test note -12 Food", models.FLAG_NO_SKIP_SUMMARY, None, ID_USER_ADMIN, "2020 3 25 18 00 00"),
+    (2, -1099, 2, 3, 4, "Test index vr", models.FLAG_SKIP_BUDGET, None, ID_USER_JEFF, "2020 3 24 19 00 00"),
+    (3, 12, 1, 3, 4, "Test 12 Stock", models.FLAG_NO_SKIP_SUMMARY, None, ID_USER_JEFF, "2020 3 23 19 00 00"),
+    (4, -21, 1, 3, 4, "Test", models.FLAG_NO_SKIP_SUMMARY, None, ID_USER_JEFF, "2020 3 23 18 00 00"),
+    (5, -5, 2, 3, 4, "Food", models.FLAG_NO_SKIP_SUMMARY, None, ID_USER_JEFF, "2020 3 23 17 00 00"),
+    (6, -4, 1, 3, 4, "Amount is -4", models.FLAG_NO_SKIP_SUMMARY, None, ID_USER_JEFF, "2020 3 21 12 00 00"),
+    (7, 7000, 2, 3, 4, "Test income", models.FLAG_NO_SKIP_SUMMARY, None, ID_USER_JEFF, "2020 3 5 18 00 00"),
+    (8, -12, 1, 3, 4, "-12", models.FLAG_NO_SKIP_SUMMARY, None, ID_USER_JEFF, "2020 3 2 18 00 00"),
+    (9, -1200, 1, 3, 4, "Rent, not shown in summary", models.FLAG_SKIP_BUDGET, None, ID_USER_JEFF, "2020 3 2 18 00 00"),
+    (10, -120000, 1, 3, 4, "Transfer, not shown in both", models.FLAG_SKIP_BOTH, None, ID_USER_JEFF, "2020 3 2 18 01 00")
 ]
 
 

@@ -1,14 +1,12 @@
 from calendar import monthrange
 
-from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Sum, F
 from django.utils import timezone
-from graphene_django.views import GraphQLView
 from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from . import models
+from backend import models
 from . import serializers
 
 
@@ -71,7 +69,7 @@ class SummaryView(APIView):
             last_month = 12
             last_year -= 1
         bill_income_last_month = bill_current_user.filter(time_created__year=last_year,
-                                                                   time_created__month=last_month, amount__gt=0)
+                                                          time_created__month=last_month, amount__gt=0)
         sum_income_last_month = self.aggregate_amount(bill_income_last_month)
 
         # Sum of all spending this month, exclude marked as skip total
@@ -160,21 +158,3 @@ class SummaryView(APIView):
         sum_year = rb_yearly.aggregate(tmp_result=Sum('amount'))["tmp_result"] or 0
 
         return sum_monthly + sum_year / 12
-
-
-class PrivateGraphQLView(LoginRequiredMixin, GraphQLView):
-    raise_exception = True
-
-
-class TestGraphQLView(GraphQLView):
-    @property
-    def username(self):
-        return self.kwargs.get('username', None)
-
-    def dispatch(self, request, *args, **kwargs):
-        if self.username:
-            users = models.User.objects.filter(username=self.username)
-            if len(users) == 1:
-                self.request.user = users.first()
-
-        return super().dispatch(request, *args, **kwargs)

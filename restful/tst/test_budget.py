@@ -1,7 +1,7 @@
 from django.urls import reverse
 from rest_framework import status
 
-from ..setup import BasicAPITestCase, TEST_BUDGET
+from backend.tst.setup import BasicAPITestCase, TEST_BUDGET
 
 
 class BudgetTest(BasicAPITestCase):
