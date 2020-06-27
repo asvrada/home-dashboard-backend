@@ -8,6 +8,7 @@ from rest_framework.views import APIView
 
 from backend import models
 from . import serializers
+from .google_oauth import get_google_user_from_google_token
 
 
 class UserView(generics.RetrieveAPIView):
@@ -20,15 +21,33 @@ class UserView(generics.RetrieveAPIView):
         return self.request.user
 
 
+class GoogleLogin(APIView):
+    permission_classes = []
+
+    def post(self, request):
+        token = request.data.get("token", None)
+
+        if token is None:
+            return Response(status=400, data={"error": "Please provide Google access token in POST body"})
+
+        user = get_google_user_from_google_token(token)
+        # google_user_id = user[""]
+
+        # if user does not exist, create user
+
+        # return user's access and refresh token
+
+        return Response(data=user)
+
+
 class MonthlyBudgetView(generics.RetrieveUpdateAPIView):
-    queryset = models.MonthlyBudget.objects.all()
     serializer_class = serializers.MonthlyBudgetSerializer
 
     def get_object(self):
-        return self.filter_queryset(self.get_queryset()).first()
+        return self.get_queryset()
 
     def get_queryset(self):
-        return self.request.user.budget.all()
+        return self.request.user.budget
 
 
 class SummaryView(APIView):
@@ -132,10 +151,7 @@ class SummaryView(APIView):
 
     @staticmethod
     def retrieve_budget(user):
-        if user.budget.count() != 1:
-            raise Exception("MonthlyBudget record count != 1")
-
-        return user.budget.first().budget
+        return user.budget.budget
 
     @staticmethod
     def aggregate_amount(queryset):

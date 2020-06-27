@@ -6,6 +6,8 @@ from rest_framework_simplejwt.views import (
     TokenVerifyView
 )
 
+from restful.views import GoogleLogin
+
 urlpatterns = [
     # Admin
     path('admin/', admin.site.urls),
@@ -19,6 +21,5 @@ urlpatterns = [
     path('restful/', include('restful.urls')),
     path('', include('graphqlapi.urls')),
 
-    # path('google-login/')
-    # path('google-signup/')
+    path('google-login/', GoogleLogin.as_view(), name="google_login")
 ]
