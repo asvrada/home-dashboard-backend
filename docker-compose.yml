@@ -11,10 +11,10 @@ services:
     ports:
       - "4444:80"
     depends_on:
-      - web
+      - backend
 
-  web:
-    container_name: dashboard-backend-web
+  backend:
+    container_name: dashboard-backend-backend
     build: .
     environment:
       - ENV=prod

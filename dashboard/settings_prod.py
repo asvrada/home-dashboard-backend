@@ -1,9 +1,11 @@
-ALLOWED_HOSTS = ["kksk.biz"]
+ALLOWED_HOSTS = ["kksk.biz", "localhost:3000"]
 
 CORS_ORIGIN_ALLOW_ALL = False
 CORS_ORIGIN_WHITELIST = [
     # Prod
     "https://kksk.biz",
+    # For local testing
+    "http://localhost:3000",
 ]
 
 DATABASES = {
