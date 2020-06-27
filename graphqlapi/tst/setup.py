@@ -1,7 +1,7 @@
 from graphene_django.utils.testing import GraphQLTestCase
 
-from backend.schema import schema
-from ..setup import BasicAPITestCase
+from graphqlapi.schema import schema
+from backend.tst.setup import BasicAPITestCase
 
 
 class GraphQLBasicAPITestCase(BasicAPITestCase, GraphQLTestCase):

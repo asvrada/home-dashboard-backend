@@ -42,7 +42,9 @@ INSTALLED_APPS = [
     'graphene_django',
     'rest_framework',
     # My App
-    'backend'
+    'backend',
+    'restful',
+    'graphqlapi'
 ]
 
 MIDDLEWARE = [
@@ -71,7 +73,7 @@ REST_FRAMEWORK = {
 }
 
 GRAPHENE = {
-    'SCHEMA': 'backend.schema.schema',
+    'SCHEMA': 'graphqlapi.schema.schema',
 }
 
 # https://docs.djangoproject.com/en/3.0/topics/auth/customizing/#specifying-authentication-backends

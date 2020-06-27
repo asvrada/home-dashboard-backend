@@ -1,7 +1,7 @@
 from django.urls import reverse
 from rest_framework import status
 
-from ..setup import BasicAPITestCase
+from backend.tst.setup import BasicAPITestCase
 
 
 class UserTest(BasicAPITestCase):
