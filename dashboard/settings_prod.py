@@ -1,4 +1,5 @@
-ALLOWED_HOSTS = ["kksk.biz", "localhost:3000"]
+# ALLOWED_HOSTS = ["kksk.biz", "localhost:3000"]
+ALLOWED_HOSTS = ["*"]
 
 CORS_ORIGIN_ALLOW_ALL = False
 CORS_ORIGIN_WHITELIST = [
