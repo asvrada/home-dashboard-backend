@@ -27,7 +27,7 @@ recurring_bills = [
     # id, frequency, month, day, amount, category, company, card, note, skip, user
     (1, 'Y', 12, 2, 123, None, None, None, "Test year 12/2", models.FLAG_NO_SKIP_SUMMARY, ID_USER_ADMIN),
     (2, 'M', 1, 2, 456, None, None, None, "Test month 2", models.FLAG_NO_SKIP_SUMMARY, ID_USER_JEFF),
-    (3, 'M', 1, 2, 456, None, None, None, "Test month 2", models.FLAG_SKIP_TOTAL, ID_USER_JEFF),
+    (3, 'M', 1, 2, 789, None, None, None, "Test month 2", models.FLAG_SKIP_TOTAL, ID_USER_JEFF),
 ]
 
 transactions = [

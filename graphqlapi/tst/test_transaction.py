@@ -1,4 +1,5 @@
 from .setup import GraphQLBasicAPITestCase
+from django.utils.timezone import now
 
 
 class GraphQLTransactionTest(GraphQLBasicAPITestCase):
@@ -110,19 +111,23 @@ class GraphQLTransactionTest(GraphQLBasicAPITestCase):
     """
 
     mutation_update_bill_max = """
-    mutation updateBill($id: ID!, $cat: ID, $com: ID, $car: ID) {
+    mutation updateBill($id: ID!, $cat: ID, $com: ID, $car: ID, $timeCreated: String) {
       updateTransaction(input: {
         id: $id,
         amount: -9999,
         category: $cat,
         company: $com,
         card: $car,
+        timeCreated: $timeCreated,
+        skipSummaryFlag: 1,
         note: "New note"
       }) {
         transaction {
           id,
           amount,
-          note
+          note,
+          timeCreated,
+          skipSummaryFlag
         }
       }
     }
@@ -164,7 +169,7 @@ class GraphQLTransactionTest(GraphQLBasicAPITestCase):
         content = res.json()["data"]["createTransaction"]["transaction"]
         self.assertEqual(-99, content["amount"])
 
-    def test_GIVEN_all_same_enum_WHEN_create_transaction_max_THEN_bill_created(self):
+    def test_GIVEN_all_same_enum_WHEN_create_transaction_max_THEN_throw_error(self):
         # when
         res = self.query(self.mutation_create_bill_max, variables={
             "cat": self.id_valid_enum,
@@ -194,13 +199,19 @@ class GraphQLTransactionTest(GraphQLBasicAPITestCase):
         self.assertResponseNoErrors(res)
 
     def test_GIVEN_WHEN_update_transaction_max_THEN_updated(self):
+        # given
+        str_now = str(now())
+
         # when
         res = self.query(self.mutation_update_bill_max, variables={
             "id": self.id_valid_bill,
             "cat": self.id_valid_enum_category,
             "com": self.id_valid_enum_company,
-            "car": self.id_valid_enum_card
+            "car": self.id_valid_enum_card,
+            "timeCreated": str_now
         })
 
         # then
         self.assertResponseNoErrors(res)
+        self.assertEqual(str_now[:10], res.json()["data"]["updateTransaction"]["transaction"]["timeCreated"][:10])
+        self.assertEqual(1, res.json()["data"]["updateTransaction"]["transaction"]["skipSummaryFlag"])

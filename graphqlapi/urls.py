@@ -10,5 +10,5 @@ urlpatterns = [
 if settings.DEBUG:
     urlpatterns += [
         path('graphqltest/', TestGraphQLView.as_view(graphiql=True)),
-        path('graphqltest/<str:username>', TestGraphQLView.as_view(graphiql=True)),
+        path('graphqltest/<int:id>', TestGraphQLView.as_view(graphiql=True)),
     ]

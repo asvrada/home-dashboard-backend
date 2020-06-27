@@ -78,7 +78,7 @@ class EnumRecurringBillFrequency(Enum):
 class UserType(DjangoObjectType):
     class Meta:
         model = models.User
-        fields = ["id", "username", "password", "icons", "enums", "rbs", "bills"]
+        fields = ["id", "email", "username", "has_password", "google_user_id", "icons", "enums", "rbs", "bills"]
         filter_fields = fields
         interfaces = (relay.Node,)
 
