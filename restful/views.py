@@ -60,8 +60,7 @@ class GoogleLogin(APIView):
                                                    last_name=google_user_object["family_name"],
                                                    has_password=False,
                                                    google_user_id=google_user_id)
-            user.budget = models.MonthlyBudget.objects.create(user=user, budget=2000)
-            user.save()
+            models.MonthlyBudget.objects.create(user=user, amount=2000)
         else:
             user = users.first()
 
@@ -93,9 +92,6 @@ class SummaryView(APIView):
             monthlyCost
         """
         user = request.user
-
-        if not user.is_authenticated:
-            return Response(status=401)
 
         bill_current_user = user.bills
 
@@ -179,7 +175,7 @@ class SummaryView(APIView):
 
     @staticmethod
     def retrieve_budget(user):
-        return user.budget.budget
+        return user.budget.amount
 
     @staticmethod
     def aggregate_amount(queryset):

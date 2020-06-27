@@ -16,7 +16,7 @@ class BudgetTest(BasicAPITestCase):
 
         # then
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data, {"budget": TEST_BUDGET})
+        self.assertEqual(response.data, {"amount": TEST_BUDGET})
 
     def test_create_summary_THEN_failed(self):
         res = self.client.post(reverse("budget"))
@@ -25,11 +25,11 @@ class BudgetTest(BasicAPITestCase):
 
     def test_update_budget_THEN_succeed(self):
         res = self.client.put(reverse("budget"), data={
-            "budget": 1
+            "amount": 1
         })
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
-        self.assertEqual(res.data, {"budget": 1})
+        self.assertEqual(res.data, {"amount": 1})
 
     def test_delete_budget_THEN_failed(self):
         res = self.client.delete(reverse("budget"))

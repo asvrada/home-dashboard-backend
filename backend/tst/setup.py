@@ -111,8 +111,8 @@ def setup_db():
     create_bills()
 
     # Create budget entry for both user
-    models.MonthlyBudget.objects.create(id=1, user=user_admin, budget=TEST_BUDGET)
-    models.MonthlyBudget.objects.create(id=2, user=user_jeff, budget=TEST_BUDGET * 2)
+    models.MonthlyBudget.objects.create(id=1, user=user_admin, amount=TEST_BUDGET)
+    models.MonthlyBudget.objects.create(id=2, user=user_jeff, amount=TEST_BUDGET * 2)
 
     return user_admin, user_jeff
 

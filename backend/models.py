@@ -24,13 +24,13 @@ class MonthlyBudget(models.Model):
     Should only has one row (i.e one value)
     """
     user = models.OneToOneField(User, related_name="budget", on_delete=models.CASCADE, blank=True)
-    budget = models.FloatField(default=0)
+    amount = models.FloatField(default=0)
 
     def __str__(self):
         return self.__repr__()
 
     def __repr__(self):
-        return f"{self.budget} - {self.user.username}"
+        return f"{self.amount} - {self.user.username}"
 
 
 class Icon(models.Model):

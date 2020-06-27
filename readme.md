@@ -15,3 +15,11 @@ Powered by Django
 2. Generate DB folder by running docker-compose
 3. Do migration 
 4. Create super user
+
+## Code Coverage
+
+```bash
+coverage erase
+coverage run manage.py test
+coverage report
+```
