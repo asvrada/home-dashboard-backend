@@ -2,9 +2,9 @@ from datetime import datetime
 
 import pytz
 from rest_framework.test import APITestCase
-from rest_framework_simplejwt.tokens import RefreshToken
 
 from backend import models
+from restful.views import get_jwt_token
 
 TEST_BUDGET = 3333
 ID_USER_ADMIN = 1
@@ -41,7 +41,8 @@ transactions = [
     (7, 7000, 2, 3, 4, "Test income", models.FLAG_NO_SKIP_SUMMARY, None, ID_USER_JEFF, "2020 3 5 18 00 00"),
     (8, -12, 1, 3, 4, "-12", models.FLAG_NO_SKIP_SUMMARY, None, ID_USER_JEFF, "2020 3 2 18 00 00"),
     (9, -1200, 1, 3, 4, "Rent, not shown in summary", models.FLAG_SKIP_BUDGET, None, ID_USER_JEFF, "2020 3 2 18 00 00"),
-    (10, -120000, 1, 3, 4, "Transfer, not shown in both", models.FLAG_SKIP_BOTH, None, ID_USER_JEFF, "2020 3 2 18 01 00")
+    (
+    10, -120000, 1, 3, 4, "Transfer, not shown in both", models.FLAG_SKIP_BOTH, None, ID_USER_JEFF, "2020 3 2 18 01 00")
 ]
 
 
@@ -119,14 +120,9 @@ class BasicAPITestCase(APITestCase):
     access_token_admin = None
     access_token_jeff = None
 
-    def get_access_token(self, username):
-        user = models.User.objects.get(username=username)
-        refresh_token_obj = RefreshToken.for_user(user)
-
-        refresh = str(refresh_token_obj)
-        access = str(refresh_token_obj.access_token)
-
-        return access
+    def get_access_token(self, id):
+        user = models.User.objects.get(pk=id)
+        return get_jwt_token(user)[0]
 
     def set_access_token(self, token):
         self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + token)
@@ -137,5 +133,5 @@ class BasicAPITestCase(APITestCase):
         self.user_admin, self.user_jeff = setup_db()
 
         # get access token
-        self.access_token_admin = self.get_access_token('admin')
-        self.access_token_jeff = self.get_access_token('jeff')
+        self.access_token_admin = self.get_access_token(ID_USER_ADMIN)
+        self.access_token_jeff = self.get_access_token(ID_USER_JEFF)

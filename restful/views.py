@@ -12,6 +12,15 @@ from . import serializers
 from .google_oauth import get_google_user_from_google_token
 
 
+def get_jwt_token(user):
+    refresh_token_obj = RefreshToken.for_user(user)
+
+    refresh = str(refresh_token_obj)
+    access = str(refresh_token_obj.access_token)
+
+    return access, refresh
+
+
 class UserView(generics.RetrieveAPIView):
     """
     Retrieve the current user
@@ -32,12 +41,11 @@ class GoogleLogin(APIView):
             return Response(status=400, data={"error": "Please provide Google access token in POST body"})
 
         google_user_object = get_google_user_from_google_token(token)
-        # google_user_id = user[""]
 
         user = self.get_or_create_user_given_google_user_object(google_user_object)
 
         # return user's access and refresh token
-        access, refresh = self.get_token(user)
+        access, refresh = get_jwt_token(user)
 
         return Response(data={
             "access": access,
@@ -46,7 +54,6 @@ class GoogleLogin(APIView):
 
     @staticmethod
     def get_or_create_user_given_google_user_object(google_user_object):
-        # try to find user given google id
         google_user_id = google_user_object["sub"]
 
         users = models.User.objects.filter(google_user_id=google_user_id)
@@ -57,23 +64,17 @@ class GoogleLogin(APIView):
         if users.count() == 0:
             # create user
             user = models.User.objects.create_user(email=google_user_object["email"],
-                                                   username=google_user_object["name"], password="default",
+                                                   username=google_user_object["name"],
+                                                   password="default",
                                                    first_name=google_user_object["given_name"],
                                                    last_name=google_user_object["family_name"],
                                                    google_user_id=google_user_id)
+            user.budget = models.MonthlyBudget.objects.create(budget=2000)
+            user.save()
         else:
             user = users.first()
 
         return user
-
-    @staticmethod
-    def get_token(user):
-        refresh_token_obj = RefreshToken.for_user(user)
-
-        refresh = str(refresh_token_obj)
-        access = str(refresh_token_obj.access_token)
-
-        return access, refresh
 
 
 class MonthlyBudgetView(generics.RetrieveUpdateAPIView):
