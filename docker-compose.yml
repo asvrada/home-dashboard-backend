@@ -32,7 +32,5 @@ services:
       - POSTGRES_DB=dashboard
       - POSTGRES_USER=dashboard
       - POSTGRES_PASSWORD
-    env_file:
-      - docker.env
     volumes:
       - ./db/prod:/var/lib/postgresql/data
