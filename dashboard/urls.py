@@ -6,6 +6,7 @@ from rest_framework_simplejwt.views import (
     TokenVerifyView
 )
 
+from django.conf import settings
 from restful.views import GoogleLogin
 
 urlpatterns = [
@@ -13,7 +14,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 
     # Auth
-    path('token-auth/', TokenObtainPairView.as_view(), name='token_auth'),
+    path('google-login/', GoogleLogin.as_view(), name="google_login"),
     path('token-refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('token-verify/', TokenVerifyView.as_view(), name='token_verify'),
 
@@ -21,5 +22,9 @@ urlpatterns = [
     path('restful/', include('restful.urls')),
     path('', include('graphqlapi.urls')),
 
-    path('google-login/', GoogleLogin.as_view(), name="google_login")
 ]
+
+if settings.DEBUG:
+    urlpatterns += [
+        path('token-auth/', TokenObtainPairView.as_view(), name='token_auth')
+    ]

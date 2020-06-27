@@ -1,9 +1,8 @@
 from datetime import datetime
 
 import pytz
-from django.urls import reverse
-from rest_framework import status
 from rest_framework.test import APITestCase
+from rest_framework_simplejwt.tokens import RefreshToken
 
 from backend import models
 
@@ -120,14 +119,14 @@ class BasicAPITestCase(APITestCase):
     access_token_admin = None
     access_token_jeff = None
 
-    def get_access_token(self, username, password):
-        url = reverse('token_auth')
-        res = self.client.post(url, {'username': username, 'password': password}, format='json')
+    def get_access_token(self, username):
+        user = models.User.objects.get(username=username)
+        refresh_token_obj = RefreshToken.for_user(user)
 
-        self.assertEqual(res.status_code, status.HTTP_200_OK)
-        self.assertTrue('access' in res.data)
+        refresh = str(refresh_token_obj)
+        access = str(refresh_token_obj.access_token)
 
-        return res.data['access']
+        return access
 
     def set_access_token(self, token):
         self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + token)
@@ -138,5 +137,5 @@ class BasicAPITestCase(APITestCase):
         self.user_admin, self.user_jeff = setup_db()
 
         # get access token
-        self.access_token_admin = self.get_access_token('admin', '4980')
-        self.access_token_jeff = self.get_access_token('jeff', '4980')
+        self.access_token_admin = self.get_access_token('admin')
+        self.access_token_jeff = self.get_access_token('jeff')
