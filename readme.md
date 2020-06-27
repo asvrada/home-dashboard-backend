@@ -1,5 +1,7 @@
 # Home dashboard backend
 
+[![Build Status](https://travis-ci.com/asvrada/home-dashboard-backend.svg?token=ug58w9zF9PguvrQ5qbqS&branch=master)](https://travis-ci.com/asvrada/home-dashboard-backend)
+
 Powered by Django
 
 ## Run Docker Postgres
