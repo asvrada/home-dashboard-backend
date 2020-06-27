@@ -5,8 +5,9 @@ from django.utils import timezone
 from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework_simplejwt.tokens import RefreshToken
 
-from backend import models
+from backend import exceptions, models
 from . import serializers
 from .google_oauth import get_google_user_from_google_token
 
@@ -30,14 +31,49 @@ class GoogleLogin(APIView):
         if token is None:
             return Response(status=400, data={"error": "Please provide Google access token in POST body"})
 
-        user = get_google_user_from_google_token(token)
+        google_user_object = get_google_user_from_google_token(token)
         # google_user_id = user[""]
 
-        # if user does not exist, create user
+        user = self.get_or_create_user_given_google_user_object(google_user_object)
 
         # return user's access and refresh token
+        access, refresh = self.get_token(user)
 
-        return Response(data=user)
+        return Response(data={
+            "access": access,
+            "refresh": refresh
+        })
+
+    @staticmethod
+    def get_or_create_user_given_google_user_object(google_user_object):
+        # try to find user given google id
+        google_user_id = google_user_object["sub"]
+
+        users = models.User.objects.filter(google_user_id=google_user_id)
+
+        if users.count() > 1:
+            raise exceptions.ImpossibleException(f"More than 1 result given google user id: {google_user_id}")
+
+        if users.count() == 0:
+            # create user
+            user = models.User.objects.create_user(email=google_user_object["email"],
+                                                   username=google_user_object["name"], password="default",
+                                                   first_name=google_user_object["given_name"],
+                                                   last_name=google_user_object["family_name"],
+                                                   google_user_id=google_user_id)
+        else:
+            user = users.first()
+
+        return user
+
+    @staticmethod
+    def get_token(user):
+        refresh_token_obj = RefreshToken.for_user(user)
+
+        refresh = str(refresh_token_obj)
+        access = str(refresh_token_obj.access_token)
+
+        return access, refresh
 
 
 class MonthlyBudgetView(generics.RetrieveUpdateAPIView):
