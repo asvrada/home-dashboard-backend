@@ -5,19 +5,16 @@
 
 Powered by Django
 
-## Run Docker Postgres
-
-`docker run -p 5432:5432 --name db -e POSTGRES_USER=dashboard -e POSTGRES_PASSWORD=password -e POSTGRES_DB=dashboard postgres`
-
 ## How to do a fresh deploy
 
+0. `export POSTGRES_PASSWORD=[some password here]`
+1. `docker-compose up`
+2. ssh into the backend container  
 `docker exec -i -t dashboard-backend-backend bash`
-
-1. Generate static file  
-`./manager.py collectstatic`
-2. Generate DB folder by running docker-compose
-3. Do migration 
-4. Create super user
+    1. `./manager.py collectstatic`
+    3. makemigrations && migrate
+    4. Create super user
+    5. `./manage.py shell` and make a MonthlyBudget object for super user
 
 ## Code Coverage
 
