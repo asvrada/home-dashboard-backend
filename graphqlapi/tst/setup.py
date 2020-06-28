@@ -15,6 +15,7 @@ class GraphQLBasicAPITestCase(BasicAPITestCase, GraphQLTestCase):
     id_valid_enum_category = 'RW51bUNhdGVnb3J5VHlwZTox'
     id_valid_enum_card = "RW51bUNhdGVnb3J5VHlwZTo0"
     id_valid_bill = 'VHJhbnNhY3Rpb25UeXBlOjM='
+    id_valid_recurring_bill = 'UmVjdXJyaW5nQmlsbFR5cGU6Mg=='
 
     mutation_delete = """
     mutation delete($id: ID!) {

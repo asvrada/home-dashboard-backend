@@ -12,4 +12,4 @@ class UserSerializer(serializers.ModelSerializer):
 class MonthlyBudgetSerializer(serializers.ModelSerializer):
     class Meta:
         model = MonthlyBudget
-        fields = ('budget',)
+        fields = ('amount',)

@@ -9,13 +9,27 @@ FLAG_SKIP_TOTAL = 2
 FLAG_SKIP_BOTH = FLAG_SKIP_BUDGET | FLAG_SKIP_TOTAL
 
 
+def validate_enum(category, company, card):
+    if category is not None and category.category != "CAT":
+        raise ValidationError(
+            {"category": f"Field category should have a enum of type category, got {category}"})
+
+    if company is not None and company.category != "COM":
+        raise ValidationError(
+            {"company": f"Field company should have a enum of type company, got {company}"})
+
+    if card is not None and card.category != "CAR":
+        raise ValidationError(
+            {"card": f"Field card should have a enum of type card, got {card}"})
+
+
 class User(AbstractCUser):
     """
     User for this website
     """
     username = models.CharField(max_length=256, null=False, blank=False)
     has_password = models.BooleanField(default=False)
-    google_user_id = models.CharField(max_length=256, null=True, blank=True, default=None)
+    google_user_id = models.CharField(max_length=256, unique=True, null=True, blank=True, default=None)
 
 
 class MonthlyBudget(models.Model):
@@ -24,13 +38,13 @@ class MonthlyBudget(models.Model):
     Should only has one row (i.e one value)
     """
     user = models.OneToOneField(User, related_name="budget", on_delete=models.CASCADE, blank=True)
-    budget = models.FloatField(default=0)
+    amount = models.FloatField(default=0)
 
     def __str__(self):
         return self.__repr__()
 
     def __repr__(self):
-        return f"{self.budget} - {self.user.username}"
+        return f"{self.amount} - {self.user.username}"
 
 
 class Icon(models.Model):
@@ -129,6 +143,8 @@ class RecurringBill(models.Model):
         return f"Recurring {self.frequency} = {self.amount} - {self.category}"
 
     def clean(self):
+        validate_enum(self.category, self.company, self.card)
+
         if not 1 <= self.recurring_month <= 12:
             raise ValidationError({"recurring_month": f"Value of month should be [1, 12], got {self.recurring_month}"})
 
@@ -192,17 +208,7 @@ class Transaction(models.Model):
         return f"{self.amount} - {self.category} - {self.company} - {self.card} - {self.time_created}"
 
     def clean(self):
-        if self.category is not None and self.category.category != "CAT":
-            raise ValidationError(
-                {"category": f"Field category should have a enum of type category, got {self.category}"})
-
-        if self.company is not None and self.company.category != "COM":
-            raise ValidationError(
-                {"company": f"Field company should have a enum of type company, got {self.company}"})
-
-        if self.card is not None and self.card.category != "CAR":
-            raise ValidationError(
-                {"card": f"Field card should have a enum of type card, got {self.card}"})
+        validate_enum(self.category, self.company, self.card)
 
     def save(self, *args, **kwargs):
         self.full_clean()

@@ -27,7 +27,7 @@ recurring_bills = [
     # id, frequency, month, day, amount, category, company, card, note, skip, user
     (1, 'Y', 12, 2, 123, None, None, None, "Test year 12/2", models.FLAG_NO_SKIP_SUMMARY, ID_USER_ADMIN),
     (2, 'M', 1, 2, 456, None, None, None, "Test month 2", models.FLAG_NO_SKIP_SUMMARY, ID_USER_JEFF),
-    (3, 'M', 1, 2, 456, None, None, None, "Test month 2", models.FLAG_SKIP_TOTAL, ID_USER_JEFF),
+    (3, 'M', 1, 2, 789, None, None, None, "Test month 2", models.FLAG_SKIP_TOTAL, ID_USER_JEFF),
 ]
 
 transactions = [
@@ -111,8 +111,8 @@ def setup_db():
     create_bills()
 
     # Create budget entry for both user
-    models.MonthlyBudget.objects.create(id=1, user=user_admin, budget=TEST_BUDGET)
-    models.MonthlyBudget.objects.create(id=2, user=user_jeff, budget=TEST_BUDGET * 2)
+    models.MonthlyBudget.objects.create(id=1, user=user_admin, amount=TEST_BUDGET)
+    models.MonthlyBudget.objects.create(id=2, user=user_jeff, amount=TEST_BUDGET * 2)
 
     return user_admin, user_jeff
 

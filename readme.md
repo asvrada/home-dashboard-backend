@@ -1,11 +1,23 @@
 # Home dashboard backend
 
+[![Build Status](https://travis-ci.com/asvrada/home-dashboard-backend.svg?token=ug58w9zF9PguvrQ5qbqS&branch=master)](https://travis-ci.com/asvrada/home-dashboard-backend)
+![Django CI](https://github.com/asvrada/home-dashboard-backend/workflows/Django%20CI/badge.svg?branch=master)
+
 Powered by Django
 
-## How to generate new migration
+## How to do a fresh deploy
 
-https://stackoverflow.com/questions/43880426/how-to-force-migrations-to-a-db-if-some-tables-already-exist-in-django
+0. `export POSTGRES_PASSWORD=[some password here]`
+1. `docker-compose up`
+2. ssh into the backend container  
+`docker exec -i -t dashboard-backend-backend bash`
+    1. `./manager.py collectstatic`
+    3. makemigrations && migrate
+    4. Create super user
+    5. `./manage.py shell` and make a MonthlyBudget object for super user
 
-## Run Docker Postgres
+## Code Coverage
 
-`docker run -p 5432:5432 --name db -e POSTGRES_USER=dashboard -e POSTGRES_PASSWORD=password -e POSTGRES_DB=dashboard postgres`
+```bash
+coverage erase && coverage run manage.py test && coverage report
+```

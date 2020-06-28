@@ -11,13 +11,14 @@ services:
     ports:
       - "4444:80"
     depends_on:
-      - web
+      - backend
 
-  web:
-    container_name: dashboard-backend-web
+  backend:
+    container_name: dashboard-backend-backend
     build: .
     environment:
       - ENV=prod
+      - POSTGRES_PASSWORD
     expose:
       - "8000"
     depends_on:
@@ -31,6 +32,6 @@ services:
     environment:
       - POSTGRES_DB=dashboard
       - POSTGRES_USER=dashboard
-      - POSTGRES_PASSWORD=password
+      - POSTGRES_PASSWORD
     volumes:
       - ./db/prod:/var/lib/postgresql/data

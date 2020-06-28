@@ -10,13 +10,13 @@ class PrivateGraphQLView(LoginRequiredMixin, GraphQLView):
 
 class TestGraphQLView(GraphQLView):
     @property
-    def username(self):
-        return self.kwargs.get('username', None)
+    def id(self):
+        return self.kwargs.get('id', None)
 
     def dispatch(self, request, *args, **kwargs):
-        if self.username:
-            users = models.User.objects.filter(username=self.username)
-            if len(users) == 1:
-                self.request.user = users.first()
+        if self.id:
+            user = models.User.objects.get(pk=self.id)
+            if user:
+                self.request.user = user
 
         return super().dispatch(request, *args, **kwargs)
