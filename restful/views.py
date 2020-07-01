@@ -1,12 +1,15 @@
 from calendar import monthrange
 
-from django.db.models import Sum, F, Q
+from django.db.models import F, Q, Sum
 from django.utils import timezone
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
+from django.views.decorators.vary import vary_on_cookie
 from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from backend import exceptions, models, helper
+from backend import exceptions, helper, models
 from . import serializers
 from .google_oauth import get_google_user_from_google_token
 
@@ -15,6 +18,7 @@ class UserView(generics.RetrieveAPIView):
     """
     Retrieve the current user
     """
+    throttle_scope = 'summary'
     serializer_class = serializers.UserSerializer
 
     def get_object(self):
@@ -68,6 +72,7 @@ class GoogleLogin(APIView):
 
 
 class MonthlyBudgetView(generics.RetrieveUpdateAPIView):
+    throttle_scope = 'budget'
     serializer_class = serializers.MonthlyBudgetSerializer
 
     def get_object(self):
@@ -78,7 +83,11 @@ class MonthlyBudgetView(generics.RetrieveUpdateAPIView):
 
 
 class SummaryView(APIView):
+    throttle_scope = 'summary'
 
+    # Cache 2 seconds
+    @method_decorator(cache_page(2))
+    @method_decorator(vary_on_cookie)
     def get(self, request):
         """
         Calculate the sum of income/spend this month

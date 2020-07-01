@@ -57,7 +57,7 @@ class SummaryTest(BasicAPITestCase):
     def test_GIVEN_category_mismatch_WHEN_create_rb_THEN_ValidationError(self):
         # given
         u = models.User.objects.first()
-        invalid_category = models.EnumCategory.objects.create(user=u, category="NUL")
+        invalid_category = models.EnumCategory.objects.create(user=u, category="NUL", name="Invalid category")
 
         # when
         with self.assertRaises(ValidationError) as e:
@@ -69,7 +69,7 @@ class SummaryTest(BasicAPITestCase):
     def test_GIVEN_category_mismatch_WHEN_create_bill_THEN_ValidationError(self):
         # given
         u = models.User.objects.first()
-        invalid_category = models.EnumCategory.objects.create(user=u, category="NUL")
+        invalid_category = models.EnumCategory.objects.create(user=u, category="NUL", name="Invalid category")
 
         # when
         with self.assertRaises(ValidationError) as e:
@@ -81,7 +81,7 @@ class SummaryTest(BasicAPITestCase):
     def test_GIVEN_company_mismatch_WHEN_create_bill_THEN_ValidationError(self):
         # given
         u = models.User.objects.first()
-        invalid_company = models.EnumCategory.objects.create(user=u, category="NUL")
+        invalid_company = models.EnumCategory.objects.create(user=u, category="NUL", name="Invalid company")
 
         # when
         with self.assertRaises(ValidationError) as e:
@@ -93,7 +93,7 @@ class SummaryTest(BasicAPITestCase):
     def test_GIVEN_card_mismatch_WHEN_create_bill_THEN_ValidationError(self):
         # given
         u = models.User.objects.first()
-        invalid_card = models.EnumCategory.objects.create(user=u, category="NUL")
+        invalid_card = models.EnumCategory.objects.create(user=u, category="NUL", name="Invalid card")
 
         # when
         with self.assertRaises(ValidationError) as e:

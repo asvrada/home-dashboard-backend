@@ -1,5 +1,7 @@
 import os
 
+DEBUG = False
+
 ALLOWED_HOSTS = ["api.kksk.biz", "localhost:3000"]
 
 CORS_ORIGIN_ALLOW_ALL = False
@@ -20,5 +22,3 @@ DATABASES = {
         'PORT': '5432'
     }
 }
-
-DEBUG = False

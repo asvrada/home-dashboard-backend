@@ -1,7 +1,9 @@
+from cuser.models import AbstractCUser
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.timezone import now
-from cuser.models import AbstractCUser
+
+from .validators import MAX_RANGE_NUMBER, MIN_RANGE_NUMBER, make_validate_number_range
 
 FLAG_NO_SKIP_SUMMARY = 0
 FLAG_SKIP_BUDGET = 1
@@ -38,7 +40,12 @@ class MonthlyBudget(models.Model):
     Should only has one row (i.e one value)
     """
     user = models.OneToOneField(User, related_name="budget", on_delete=models.CASCADE, blank=True)
-    amount = models.FloatField(default=0)
+    amount = models.FloatField(default=0,
+                               validators=[make_validate_number_range(range_min=0, range_max=MAX_RANGE_NUMBER)])
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.__repr__()
@@ -54,6 +61,10 @@ class Icon(models.Model):
     user = models.ForeignKey(User, related_name="icons", on_delete=models.CASCADE, blank=True)
     path = models.CharField(max_length=256, default="", blank=True)
     keyword = models.CharField(max_length=128, unique=True)
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.__repr__()
@@ -84,6 +95,10 @@ class EnumCategory(models.Model):
         ordering = ['category', 'name']
         unique_together = ('icon', 'name', 'category')
 
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super().save(*args, **kwargs)
+
     def __str__(self):
         return self.__repr__()
 
@@ -110,7 +125,9 @@ class RecurringBill(models.Model):
     recurring_day = models.IntegerField()
 
     # Below are the same as Transaction
-    amount = models.FloatField(default=0)
+    amount = models.FloatField(default=0,
+                               validators=[make_validate_number_range(range_min=MIN_RANGE_NUMBER,
+                                                                      range_max=MAX_RANGE_NUMBER)])
 
     category = models.ForeignKey(EnumCategory, related_name="recur_category",
                                  null=True, blank=True, on_delete=models.SET_NULL,
@@ -135,6 +152,10 @@ class RecurringBill(models.Model):
     class Meta:
         # Order by (frequency, month, day)
         ordering = ['frequency', 'recurring_month', 'recurring_day', 'time_created']
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.__repr__()
@@ -162,7 +183,9 @@ class Transaction(models.Model):
     """
     user = models.ForeignKey(User, related_name="bills", on_delete=models.CASCADE, blank=True)
 
-    amount = models.FloatField(default=0)
+    amount = models.FloatField(default=0,
+                               validators=[make_validate_number_range(range_min=MIN_RANGE_NUMBER,
+                                                                      range_max=MAX_RANGE_NUMBER)])
 
     # {instance of enum}.{related_name} := all Transactions that point to it
     category = models.ForeignKey(EnumCategory, related_name="bill_category",
@@ -209,6 +232,7 @@ class Transaction(models.Model):
 
     def clean(self):
         validate_enum(self.category, self.company, self.card)
+        super().clean()
 
     def save(self, *args, **kwargs):
         self.full_clean()
