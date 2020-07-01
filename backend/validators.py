@@ -24,3 +24,17 @@ def make_validate_number_range(range_min=None, range_max=None):
                 raise ValidationError(f"{number} not within range: {range_min} to {range_max} (inclusive)")
 
     return lambda value: validate_number_range(value)
+
+
+def validate_enum(category, company, card):
+    if category is not None and category.category != "CAT":
+        raise ValidationError(
+            {"category": f"Field category should have a enum of type category, got {category}"})
+
+    if company is not None and company.category != "COM":
+        raise ValidationError(
+            {"company": f"Field company should have a enum of type company, got {company}"})
+
+    if card is not None and card.category != "CAR":
+        raise ValidationError(
+            {"card": f"Field card should have a enum of type card, got {card}"})

@@ -1,5 +1,6 @@
-from .setup import GraphQLBasicAPITestCase
 from django.utils.timezone import now
+
+from .setup import GraphQLBasicAPITestCase
 
 
 class GraphQLTransactionTest(GraphQLBasicAPITestCase):
@@ -119,7 +120,7 @@ class GraphQLTransactionTest(GraphQLBasicAPITestCase):
         company: $com,
         card: $car,
         timeCreated: $timeCreated,
-        skipSummaryFlag: 1,
+        skipSummaryFlag: 3,
         note: "New note"
       }) {
         transaction {
@@ -214,4 +215,4 @@ class GraphQLTransactionTest(GraphQLBasicAPITestCase):
         # then
         self.assertResponseNoErrors(res)
         self.assertEqual(str_now[:10], res.json()["data"]["updateTransaction"]["transaction"]["timeCreated"][:10])
-        self.assertEqual(1, res.json()["data"]["updateTransaction"]["transaction"]["skipSummaryFlag"])
+        self.assertEqual(3, res.json()["data"]["updateTransaction"]["transaction"]["skipSummaryFlag"])

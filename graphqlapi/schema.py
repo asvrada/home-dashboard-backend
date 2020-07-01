@@ -1,13 +1,11 @@
 import graphene
-import graphql_jwt
 from django.utils.timezone import now
-from graphene import relay, Enum
+from graphene import Enum, relay
 from graphene_django.fields import DjangoConnectionField
 from graphene_django.types import DjangoObjectType
 from graphql_relay.node.node import from_global_id
 
-from backend import exceptions
-from backend import models
+from backend import exceptions, models
 
 """
 Helper functions

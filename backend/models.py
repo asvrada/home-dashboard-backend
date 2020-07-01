@@ -3,26 +3,13 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.timezone import now
 
-from .validators import MAX_RANGE_NUMBER, MIN_RANGE_NUMBER, make_validate_number_range
+from .validators import MAX_RANGE_NUMBER, MIN_RANGE_NUMBER, \
+    make_validate_number_range, validate_enum
 
 FLAG_NO_SKIP_SUMMARY = 0
 FLAG_SKIP_BUDGET = 1
 FLAG_SKIP_TOTAL = 2
 FLAG_SKIP_BOTH = FLAG_SKIP_BUDGET | FLAG_SKIP_TOTAL
-
-
-def validate_enum(category, company, card):
-    if category is not None and category.category != "CAT":
-        raise ValidationError(
-            {"category": f"Field category should have a enum of type category, got {category}"})
-
-    if company is not None and company.category != "COM":
-        raise ValidationError(
-            {"company": f"Field company should have a enum of type company, got {company}"})
-
-    if card is not None and card.category != "CAR":
-        raise ValidationError(
-            {"card": f"Field card should have a enum of type card, got {card}"})
 
 
 class User(AbstractCUser):
@@ -129,15 +116,15 @@ class RecurringBill(models.Model):
                                validators=[make_validate_number_range(range_min=MIN_RANGE_NUMBER,
                                                                       range_max=MAX_RANGE_NUMBER)])
 
-    category = models.ForeignKey(EnumCategory, related_name="recur_category",
+    category = models.ForeignKey(EnumCategory, related_name="rb_categories",
                                  null=True, blank=True, on_delete=models.SET_NULL,
                                  limit_choices_to={"category": "CAT"})
 
-    company = models.ForeignKey(EnumCategory, related_name="recur_company",
+    company = models.ForeignKey(EnumCategory, related_name="rb_companies",
                                 null=True, blank=True, on_delete=models.SET_NULL,
                                 limit_choices_to={"category": "COM"})
 
-    card = models.ForeignKey(EnumCategory, related_name="recur_card",
+    card = models.ForeignKey(EnumCategory, related_name="rb_cards",
                              null=True, blank=True, on_delete=models.SET_NULL,
                              limit_choices_to={"category": "CAR"})
 
@@ -187,16 +174,15 @@ class Transaction(models.Model):
                                validators=[make_validate_number_range(range_min=MIN_RANGE_NUMBER,
                                                                       range_max=MAX_RANGE_NUMBER)])
 
-    # {instance of enum}.{related_name} := all Transactions that point to it
-    category = models.ForeignKey(EnumCategory, related_name="bill_category",
+    category = models.ForeignKey(EnumCategory, related_name="bill_categories",
                                  null=True, blank=True, on_delete=models.SET_NULL,
                                  limit_choices_to={"category": "CAT"})
 
-    company = models.ForeignKey(EnumCategory, related_name="bill_company",
+    company = models.ForeignKey(EnumCategory, related_name="bill_companies",
                                 null=True, blank=True, on_delete=models.SET_NULL,
                                 limit_choices_to={"category": "COM"})
 
-    card = models.ForeignKey(EnumCategory, related_name="bill_card",
+    card = models.ForeignKey(EnumCategory, related_name="bill_cards",
                              null=True, blank=True, on_delete=models.SET_NULL,
                              limit_choices_to={"category": "CAR"})
 
@@ -213,7 +199,8 @@ class Transaction(models.Model):
     For a rent payment, value should be 1
     For a transfer, value should be 3
     """
-    skip_summary_flag = models.IntegerField(default=0)
+    skip_summary_flag = models.IntegerField(default=0,
+                                            validators=[make_validate_number_range(range_min=0, range_max=2 ** 2 - 1)])
 
     # If not NULL, then point to the recurring_bill record
     creator = models.ForeignKey(RecurringBill, related_name="bill_instance",
