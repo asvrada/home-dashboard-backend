@@ -1,7 +1,5 @@
 from django.core.exceptions import ValidationError
 
-from . import models
-
 MIN_RANGE_NUMBER = -999999999
 MAX_RANGE_NUMBER = 999999999
 
@@ -27,10 +25,6 @@ def validate_number_range(number, error_key: str, range_min=None, range_max=None
             })
 
 
-def make_validate_number_range(error_key: str, range_min=None, range_max=None):
-    return lambda number: validate_number_range(number, error_key, range_min, range_max)
-
-
 def validate_enum_category(enum, error_key: str, expected_category: str):
     if enum is None:
         return
@@ -39,7 +33,3 @@ def validate_enum_category(enum, error_key: str, expected_category: str):
         raise ValidationError({
             error_key: f"Field EnumCategory should have a enum of type {expected_category}, got {enum}"
         })
-
-
-def make_validate_enum_category(error_key: str, expected_category: str):
-    return lambda enum: validate_enum_category(enum, error_key, expected_category)

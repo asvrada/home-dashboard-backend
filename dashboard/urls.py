@@ -24,7 +24,7 @@ urlpatterns = [
 
 ]
 
-if not settings.DEBUG:
+if settings.DEBUG:
     urlpatterns += [
         path('email-login/', TokenObtainPairView.as_view(), name='email_login'),
     ]

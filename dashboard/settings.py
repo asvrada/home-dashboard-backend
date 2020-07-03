@@ -62,6 +62,7 @@ MIDDLEWARE = [
 ROOT_URLCONF = 'dashboard.urls'
 
 REST_FRAMEWORK = {
+    'EXCEPTION_HANDLER': 'restful.exceptions.exception_handler',
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'backend.authentications.CsrfExemptSessionAuthentication',
         'rest_framework.authentication.BasicAuthentication',
