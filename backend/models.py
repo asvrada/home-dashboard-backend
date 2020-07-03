@@ -4,7 +4,7 @@ from django.db import models
 from django.utils.timezone import now
 
 from .validators import MAX_RANGE_NUMBER, MIN_RANGE_NUMBER, \
-    make_validate_number_range, validate_enum
+    make_validate_number_range, make_validate_enum_category
 
 FLAG_NO_SKIP_SUMMARY = 0
 FLAG_SKIP_BUDGET = 1
@@ -107,9 +107,9 @@ class RecurringBill(models.Model):
 
     # User could emit this when frequency is M
     # But for simplicity we set a default value anyway
-    recurring_month = models.IntegerField(default=1)
+    recurring_month = models.IntegerField(default=1, validators=[make_validate_number_range(1, 12)])
     # Should be only 1<= x <= 28
-    recurring_day = models.IntegerField()
+    recurring_day = models.IntegerField(validators=[make_validate_number_range(1, 28)])
 
     # Below are the same as Transaction
     amount = models.FloatField(default=0,
@@ -118,14 +118,17 @@ class RecurringBill(models.Model):
 
     category = models.ForeignKey(EnumCategory, related_name="rb_categories",
                                  null=True, blank=True, on_delete=models.SET_NULL,
+                                 validators=[make_validate_enum_category("CAT")],
                                  limit_choices_to={"category": "CAT"})
 
     company = models.ForeignKey(EnumCategory, related_name="rb_companies",
                                 null=True, blank=True, on_delete=models.SET_NULL,
+                                validators=[make_validate_enum_category("COM")],
                                 limit_choices_to={"category": "COM"})
 
     card = models.ForeignKey(EnumCategory, related_name="rb_cards",
                              null=True, blank=True, on_delete=models.SET_NULL,
+                             validators=[make_validate_enum_category("CAR")],
                              limit_choices_to={"category": "CAR"})
 
     note = models.CharField(max_length=512, default="", blank=True, null=True)
@@ -140,24 +143,11 @@ class RecurringBill(models.Model):
         # Order by (frequency, month, day)
         ordering = ['frequency', 'recurring_month', 'recurring_day', 'time_created']
 
-    def save(self, *args, **kwargs):
-        self.full_clean()
-        super().save(*args, **kwargs)
-
     def __str__(self):
         return self.__repr__()
 
     def __repr__(self):
         return f"Recurring {self.frequency} = {self.amount} - {self.category}"
-
-    def clean(self):
-        validate_enum(self.category, self.company, self.card)
-
-        if not 1 <= self.recurring_month <= 12:
-            raise ValidationError({"recurring_month": f"Value of month should be [1, 12], got {self.recurring_month}"})
-
-        if not 1 <= self.recurring_day <= 28:
-            raise ValidationError({"recurring_day": f"Value of day should be [1, 28], got {self.recurring_day}"})
 
     def save(self, *args, **kwargs):
         self.full_clean()
@@ -176,14 +166,17 @@ class Transaction(models.Model):
 
     category = models.ForeignKey(EnumCategory, related_name="bill_categories",
                                  null=True, blank=True, on_delete=models.SET_NULL,
+                                 validators=[make_validate_enum_category("CAT")],
                                  limit_choices_to={"category": "CAT"})
 
     company = models.ForeignKey(EnumCategory, related_name="bill_companies",
                                 null=True, blank=True, on_delete=models.SET_NULL,
+                                validators=[make_validate_enum_category("COM")],
                                 limit_choices_to={"category": "COM"})
 
     card = models.ForeignKey(EnumCategory, related_name="bill_cards",
                              null=True, blank=True, on_delete=models.SET_NULL,
+                             validators=[make_validate_enum_category("CAR")],
                              limit_choices_to={"category": "CAR"})
 
     note = models.CharField(max_length=512, default="", blank=True, null=True)
@@ -216,10 +209,6 @@ class Transaction(models.Model):
 
     def __repr__(self):
         return f"{self.amount} - {self.category} - {self.company} - {self.card} - {self.time_created}"
-
-    def clean(self):
-        validate_enum(self.category, self.company, self.card)
-        super().clean()
 
     def save(self, *args, **kwargs):
         self.full_clean()

@@ -42,8 +42,9 @@ class SummaryTest(BasicAPITestCase):
 
         # then
         self.assertTrue(type(e.exception) in [ValidationError])
+        self.assertIn("recurring_month", e.exception.error_dict)
 
-    def test_GIVEN_day_oob_WHEN_create_rb_THEN_ValidationError(self):
+    def test_GIVEN_day_is_zero_WHEN_create_rb_THEN_ValidationError(self):
         # given
         u = models.User.objects.first()
 
@@ -53,6 +54,19 @@ class SummaryTest(BasicAPITestCase):
 
         # then
         self.assertTrue(type(e.exception) in [ValidationError])
+        self.assertIn("recurring_day", e.exception.error_dict)
+
+    def test_GIVEN_day_oob_zero_WHEN_create_rb_THEN_ValidationError(self):
+        # given
+        u = models.User.objects.first()
+
+        # when
+        with self.assertRaises(ValidationError) as e:
+            models.RecurringBill.objects.create(user=u, recurring_month=1, recurring_day=29)
+
+        # then
+        self.assertTrue(type(e.exception) in [ValidationError])
+        self.assertIn("recurring_day", e.exception.error_dict)
 
     def test_GIVEN_category_mismatch_WHEN_create_rb_THEN_ValidationError(self):
         # given
@@ -65,6 +79,7 @@ class SummaryTest(BasicAPITestCase):
 
         # then
         self.assertTrue(type(e.exception) in [ValidationError])
+        self.assertIn("category", e.exception.error_dict)
 
     def test_GIVEN_category_mismatch_WHEN_create_bill_THEN_ValidationError(self):
         # given
