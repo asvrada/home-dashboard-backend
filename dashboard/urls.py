@@ -15,7 +15,6 @@ urlpatterns = [
 
     # Auth
     path('google-login/', GoogleLogin.as_view(), name="google_login"),
-    path('email-login/', TokenObtainPairView.as_view(), name='email_login'),
     path('token-refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('token-verify/', TokenVerifyView.as_view(), name='token_verify'),
 
@@ -24,3 +23,8 @@ urlpatterns = [
     path('', include('graphqlapi.urls')),
 
 ]
+
+if not settings.DEBUG:
+    urlpatterns += [
+        path('email-login/', TokenObtainPairView.as_view(), name='email_login'),
+    ]

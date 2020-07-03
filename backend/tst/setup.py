@@ -8,7 +8,9 @@ from backend.helper import get_jwt_token
 
 TEST_BUDGET = 3333
 ID_USER_ADMIN = 1
+EMAIL_USER_ADMIN = "admin@gmail.com"
 ID_USER_JEFF = 2
+EMAIL_USER_JEFF = "jeff@brandeis.edu"
 
 icons = [
     (1, "Test Icon admin id 1", "/path/icon 1", ID_USER_ADMIN),
@@ -100,9 +102,9 @@ def create_bills():
 
 def setup_db():
     # Create super user
-    user_admin = models.User.objects.create_superuser(id=ID_USER_ADMIN, email="noojeff@gmail.com",
+    user_admin = models.User.objects.create_superuser(id=ID_USER_ADMIN, email=EMAIL_USER_ADMIN,
                                                       username="admin", password="4980")
-    user_jeff = models.User.objects.create_user(id=ID_USER_JEFF, email="zijiewu@brandeis.edu",
+    user_jeff = models.User.objects.create_user(id=ID_USER_JEFF, email=EMAIL_USER_JEFF,
                                                 username="jeff", password="4980")
 
     create_icons()

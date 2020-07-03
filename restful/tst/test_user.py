@@ -1,7 +1,7 @@
 from django.urls import reverse
 from rest_framework import status
 
-from backend.tst.setup import BasicAPITestCase
+from backend.tst.setup import BasicAPITestCase, EMAIL_USER_ADMIN, EMAIL_USER_JEFF
 
 
 class UserTest(BasicAPITestCase):
@@ -36,9 +36,9 @@ class UserTest(BasicAPITestCase):
         # then
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertDictEqual(res.data, {
-            'email': 'noojeff@gmail.com',
+            'email': EMAIL_USER_ADMIN,
             'google_user_id': None,
-            'has_password': False,
+            'has_password': True,
             'id': 1,
             'username': 'admin'
         })
@@ -53,9 +53,9 @@ class UserTest(BasicAPITestCase):
         # then
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertDictEqual(res.data, {
-            'email': 'zijiewu@brandeis.edu',
+            'email': EMAIL_USER_JEFF,
             'google_user_id': None,
-            'has_password': False,
+            'has_password': True,
             'id': 2,
             'username': 'jeff'
         })

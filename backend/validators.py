@@ -6,7 +6,7 @@ MIN_RANGE_NUMBER = -999999999
 MAX_RANGE_NUMBER = 999999999
 
 
-def validate_number_range(number, range_min=None, range_max=None):
+def validate_number_range(number, error_key: str, range_min=None, range_max=None):
     # Don't do validation
     if range_min is None and range_max is None:
         return
@@ -22,19 +22,24 @@ def validate_number_range(number, range_min=None, range_max=None):
     # both min max is not None
     if range_min is not None and range_max is not None:
         if not range_min <= number <= range_max:
-            raise ValidationError(f"{number} not within range: {range_min} to {range_max} (inclusive)")
+            raise ValidationError({
+                error_key: f"{number} not within range: {range_min} to {range_max} (inclusive)"
+            })
 
 
-def make_validate_number_range(range_min=None, range_max=None):
-    return lambda value: validate_number_range(value, range_min, range_max)
+def make_validate_number_range(error_key: str, range_min=None, range_max=None):
+    return lambda number: validate_number_range(number, error_key, range_min, range_max)
 
 
-def validate_enum_category(enum_id, expected_category):
-    enum = models.EnumCategory.objects.get(pk=enum_id)
+def validate_enum_category(enum, error_key: str, expected_category: str):
+    if enum is None:
+        return
 
     if enum is not None and enum.category != expected_category:
-        raise ValidationError(f"Field EnumCategory should have a enum of type {expected_category}, got {enum}")
+        raise ValidationError({
+            error_key: f"Field EnumCategory should have a enum of type {expected_category}, got {enum}"
+        })
 
 
-def make_validate_enum_category(expected_category):
-    return lambda enum_id: validate_enum_category(enum_id, expected_category)
+def make_validate_enum_category(error_key: str, expected_category: str):
+    return lambda enum: validate_enum_category(enum, error_key, expected_category)

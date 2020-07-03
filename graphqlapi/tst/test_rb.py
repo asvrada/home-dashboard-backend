@@ -43,7 +43,6 @@ class GraphQLIconTest(GraphQLBasicAPITestCase):
             id,
             email,
             username,
-            hasPassword,
             googleUserId
           },
           frequency,
@@ -94,7 +93,6 @@ class GraphQLIconTest(GraphQLBasicAPITestCase):
             id,
             email,
             username,
-            hasPassword,
             googleUserId
           },
           frequency,
@@ -131,7 +129,6 @@ class GraphQLIconTest(GraphQLBasicAPITestCase):
             id,
             email,
             username,
-            hasPassword,
             googleUserId
           },
           frequency,
@@ -184,7 +181,6 @@ class GraphQLIconTest(GraphQLBasicAPITestCase):
             id,
             email,
             username,
-            hasPassword,
             googleUserId
           },
           frequency,
