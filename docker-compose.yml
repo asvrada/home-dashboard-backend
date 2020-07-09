@@ -7,7 +7,7 @@ services:
     container_name: dashboard-backend-nginx
     volumes:
       - ./ci/nginx.conf:/etc/nginx/nginx.conf
-      - ./static:/app/static
+      - django-static:/app/static/
     ports:
       - "4444:80"
     depends_on:
@@ -21,6 +21,8 @@ services:
       - POSTGRES_PASSWORD
     expose:
       - "8000"
+    volumes:
+      - django-static:/app/static/
     depends_on:
       - db
 
@@ -35,3 +37,6 @@ services:
       - POSTGRES_PASSWORD
     volumes:
       - ./db/prod:/var/lib/postgresql/data
+
+volumes:
+  django-static:
