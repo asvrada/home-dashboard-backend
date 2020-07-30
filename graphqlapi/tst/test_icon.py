@@ -1,4 +1,5 @@
 from .setup import GraphQLBasicAPITestCase
+from django.core.exceptions import PermissionDenied
 
 
 class GraphQLIconTest(GraphQLBasicAPITestCase):
@@ -134,7 +135,17 @@ class GraphQLIconTest(GraphQLBasicAPITestCase):
             "path": "update path"
         })
 
-    def test_GIVEN_existing_icon_WHEN_delete_THEN_icon_deleted(self):
+    def test_GIVEN_no_login_AND_existing_icon_WHEN_delete_THEN_icon_deleted(self):
+        # given
+        self.access_token = None
+
+        # when
+        res = self.query(self.mutation_delete, variables={"id": self.id_valid_icon})
+
+        # then
+        self.assertTrue(res.status_code, 403)
+
+    def test_GIVEN_login_AND_existing_icon_WHEN_delete_THEN_icon_deleted(self):
         # when
         res = self.query(self.mutation_delete, variables={"id": self.id_valid_icon})
 
