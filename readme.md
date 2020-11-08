@@ -5,6 +5,8 @@
 
 Powered by Django
 
+> This is the backend for home dashboard project, link to frontend: https://github.com/asvrada/home-dashboard-frontend
+
 ## How to do a fresh deploy
 
 0. `export POSTGRES_PASSWORD=[some password here]`
