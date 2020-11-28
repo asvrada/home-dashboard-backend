@@ -9,14 +9,21 @@ Powered by Django
 
 ## How to do a fresh deploy
 
-0. `export POSTGRES_PASSWORD=[some password here]`
-1. `docker-compose up`
-2. ssh into the backend container  
-`docker exec -i -t dashboard-backend-backend bash`
-    1. `./manager.py collectstatic`
-    3. makemigrations && migrate
-    4. Create super user
-    5. `./manage.py shell` and make a MonthlyBudget object for super user
+0. `export POSTGRES_PASSWORD=<some password here>`
+1. `docker-compose up` or `sudo -E docker-compose up`
+2. ssh into the backend container and create following resources:
+    1. HTML Static resources
+    2. Migration and migrate DB
+    4. Superuser
+    5. Monthly budget for the superuser
+
+```shell script
+docker exec -i -t dashboard-backend-backend bash &&
+./manage.py collectstatic &&
+./manage.py makemigrations && ./manage.py migrate
+./manage.py createsuperuser &&
+./manage.py createbudget <your email> <monthly budget amount>
+```
 
 ## Code Coverage
 
