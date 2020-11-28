@@ -45,12 +45,9 @@ def update_fragment_given_payload(obj_fragment, payload):
 
     if amount is not None:
         obj_fragment.amount = amount
-    if category:
-        obj_fragment.category = category
-    if company:
-        obj_fragment.company = company
-    if card:
-        obj_fragment.card = card
+    obj_fragment.category = category
+    obj_fragment.company = company
+    obj_fragment.card = card
     if note is not None:
         obj_fragment.note = note
     if skip is not None:
@@ -242,6 +239,7 @@ class CreateRecurringBill(relay.ClientIDMutation):
 class CreateTransaction(relay.ClientIDMutation):
     class Input:
         amount = graphene.Float(required=True)
+        # If missing (undefined), then set to None
         category = graphene.GlobalID(required=False)
         company = graphene.GlobalID(required=False)
         card = graphene.GlobalID(required=False)
@@ -306,7 +304,7 @@ class UpdateIcon(relay.ClientIDMutation):
             icon.path = path
 
         icon.save()
-        return CreateIcon(icon=icon)
+        return UpdateIcon(icon=icon)
 
 
 class UpdateEnum(relay.ClientIDMutation):
@@ -338,7 +336,7 @@ class UpdateEnum(relay.ClientIDMutation):
             enum.category = category
 
         enum.save()
-        return CreateEnum(enum=enum)
+        return UpdateEnum(enum=enum)
 
 
 class UpdateRecurringBill(relay.ClientIDMutation):
@@ -378,13 +376,14 @@ class UpdateRecurringBill(relay.ClientIDMutation):
             recurring_bill.recurring_day = recurring_day
 
         recurring_bill.save()
-        return CreateRecurringBill(recurring_bill=recurring_bill)
+        return UpdateRecurringBill(recurring_bill=recurring_bill)
 
 
 class UpdateTransaction(relay.ClientIDMutation):
     class Input:
         id = graphene.GlobalID(required=True)
         amount = graphene.Float(required=False)
+        # If missing (undefined), then set to None
         category = graphene.GlobalID(required=False)
         company = graphene.GlobalID(required=False)
         card = graphene.GlobalID(required=False)
@@ -411,7 +410,7 @@ class UpdateTransaction(relay.ClientIDMutation):
             bill.time_created = time_created
 
         bill.save()
-        return CreateTransaction(transaction=bill)
+        return UpdateTransaction(transaction=bill)
 
 
 """

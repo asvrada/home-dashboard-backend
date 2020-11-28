@@ -17,11 +17,33 @@ Powered by Django
     ./manage.py collectstatic &&
     ./manage.py makemigrations && ./manage.py migrate
     ./manage.py createsuperuser &&
-    ./manage.py createbudget <your email> <monthly budget amount>
+    ./manage.py setbudget <your email> <monthly budget amount>
     ```
 
 ## Code Coverage
 
 ```bash
 coverage erase && coverage run manage.py test && coverage report
+```
+
+## APIs
+
+```
+admin/
+
+#JWT Token related
+google-login/
+token-refresh/
+token-verify/
+
+restful/
+  user/
+  summary/
+  budget/
+graphql/
+
+# Test use only
+graphqltest/
+graphqltest/<int:id>
+email-login/
 ```

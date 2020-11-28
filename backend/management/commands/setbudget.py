@@ -4,7 +4,7 @@ from backend.models import User, MonthlyBudget
 
 
 class Command(BaseCommand):
-    help = 'Create budget for user given email\nUsage:\n./manage.py create_budget example@gmail.com 1500'
+    help = 'Set budget for user given email\nUsage:\n./manage.py create_budget example@gmail.com 1500'
     arg_email = 'email'
     arg_amount = 'amount'
 
