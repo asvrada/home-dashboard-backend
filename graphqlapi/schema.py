@@ -439,7 +439,11 @@ class DeleteMutation(relay.ClientIDMutation):
         model_class = dict_model_class[str_type]
 
         # delete
-        count, result = model_class.objects.get(id=id).delete()
+        objects = model_class.objects.filter(id=id)
+        if objects:
+            count, result = objects.delete()
+        else:
+            result = "None"
 
         return DeleteMutation(ok=f"Deleted {result}")
 
