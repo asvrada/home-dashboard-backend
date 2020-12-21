@@ -17,7 +17,7 @@ class EnumCategoryAdmin(admin.ModelAdmin):
 
 @admin.register(models.Transaction)
 class TransactionAdmin(admin.ModelAdmin):
-    list_display = ('amount', 'category', 'company', 'note', 'skip_summary_flag', 'creator', 'time_created', 'user')
+    list_display = ('amount', 'category', 'company', 'card', 'note', 'skip_summary_flag', 'creator', 'time_created', 'user')
     list_display_links = list_display
 
 
