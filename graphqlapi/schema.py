@@ -102,9 +102,7 @@ class EnumCategoryType(DjangoObjectType):
     # overwrite field
     category = EnumEnumCategory()
 
-    count_bill_category = Int()
-    count_bill_company = Int()
-    count_bill_card = Int()
+    count_bill = Int()
 
     class Meta:
         model = models.EnumCategory
@@ -115,14 +113,17 @@ class EnumCategoryType(DjangoObjectType):
     def resolve_category(self, info, **kwargs):
         return self.category
 
-    def resolve_count_bill_category(self: models.EnumCategory, info, **kwargs):
-        return len(self.bill_categories.all())
+    def resolve_count_bill(self: models.EnumCategory, info, **kwargs):
+        table = {
+            EnumEnumCategory.Category.value: self.bill_categories,
+            EnumEnumCategory.Company.value: self.bill_companies,
+            EnumEnumCategory.Card.value: self.bill_cards,
+        }
 
-    def resolve_count_bill_company(self: models.EnumCategory, info, **kwargs):
-        return len(self.bill_companies.all())
+        if self.category == EnumEnumCategory.NULL.value:
+            raise Exception("Category of enum cannot be NUL")
 
-    def resolve_count_bill_card(self: models.EnumCategory, info, **kwargs):
-        return len(self.bill_cards.all())
+        return len(table[self.category].all())
 
     @classmethod
     def get_queryset(cls, queryset, info):
