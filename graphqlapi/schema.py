@@ -1,7 +1,7 @@
 import graphene
 from django.utils.timezone import now
-from graphene import Enum, relay
-from graphene_django.fields import DjangoConnectionField
+from graphene import Enum, relay, Int
+from graphene_django.filter import DjangoFilterConnectionField
 from graphene_django.types import DjangoObjectType
 from graphql_relay.node.node import from_global_id
 
@@ -102,6 +102,10 @@ class EnumCategoryType(DjangoObjectType):
     # overwrite field
     category = EnumEnumCategory()
 
+    count_bill_categories = Int()
+    count_bill_company = Int()
+    count_bill_card = Int()
+
     class Meta:
         model = models.EnumCategory
         fields = "__all__"
@@ -110,6 +114,15 @@ class EnumCategoryType(DjangoObjectType):
 
     def resolve_category(self, info, **kwargs):
         return self.category
+
+    def resolve_count_bill_categories(self: models.EnumCategory, info, **kwargs):
+        return len(self.bill_categories.all())
+
+    def resolve_count_bill_company(self: models.EnumCategory, info, **kwargs):
+        return len(self.bill_companies.all())
+
+    def resolve_count_bill_card(self: models.EnumCategory, info, **kwargs):
+        return len(self.bill_cards.all())
 
     @classmethod
     def get_queryset(cls, queryset, info):
@@ -466,16 +479,16 @@ class Mutation(graphene.ObjectType):
 
 class Query(graphene.ObjectType):
     icon = relay.Node.Field(IconType)
-    icons = DjangoConnectionField(IconType)
+    icons = DjangoFilterConnectionField(IconType)
 
     enum = relay.Node.Field(EnumCategoryType)
-    enums = DjangoConnectionField(EnumCategoryType)
+    enums = DjangoFilterConnectionField(EnumCategoryType)
 
     recurring_bill = relay.Node.Field(RecurringBillType)
-    recurring_bills = DjangoConnectionField(RecurringBillType)
+    recurring_bills = DjangoFilterConnectionField(RecurringBillType)
 
     bill = relay.Node.Field(TransactionType)
-    bills = DjangoConnectionField(TransactionType)
+    bills = DjangoFilterConnectionField(TransactionType)
 
 
 schema = graphene.Schema(query=Query, mutation=Mutation)
