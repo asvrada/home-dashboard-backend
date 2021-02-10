@@ -102,7 +102,7 @@ class EnumCategoryType(DjangoObjectType):
     # overwrite field
     category = EnumEnumCategory()
 
-    count_bill_categories = Int()
+    count_bill_category = Int()
     count_bill_company = Int()
     count_bill_card = Int()
 
@@ -115,7 +115,7 @@ class EnumCategoryType(DjangoObjectType):
     def resolve_category(self, info, **kwargs):
         return self.category
 
-    def resolve_count_bill_categories(self: models.EnumCategory, info, **kwargs):
+    def resolve_count_bill_category(self: models.EnumCategory, info, **kwargs):
         return len(self.bill_categories.all())
 
     def resolve_count_bill_company(self: models.EnumCategory, info, **kwargs):
