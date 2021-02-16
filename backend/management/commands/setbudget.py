@@ -17,6 +17,15 @@ class Command(BaseCommand):
         parser.formatter_class = RawTextHelpFormatter
         return parser
 
+    @staticmethod
+    def has_related_budget(user: User):
+        has_budget = False
+        try:
+            has_budget = (user.budget is not None)
+        except Exception:
+            pass
+        return has_budget
+
     def handle(self, *args, **options):
         input_email = options[self.arg_email]
         input_amount = options[self.arg_amount]
@@ -28,8 +37,7 @@ class Command(BaseCommand):
 
         u = u.first()
 
-        obj_budget = None
-        if u.budget:
+        if Command.has_related_budget(u):
             self.stdout.write(f"User {u} already have a monthly budget of {u.budget}")
             obj_budget = u.budget
             obj_budget.amount = input_amount

@@ -7,18 +7,29 @@ Powered by Django
 
 > This is the backend for home dashboard project, link to frontend: https://github.com/asvrada/home-dashboard-frontend
 
-## How to do a fresh deploy
 
-0. `export POSTGRES_PASSWORD=<some password here>`
-1. `docker-compose up` or `sudo -E docker-compose up`
-3. 
-    ```shell script
-    docker exec -i -t dashboard-backend-backend bash &&
-    ./manage.py collectstatic &&
-    ./manage.py makemigrations && ./manage.py migrate
-    ./manage.py createsuperuser &&
-    ./manage.py setbudget <your email> <monthly budget amount>
-    ```
+## To run
+
+### In Prod
+
+1. `export POSTGRES_PASSWORD=<some password here>`  
+2. `docker-compose up` or `sudo -E docker-compose up`
+
+If this is the first time you deploy this project, you will need to run below command to set up the db and super user
+
+ ```shell script
+ docker exec -it dashboard-backend-backend bash &&
+ ./manage.py collectstatic &&
+ ./manage.py makemigrations && ./manage.py migrate
+ ./manage.py createsuperuser &&
+ ./manage.py setbudget <your email> <monthly budget amount>
+ ```
+
+
+### In Beta
+
+`./manage.py runserver 4444`
+
 
 ## Code Coverage
 
@@ -31,19 +42,24 @@ coverage erase && coverage run manage.py test && coverage report
 ```
 admin/
 
-#JWT Token related
-google-login/
-token-refresh/
-token-verify/
+# JWT Token related
+/google-login/
+/token-refresh/
+/token-verify/
 
-restful/
+# Main
+/restful/
   user/
   summary/
   budget/
-graphql/
+/graphql/
 
-# Test use only
-graphqltest/
-graphqltest/<int:id>
-email-login/
+# Available to Beta env only
+/graphqltest/
+/graphqltest/<int:id>
+/email-login/
 ```
+
+## TODOS
+
+1. Define GraphQL Null behavior

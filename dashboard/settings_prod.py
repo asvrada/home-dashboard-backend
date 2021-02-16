@@ -2,12 +2,12 @@ import os
 
 DEBUG = False
 
-ALLOWED_HOSTS = ["api.kksk.biz", "localhost:3000"]
+ALLOWED_HOSTS = ["localhost"]
 
 CORS_ORIGIN_ALLOW_ALL = False
 CORS_ORIGIN_WHITELIST = [
     # Prod
-    "https://kksk.biz",
+    # xxx.com
     # For local testing
     "http://localhost:3000",
 ]
