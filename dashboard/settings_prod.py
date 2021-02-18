@@ -9,7 +9,7 @@ CORS_ORIGIN_WHITELIST = [
     # Prod
     # xxx.com
     # For local testing
-    "http://localhost:3000",
+    "http://localhost",
 ]
 
 DATABASES = {
