@@ -12,12 +12,16 @@ Powered by Django
 
 ### In Prod
 
-1. `export POSTGRES_PASSWORD=<some password here>`  
-2. `docker-compose up` or `sudo -E docker-compose up`
+1. `docker-compose up`
 
-If this is the first time you deploy this project, you will need to run below command to set up the db and super user
+If this is the first time you deploy this project, you will need to run below command first to set up the db and super user
 
  ```shell script
+ # set up password for DB
+ # run this before `docker-compose up`!
+ export POSTGRES_PASSWORD=<some password here>
+ 
+ # Run below after docker-compose up
  docker exec -it dashboard-backend-backend bash &&
  ./manage.py collectstatic &&
  ./manage.py makemigrations && ./manage.py migrate
