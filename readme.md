@@ -12,22 +12,21 @@ Powered by Django
 
 ### In Prod
 
-1. `docker-compose up`
-
 If this is the first time you deploy this project, you will need to run below command first to set up the db and super user
 
- ```shell script
- # set up password for DB
- # run this before `docker-compose up`!
- export POSTGRES_PASSWORD=<some password here>
+```shell script
+# Set up password for DB before `docker-compose up`!
+export POSTGRES_PASSWORD=<some password here>
+
+# Run below after docker-compose up
+docker exec -it dashboard-backend-backend bash &&
+./manage.py collectstatic &&
+./manage.py makemigrations && ./manage.py migrate
+./manage.py createsuperuser &&
+./manage.py setbudget <your email> <monthly budget amount>
+```
  
- # Run below after docker-compose up
- docker exec -it dashboard-backend-backend bash &&
- ./manage.py collectstatic &&
- ./manage.py makemigrations && ./manage.py migrate
- ./manage.py createsuperuser &&
- ./manage.py setbudget <your email> <monthly budget amount>
- ```
+`docker-compose up`
 
 
 ### In Beta
