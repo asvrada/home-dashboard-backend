@@ -8,7 +8,7 @@ class SummaryTest(BasicAPITestCase):
     def test_model_budget(self):
         m = models.MonthlyBudget.objects.first()
 
-        self.assertEqual("3333.0 - admin", str(m))
+        self.assertEqual("3333.0 - admin@gmail.com", str(m))
 
     def test_model_icon(self):
         m = models.Icon.objects.first()
