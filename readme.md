@@ -31,6 +31,15 @@ docker exec -it dashboard-backend-backend bash &&
 
 ### In Beta
 
+If this is the first time you run this project, you will need to run below command first to set up the db and super user
+
+```shell
+./manage.py migrate
+./manage.py createsuperuser
+./manage.py etbudget <your email> <monthly budget amount>
+```
+
+To start the server:  
 `./manage.py runserver 4444`
 
 
