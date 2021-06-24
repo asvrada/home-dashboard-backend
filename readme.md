@@ -36,7 +36,7 @@ If this is the first time you run this project, you will need to run below comma
 ```shell
 ./manage.py migrate
 ./manage.py createsuperuser
-./manage.py etbudget <your email> <monthly budget amount>
+./manage.py setbudget <your email> <monthly budget amount>
 ```
 
 To start the server:  
