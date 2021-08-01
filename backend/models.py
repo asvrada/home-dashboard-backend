@@ -39,7 +39,7 @@ class MonthlyBudget(models.Model):
         return self.__repr__()
 
     def __repr__(self):
-        return f"{self.amount} - {self.user.username}"
+        return f"{self.amount} - {self.user.email}"
 
 
 class Icon(models.Model):
