@@ -9,6 +9,6 @@ if [[ -z $ROOT_HOME_DASHBOARD_BACKEND ]]; then
 fi
 
 cd $ROOT_HOME_DASHBOARD_BACKEND
-git pull --rebase
+git pull --ff-only
 
 echo "Finished update.sh"
