@@ -1,7 +1,6 @@
 FROM python:3
 
-RUN apt-get update \
-    && apt-get install -y cron
+RUN apt-get update
 
 WORKDIR /app/
 
